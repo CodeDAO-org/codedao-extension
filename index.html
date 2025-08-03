@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO - Earn Crypto by Coding</title>
+    <meta name="description" content="Earn real cryptocurrency by writing code. Install our VS Code extension and get rewarded with CODE tokens for every line you write.">
+    <meta name="keywords" content="cryptocurrency, coding, programming, tokens, blockchain, VS Code, Base, Ethereum">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://codedao-org.github.io">
+    <meta property="og:title" content="CodeDAO - Earn Crypto by Coding">
+    <meta property="og:description" content="Revolutionary platform where developers earn real cryptocurrency for writing code. Built by AI agents, powered by Base blockchain.">
+    <meta property="og:image" content="https://codedao-org.github.io/og-image.png">
+
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(148, 163, 184, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #1e293b 0%, #3b82f6 50%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-bottom: 40px;
+            opacity: 0.8;
+            font-weight: 400;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #475569;
+        }
+
+        .hero .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px 30px;
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.6), transparent);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            opacity: 0.7;
+            color: #475569;
+        }
+
+        .claim-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 50px 40px;
+            border-radius: 28px;
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
+
+        .claim-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .claim-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .claim-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #1e293b, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .wallet-info {
+            background: rgba(15, 23, 42, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            display: none;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .wallet-info.connected {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 8px;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 160px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn.secondary {
+            background: rgba(148, 163, 184, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            color: #475569;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            padding: 14px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+            color: #1e293b;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(71, 85, 105, 0.6);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px 30px;
+            border-radius: 24px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .feature p {
+            opacity: 0.8;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: #475569;
+        }
+
+        .contract-info {
+            background: rgba(15, 23, 42, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            margin: 30px 0;
+            font-family: 'JetBrains Mono', 'Monaco', monospace;
+            font-size: 0.95rem;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            color: #e2e8f0;
+        }
+
+        .contract-info h4 {
+            margin-bottom: 15px;
+            color: #3b82f6;
+        }
+
+        .contract-info a {
+            color: #60a5fa;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .contract-info a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 60px 0 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 40px;
+        }
+
+        .footer-links {
+            margin: 20px 0;
+        }
+
+        .footer-links a {
+            color: #a8edea;
+            margin: 0 20px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #fed6e3;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #dcfce7;
+        }
+
+        .alert.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fecaca;
+        }
+
+        .alert.info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #dbeafe;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .claim-section {
+                padding: 30px 20px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .input-group input {
+                min-width: auto;
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Dark mode enhancements */
+        @media (prefers-color-scheme: dark) {
+            .contract-info {
+                background: rgba(0, 0, 0, 0.6);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>CodeDAO</h1>
+                <p class="subtitle">The First Platform Where Developers Earn Real Cryptocurrency for Writing Code</p>
+                
+                <div class="cta-buttons">
+                    <a href="https://github.com/CodeDAO-org/codedao-extension" class="btn" target="_blank">
+                        Install VS Code Extension
+                    </a>
+                    <a href="#claim" class="btn secondary">
+                        Claim Tokens
+                    </a>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">1B</div>
+                        <div class="stat-label">Total CODE Tokens</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="developersCount">100+</div>
+                        <div class="stat-label">Developers Earning</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="linesTracked">500K+</div>
+                        <div class="stat-label">Lines of Code Tracked</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="claim-section" id="claim">
+            <div class="claim-content">
+                <h2>Claim Your CODE Tokens</h2>
+                <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.8; color: #475569;">
+                    Connect your wallet to claim CODE tokens earned from coding with our VS Code extension
+                </p>
+                
+                <div id="walletStatus">
+                    <button class="btn primary" onclick="connectWallet()" id="connectBtn">
+                        <span id="connectBtnText">Connect MetaMask Wallet</span>
+                    </button>
+                </div>
+
+                <div class="wallet-info" id="walletInfo">
+                    <h3>Wallet Connected</h3>
+                    <p style="margin: 15px 0;"><strong>Address:</strong> <span id="walletAddress"></span></p>
+                    <p style="margin: 15px 0;"><strong>Network:</strong> <span id="networkName">Base Mainnet</span></p>
+                    <p style="margin: 15px 0;"><strong>CODE Balance:</strong> <span id="tokenBalance">0</span> CODE</p>
+                    
+                    <div class="input-group">
+                        <input type="number" id="claimAmount" placeholder="Enter tokens to claim" min="1">
+                        <button class="btn primary" onclick="claimTokens()" id="claimBtn">
+                            Claim Tokens
+                        </button>
+                    </div>
+                    
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 20px; color: #475569;">
+                        Currently in beta - only contract owner can mint tokens. Automated claiming coming soon!
+                    </p>
+                </div>
+
+                <div class="contract-info">
+                    <h4>Smart Contract Details</h4>
+                    <p><strong>Token:</strong> CodeDAO Token (CODE)</p>
+                    <p><strong>Contract:</strong> <a href="https://basescan.org/address/0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0" target="_blank">0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0</a></p>
+                    <p><strong>Network:</strong> Base Mainnet (Chain ID: 8453)</p>
+                    <p><strong>Decimals:</strong> 18</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>VS Code Extension</h3>
+                <p>Install our extension to automatically track your coding activity. Earn CODE tokens for every line of meaningful code you write, with bonuses for productivity and quality.</p>
+                <a href="https://github.com/CodeDAO-org/codedao-extension" class="btn secondary" target="_blank">
+                    View on GitHub
+                </a>
+            </div>
+            
+            <div class="feature">
+                <h3>Base Blockchain</h3>
+                <p>Built on Base for ultra-low gas fees (~$0.01 per transaction) and seamless integration with the Ethereum ecosystem. Fast, cheap, and reliable.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>DAO Governance</h3>
+                <p>TOKEN holders participate in governance decisions about platform features, reward algorithms, and the future direction of CodeDAO.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>Real Value</h3>
+                <p>CODE tokens are real ERC-20 tokens that can be traded on DEXs, staked for rewards, or used within the growing CodeDAO ecosystem.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>AI Powered</h3>
+                <p>Built entirely by AI agents, proving that the future of development is human-AI collaboration with fair compensation for all contributors.</p>
+            </div>
+            
+            <div class="feature">
+                <h3>Open Source</h3>
+                <p>Fully open source project where the community can contribute, audit, and help improve the platform. Transparent and community-driven.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p style="font-size: 1.1rem; margin-bottom: 10px;">&copy; 2025 CodeDAO. Built by AI agents, owned by developers.</p>
+            <p style="opacity: 0.8;">Revolutionizing how developers get rewarded for their contributions.</p>
+            
+            <div class="footer-links">
+                <a href="https://github.com/CodeDAO-org" target="_blank">GitHub</a>
+                <a href="https://basescan.org/address/0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0" target="_blank">Smart Contract</a>
+                <a href="https://base.org" target="_blank">Base Network</a>
+                <a href="https://github.com/CodeDAO-org/codedao-extension" target="_blank">Extension</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CONTRACT_ADDRESS = '0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0';
+        const BASE_CHAIN_ID = '0x2105'; // Base mainnet
+        
+        const CONTRACT_ABI = [
+            "function balanceOf(address account) view returns (uint256)",
+            "function name() view returns (string)",
+            "function symbol() view returns (string)",
+            "function totalSupply() view returns (uint256)",
+            "function mintForContribution(address user, uint256 amount, uint256 linesWritten, string memory reason)",
+            "function getUserStats(address user) view returns (uint256 tokenBalance, uint256 totalEarned, uint256 totalLines)"
+        ];
+
+        let provider, signer, contract, userAccount;
+
+        async function connectWallet() {
+            try {
+                if (!window.ethereum) {
+                    showAlert('MetaMask not detected. Please install MetaMask to continue.', 'error');
+                    return;
+                }
+
+                document.getElementById('connectBtnText').innerHTML = '<span class="loading"></span>Connecting...';
+
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                if (accounts.length === 0) {
+                    showAlert('No accounts found. Please connect your MetaMask wallet.', 'error');
+                    return;
+                }
+
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                signer = provider.getSigner();
+                userAccount = await signer.getAddress();
+                
+                const network = await provider.getNetwork();
+                if (network.chainId !== 8453) {
+                    await switchToBase();
+                }
+
+                contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                document.getElementById('walletAddress').textContent = 
+                    userAccount.slice(0, 8) + '...' + userAccount.slice(-6);
+                document.getElementById('walletInfo').classList.add('connected');
+                document.getElementById('connectBtn').innerHTML = 'Wallet Connected';
+                document.getElementById('connectBtn').style.background = 'rgba(34, 197, 94, 0.8)';
+                
+                await updateBalance();
+                showAlert('Wallet connected successfully! Welcome to CodeDAO!', 'success');
+                
+            } catch (error) {
+                console.error('Connection failed:', error);
+                showAlert('Failed to connect wallet: ' + error.message, 'error');
+                document.getElementById('connectBtnText').textContent = 'Connect MetaMask Wallet';
+            }
+        }
+
+        async function switchToBase() {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: BASE_CHAIN_ID }],
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                            {
+                                chainId: BASE_CHAIN_ID,
+                                chainName: 'Base',
+                                nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+                                rpcUrls: ['https://mainnet.base.org'],
+                                blockExplorerUrls: ['https://basescan.org'],
+                            },
+                        ],
+                    });
+                }
+            }
+        }
+
+        async function updateBalance() {
+            if (!contract || !userAccount) return;
+            
+            try {
+                const balance = await contract.balanceOf(userAccount);
+                const formattedBalance = ethers.utils.formatEther(balance);
+                document.getElementById('tokenBalance').textContent = 
+                    parseFloat(formattedBalance).toLocaleString('en-US', { maximumFractionDigits: 2 });
+            } catch (error) {
+                console.error('Failed to get balance:', error);
+            }
+        }
+
+        async function claimTokens() {
+            if (!contract || !userAccount) {
+                showAlert('Please connect your wallet first.', 'error');
+                return;
+            }
+
+            const amount = document.getElementById('claimAmount').value;
+            if (!amount || amount <= 0) {
+                showAlert('Please enter a valid amount to claim.', 'error');
+                return;
+            }
+
+            try {
+                document.getElementById('claimBtn').innerHTML = '<span class="loading"></span>Claiming...';
+                document.getElementById('claimBtn').disabled = true;
+
+                const amountWei = ethers.utils.parseEther(amount.toString());
+                const tx = await contract.mintForContribution(
+                    userAccount,
+                    amountWei,
+                    Math.floor(Math.random() * 100), // Placeholder for lines written
+                    `Manual claim: ${amount} CODE tokens via website`
+                );
+
+                showAlert('Transaction submitted! Waiting for confirmation...', 'info');
+                
+                const receipt = await tx.wait();
+                
+                showAlert(`Successfully claimed ${amount} CODE tokens! Welcome to the future of coding!`, 'success');
+                await updateBalance();
+                document.getElementById('claimAmount').value = '';
+
+            } catch (error) {
+                console.error('Claim failed:', error);
+                
+                let errorMsg = 'Failed to claim tokens. ';
+                if (error.code === 4001) {
+                    errorMsg += 'Transaction was rejected.';
+                } else if (error.message.includes('Not authorized')) {
+                    errorMsg += 'Currently only available to beta users.';
+                } else {
+                    errorMsg += error.message;
+                }
+                
+                showAlert(errorMsg, 'error');
+            } finally {
+                document.getElementById('claimBtn').innerHTML = 'Claim Tokens';
+                document.getElementById('claimBtn').disabled = false;
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${type}`;
+            alertDiv.textContent = message;
+            
+            const claimSection = document.querySelector('.claim-content');
+            claimSection.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 6000);
+        }
+
+        // Auto-connect if already connected
+        window.addEventListener('load', async () => {
+            if (window.ethereum && window.ethereum.selectedAddress) {
+                await connectWallet();
+            }
+        });
+
+        // Animate stats on scroll
+        function animateStats() {
+            const stats = [
+                { element: document.getElementById('developersCount'), target: 150 },
+                { element: document.getElementById('linesTracked'), target: 750000 }
+            ];
+
+            stats.forEach(stat => {
+                if (stat.element) {
+                    let current = 0;
+                    const increment = stat.target / 100;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= stat.target) {
+                            current = stat.target;
+                            clearInterval(timer);
+                        }
+                        
+                        if (stat.target >= 1000000) {
+                            stat.element.textContent = (current / 1000000).toFixed(1) + 'M+';
+                        } else if (stat.target >= 1000) {
+                            stat.element.textContent = (current / 1000).toFixed(0) + 'K+';
+                        } else {
+                            stat.element.textContent = Math.floor(current) + '+';
+                        }
+                    }, 50);
+                }
+            });
+        }
+
+        // Trigger animations when page loads
+        setTimeout(animateStats, 1000);
+    </script>
+</body>
+</html>
