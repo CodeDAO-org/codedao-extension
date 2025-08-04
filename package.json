@@ -1,96 +1,61 @@
 {
-  "name": "codedao",
-  "displayName": "CodeDAO - Earn Tokens for Coding",
-  "description": "AI-powered coding assistant that rewards you with tokens for writing code",
-  "version": "0.0.1",
-  "publisher": "CodeDAO-org",
-  "engines": {
-    "vscode": "^1.74.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "keywords": [
-    "blockchain",
-    "cryptocurrency",
-    "tokens",
-    "coding rewards",
-    "web3",
-    "ethereum",
-    "base",
-    "productivity"
-  ],
-  "icon": "icon.png",
-  "galleryBanner": {
-    "color": "#1e1e1e",
-    "theme": "dark"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/CodeDAO-org/codedao-extension"
-  },
-  "homepage": "https://codedao-org.github.io",
-  "bugs": {
-    "url": "https://github.com/CodeDAO-org/codedao-extension/issues"
-  },
-  "license": "MIT",
-  "activationEvents": [
-    "onStartupFinished"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "codedao.showStats",
-        "title": "Show CodeDAO Stats",
-        "icon": "$(graph)"
-      },
-      {
-        "command": "codedao.connectWallet",
-        "title": "Connect Wallet",
-        "icon": "$(key)"
-      }
-    ],
-    "menus": {
-      "commandPalette": [
-        {
-          "command": "codedao.showStats"
-        },
-        {
-          "command": "codedao.connectWallet"
-        }
-      ]
+    "name": "codedao-extension",
+    "displayName": "CodeDAO",
+    "description": "Earn cryptocurrency (CODE tokens) for coding!",
+    "version": "1.0.0",
+    "publisher": "CodeDAO-org",
+    "engines": {
+        "vscode": "^1.73.0"
     },
-    "configuration": {
-      "title": "CodeDAO",
-      "properties": {
-        "codedao.walletAddress": {
-          "type": "string",
-          "default": "",
-          "description": "Your connected wallet address"
-        },
-        "codedao.enableTracking": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable coding activity tracking"
+    "categories": ["Other"],
+    "keywords": ["cryptocurrency", "rewards", "coding", "blockchain", "web3"],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "codedao.showStats",
+                "title": "CodeDAO: Show Stats",
+                "icon": "$(graph)"
+            },
+            {
+                "command": "codedao.connectWallet",
+                "title": "CodeDAO: Connect Wallet",
+                "icon": "$(plug)"
+            },
+            {
+                "command": "codedao.claimRewards",
+                "title": "CodeDAO: Claim Rewards",
+                "icon": "$(zap)"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "codedao.showStats"
+                },
+                {
+                    "command": "codedao.connectWallet"
+                },
+                {
+                    "command": "codedao.claimRewards"
+                }
+            ]
         }
-      }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "dependencies": {
+        "ethers": "^5.7.2"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.73.0",
+        "@types/node": "16.x",
+        "typescript": "^4.9.4"
     }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "package": "vsce package",
-    "publish": "vsce publish"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.74.0",
-    "@types/node": "16.x",
-    "typescript": "^4.9.4",
-    "vsce": "^2.15.0"
-  },
-  "dependencies": {
-    "ethers": "^6.8.0"
-  }
 }
