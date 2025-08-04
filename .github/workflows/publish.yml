@@ -1,0 +1,44 @@
+name: Publish VS Code Extension
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'package.json'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Install vsce
+      run: npm install -g vsce
+      
+    - name: Create publisher (if needed)
+      run: |
+        echo "${{ secrets.VSCE_PAT }}" | vsce create-publisher codedao-org --pat || echo "Publisher already exists"
+      continue-on-error: true
+      
+    - name: Package extension
+      run: vsce package
+      
+    - name: Publish to marketplace
+      run: vsce publish -p ${{ secrets.VSCE_PAT }}
+      
+    - name: Upload VSIX artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: codedao-extension
+        path: "*.vsix"
