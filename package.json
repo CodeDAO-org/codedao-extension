@@ -1,18 +1,46 @@
 {
     "name": "codedao-extension",
-    "displayName": "CodeDAO",
-    "description": "Earn cryptocurrency (CODE tokens) for coding!",
+    "displayName": "CodeDAO - Earn Crypto by Coding",
+    "description": "🤖💰 The world's first VS Code extension that pays you real cryptocurrency for writing code! Earn CODE tokens automatically as you code.",
     "version": "1.0.0",
     "publisher": "CodeDAO-org",
     "engines": {
         "vscode": "^1.73.0"
     },
-    "categories": ["Other"],
-    "keywords": ["cryptocurrency", "rewards", "coding", "blockchain", "web3"],
+    "categories": [
+        "Other",
+        "Productivity"
+    ],
+    "keywords": [
+        "cryptocurrency",
+        "coding rewards", 
+        "blockchain",
+        "web3",
+        "base network",
+        "earn money coding",
+        "passive income",
+        "developer rewards",
+        "code tokens",
+        "programming incentives"
+    ],
     "activationEvents": [
         "onStartupFinished"
     ],
     "main": "./out/extension.js",
+    "icon": "images/icon.png",
+    "galleryBanner": {
+        "color": "#1e1e1e",
+        "theme": "dark"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CodeDAO-org/codedao-extension"
+    },
+    "homepage": "https://codedao-org.github.io",
+    "bugs": {
+        "url": "https://github.com/CodeDAO-org/codedao-extension/issues"
+    },
+    "license": "MIT",
     "contributes": {
         "commands": [
             {
@@ -21,13 +49,13 @@
                 "icon": "$(graph)"
             },
             {
-                "command": "codedao.connectWallet",
+                "command": "codedao.connectWallet", 
                 "title": "CodeDAO: Connect Wallet",
                 "icon": "$(plug)"
             },
             {
                 "command": "codedao.claimRewards",
-                "title": "CodeDAO: Claim Rewards",
+                "title": "CodeDAO: Claim Rewards", 
                 "icon": "$(zap)"
             }
         ],
@@ -46,38 +74,32 @@
         }
     },
     "scripts": {
-        "start:agents": "node ai-agents/server.js",
-    "deploy:autonomous": "hardhat run scripts/deploy-autonomous.js --network base",
-    "deploy:autonomous:testnet": "hardhat run scripts/deploy-autonomous.js --network baseGoerli", 
-    "setup:agents": "hardhat run scripts/setup-agents.js --network base",
-    "setup:agents:testnet": "hardhat run scripts/setup-agents.js --network baseGoerli",
-    "test:autonomous": "hardhat test test/AutonomousRewards.test.js"
-  }
-}
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./"
+        "watch": "tsc -watch -p ./",
+        "start:agents": "node ai-agents/server.js",
+        "deploy:autonomous": "hardhat run scripts/deploy-autonomous.js --network base",
+        "deploy:autonomous:testnet": "hardhat run scripts/deploy-autonomous.js --network baseGoerli", 
+        "setup:agents": "hardhat run scripts/setup-agents.js --network base",
+        "setup:agents:testnet": "hardhat run scripts/setup-agents.js --network baseGoerli",
+        "test:autonomous": "hardhat test test/AutonomousRewards.test.js"
     },
     "dependencies": {
-         "express": "^4.18.2",
-    "cors": "^2.8.5", 
-    "helmet": "^7.0.0",
-    "morgan": "^1.10.0",
-    "compression": "^1.7.4",
-    "node-cron": "^3.0.2",
-    "express-rate-limit": "^6.7.0"
-  }
-}
-        "ethers": "^5.7.2"
+        "ethers": "^5.7.2",
+        "express": "^4.18.2",
+        "cors": "^2.8.5", 
+        "helmet": "^7.0.0",
+        "morgan": "^1.10.0",
+        "compression": "^1.7.4",
+        "node-cron": "^3.0.2",
+        "express-rate-limit": "^6.7.0"
     },
     "devDependencies": {
-        "hardhat": "^2.17.0",
-    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
-    "@openzeppelin/contracts": "^4.9.3"
-  }
-}
         "@types/vscode": "^1.73.0",
         "@types/node": "16.x",
-        "typescript": "^4.9.4"
+        "typescript": "^4.9.4",
+        "hardhat": "^2.17.0",
+        "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+        "@openzeppelin/contracts": "^4.9.3"
     }
 }
