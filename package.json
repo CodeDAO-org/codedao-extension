@@ -91,8 +91,6 @@
         "@types/vscode": "^1.73.0",
         "@types/node": "16.x",
         "typescript": "^4.9.4",
-        "hardhat": "^2.17.0",
-        "@nomicfoundation/hardhat-toolbox": "^3.0.0",
-        "@openzeppelin/contracts": "^4.9.3"
+       
     }
 }
