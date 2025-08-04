@@ -27,7 +27,7 @@
         "onStartupFinished"
     ],
     "main": "./out/extension.js",
-    "icon": "images/icon.png",
+    "icon": "icon.png",
     "galleryBanner": {
         "color": "#1e1e1e",
         "theme": "dark"
@@ -72,14 +72,5 @@
                 }
             ]
         }
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./"
-    },
-    "devDependencies": {
-        "@types/vscode": "^1.73.0",
-        "@types/node": "16.x",
-        "typescript": "^4.9.4"
     }
 }
