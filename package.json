@@ -46,14 +46,36 @@
         }
     },
     "scripts": {
+        "start:agents": "node ai-agents/server.js",
+    "deploy:autonomous": "hardhat run scripts/deploy-autonomous.js --network base",
+    "deploy:autonomous:testnet": "hardhat run scripts/deploy-autonomous.js --network baseGoerli", 
+    "setup:agents": "hardhat run scripts/setup-agents.js --network base",
+    "setup:agents:testnet": "hardhat run scripts/setup-agents.js --network baseGoerli",
+    "test:autonomous": "hardhat test test/AutonomousRewards.test.js"
+  }
+}
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./"
     },
     "dependencies": {
+         "express": "^4.18.2",
+    "cors": "^2.8.5", 
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "compression": "^1.7.4",
+    "node-cron": "^3.0.2",
+    "express-rate-limit": "^6.7.0"
+  }
+}
         "ethers": "^5.7.2"
     },
     "devDependencies": {
+        "hardhat": "^2.17.0",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@openzeppelin/contracts": "^4.9.3"
+  }
+}
         "@types/vscode": "^1.73.0",
         "@types/node": "16.x",
         "typescript": "^4.9.4"
