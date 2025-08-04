@@ -15,19 +15,18 @@ jobs:
       with:
         node-version: '16'
         
-    - name: Create manual package
+    - name: Create proper VSIX package
       run: |
-        # Create package directory outside current dir
+        # Create clean extension structure
         cd ..
         mkdir -p codedao-package
         
-        # Copy specific files/folders we need
+        # Copy essential files
         cp -r codedao-extension/src codedao-package/
         cp codedao-extension/package.json codedao-package/
         cp codedao-extension/icon.png codedao-package/ || echo "No icon found"
-        cp codedao-extension/README.md codedao-package/ || echo "No README found"
         
-        # Create basic out folder with compiled JS
+        # Create compiled JavaScript
         mkdir -p codedao-package/out
         cat > codedao-package/out/extension.js << 'EOF'
         const vscode = require('vscode');
@@ -49,4 +48,24 @@ jobs:
             
             context.subscriptions.push(showStats, connectWallet, claimRewards);
             
-            vscode.window.showInformationMessage('🚀 CodeDAO is active! Star
+            vscode.window.showInformationMessage('🚀 CodeDAO is active! Start coding to earn CODE tokens!');
+        }
+        
+        function deactivate() {}
+        
+        module.exports = { activate, deactivate };
+        EOF
+        
+        # Install vsce and create VSIX
+        cd codedao-package
+        npm install -g vsce@2.15.0
+        vsce package --no-dependencies --allow-missing-repository
+        
+        # Move VSIX to workspace
+        mv *.vsix ../codedao-extension/codedao-extension.vsix
+        
+    - name: Upload VSIX package
+      uses: actions/upload-artifact@v4
+      with:
+        name: codedao-extension-vsix
+        path: codedao-extension.vsix
