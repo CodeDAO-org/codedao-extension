@@ -26,6 +26,8 @@ jobs:
       
     - name: Install vsce
       run: npm install -g vsce
+      - name: Publish to VS Code Marketplace
+      run: vsce publish -p ${{ secrets.AZURE_MARKETPLACE_TOKEN }}
       
     - name: Package extension
       run: vsce package
