@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { ethers } from 'ethers';
 
 // Contract configuration
-const CONTRACT_ADDRESS = '0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0';
+const CONTRACT_ADDRESS = '0xbE364F72149e3A246C2aE249DcBb4FC7d0BCce79';
 const BASE_RPC_URL = 'https://mainnet.base.org';
 
 // Contract ABI (simplified for claiming)
