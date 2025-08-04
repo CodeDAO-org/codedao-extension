@@ -1,26 +1,24 @@
-name: Build VS Code Extension
+name: Publish Extension
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout code
+    - name: Checkout
       uses: actions/checkout@v4
       
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '14'
+        node-version: '18'
         
-    - name: Install specific vsce version
-      run: npm install -g vsce@2.11.0
-      
-    - name: Package extension
-      run: vsce package --no-dependencies --allow-missing-repository --skip-license
-      
     - name: Publish to VS Code Marketplace
-      run: vsce publish -p ${{ secrets.AZURE_MARKETPLACE_TOKEN }} --no-dependencies --allow-missing-repository --skip-license
+      uses: HaaLeo/publish-vscode-extension@v1
+      with:
+        pat: ${{ secrets.AZURE_MARKETPLACE_TOKEN }}
+        registryUrl: https://marketplace.visualstudio.com
+        packagePath: ./
+        skipDuplicate: true
