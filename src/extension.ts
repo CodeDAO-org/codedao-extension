@@ -1,253 +1,209 @@
 import * as vscode from 'vscode';
+import { RewardClaimer, createClaimCommand } from './claimRewards';
 
-interface CodeStats {
-    linesWritten: number;
-    tokensEarned: number;
-    lastSession: number;
+interface CodingSession {
+    linesOfCode: number;
+    functionsWritten: number;
+    classesWritten: number;
+    testsWritten: number;
+    commentsWritten: number;
+    codeContent: string;
+    timestamp: number;
 }
 
 class CodeDAOExtension {
-    private codeStats: CodeStats;
+    private rewardClaimer: RewardClaimer;
+    private currentSession: CodingSession;
     private statusBarItem: vscode.StatusBarItem;
-    private context: vscode.ExtensionContext;
-    
-    constructor(context: vscode.ExtensionContext) {
-        this.context = context;
-        
-        // Load existing stats or initialize
-        this.codeStats = context.globalState.get('codeStats', {
-            linesWritten: 0,
-            tokensEarned: 0,
-            lastSession: Date.now()
-        });
+    private documentChangeListener: vscode.Disposable | undefined;
+
+    constructor(private context: vscode.ExtensionContext) {
+        this.rewardClaimer = new RewardClaimer();
+        this.currentSession = this.initializeSession();
         
         // Create status bar item
-        this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-        this.statusBarItem.command = 'codedao.showStats';
+        this.statusBarItem = vscode.window.createStatusBarItem(
+            vscode.StatusBarAlignment.Right, 
+            100
+        );
+        this.statusBarItem.command = 'codedao.claimRewards';
         this.updateStatusBar();
         this.statusBarItem.show();
         
-        this.setupEventListeners();
+        // Start tracking code changes
+        this.startCodeTracking();
     }
-    
-    private setupEventListeners() {
-        // Track text document changes
-        vscode.workspace.onDidChangeTextDocument((event) => {
-            this.handleCodeChange(event);
-        });
-        
-        // Track file saves
-        vscode.workspace.onDidSaveTextDocument((document) => {
-            this.handleFileSave(document);
-        });
+
+    private initializeSession(): CodingSession {
+        return {
+            linesOfCode: 0,
+            functionsWritten: 0,
+            classesWritten: 0,
+            testsWritten: 0,
+            commentsWritten: 0,
+            codeContent: '',
+            timestamp: Date.now()
+        };
     }
-    
-    private handleCodeChange(event: vscode.TextDocumentChangeEvent) {
-        // Only track substantial changes (not just cursor movement)
-        const meaningfulChanges = event.contentChanges.filter(change => 
-            change.text.length > 0 && change.text.trim().length > 0
-        );
-        
-        if (meaningfulChanges.length > 0) {
-            const linesAdded = meaningfulChanges.reduce((total, change) => {
-                return total + (change.text.split('\n').length - 1);
-            }, 0);
-            
-            if (linesAdded > 0) {
-                this.trackCodeContribution(linesAdded);
+
+    private startCodeTracking() {
+        // Track document changes
+        this.documentChangeListener = vscode.workspace.onDidChangeTextDocument((event) => {
+            if (event.document.languageId !== 'plaintext') {
+                this.analyzeCodeChanges(event);
             }
-        }
+        });
     }
-    
-    private handleFileSave(document: vscode.TextDocument) {
-        // Bonus tokens for saving work
-        this.earnTokens(2, `File saved: ${document.fileName.split('/').pop()}`);
-    }
-    
-    private trackCodeContribution(linesAdded: number) {
-        this.codeStats.linesWritten += linesAdded;
+
+    private analyzeCodeChanges(event: vscode.TextDocumentChangeEvent) {
+        const document = event.document;
+        const text = document.getText();
         
-        // Calculate tokens earned (1 token per line, with bonuses)
-        let tokensForLines = linesAdded;
+        // Count lines (non-empty)
+        const lines = text.split('\n').filter(line => line.trim().length > 0);
+        this.currentSession.linesOfCode = lines.length;
         
-        // Bonus for productive sessions
-        if (linesAdded >= 5) {
-            tokensForLines += 2; // Productivity bonus
-        }
+        // Count functions (simple regex patterns)
+        const functionPatterns = [
+            /function\s+\w+/g,           // JavaScript/TypeScript
+            /def\s+\w+/g,                // Python
+            /public\s+\w+\s+\w+\s*\(/g,  // Java/C#
+            /fn\s+\w+/g                  // Rust
+        ];
         
-        this.earnTokens(tokensForLines, `${linesAdded} lines written`);
-    }
-    
-    private earnTokens(amount: number, reason: string) {
-        this.codeStats.tokensEarned += amount;
+        let functionCount = 0;
+        functionPatterns.forEach(pattern => {
+            const matches = text.match(pattern);
+            if (matches) functionCount += matches.length;
+        });
+        this.currentSession.functionsWritten = functionCount;
+        
+        // Count classes
+        const classMatches = text.match(/class\s+\w+/g);
+        this.currentSession.classesWritten = classMatches ? classMatches.length : 0;
+        
+        // Count tests (test functions)
+        const testPatterns = [
+            /test\s*\(/g,
+            /it\s*\(/g,
+            /describe\s*\(/g,
+            /@Test/g
+        ];
+        
+        let testCount = 0;
+        testPatterns.forEach(pattern => {
+            const matches = text.match(pattern);
+            if (matches) testCount += matches.length;
+        });
+        this.currentSession.testsWritten = testCount;
+        
+        // Count comments
+        const commentMatches = text.match(/\/\/.*|\/\*[\s\S]*?\*\/|#.*/g);
+        this.currentSession.commentsWritten = commentMatches ? commentMatches.length : 0;
+        
+        // Store content for hash generation
+        this.currentSession.codeContent = text;
+        this.currentSession.timestamp = Date.now();
+        
+        // Update status bar
         this.updateStatusBar();
-        this.saveStats();
-        
-        // Show reward notification
-        this.showTokenReward(amount, reason);
     }
-    
-    private showTokenReward(amount: number, reason: string) {
-        const message = `🎉 +${amount} DAO tokens earned! ${reason}`;
-        
-        vscode.window.showInformationMessage(
-            message,
-            'View Stats',
-            'Connect Wallet'
-        ).then(selection => {
-            if (selection === 'View Stats') {
-                this.showStats();
-            } else if (selection === 'Connect Wallet') {
-                this.connectWallet();
+
+    private async updateStatusBar() {
+        const potentialReward = await this.calculatePotentialReward();
+        this.statusBarItem.text = `$(code) ${this.currentSession.linesOfCode} lines | $(zap) ${potentialReward} CODE`;
+        this.statusBarItem.tooltip = `Click to claim ${potentialReward} CODE tokens\nLines: ${this.currentSession.linesOfCode} | Functions: ${this.currentSession.functionsWritten} | Tests: ${this.currentSession.testsWritten}`;
+    }
+
+    private async calculatePotentialReward(): Promise<string> {
+        try {
+            return await this.rewardClaimer.calculateReward(this.currentSession);
+        } catch (error) {
+            return '0.0';
+        }
+    }
+
+    async showStats() {
+        try {
+            const stats = await this.rewardClaimer.getDeveloperStats();
+            if (stats) {
+                const message = `📊 CodeDAO Stats\n\n` +
+                    `💰 Total Rewards: ${stats.totalRewards} CODE\n` +
+                    `📝 Total Lines: ${stats.totalLines}\n` +
+                    `🔥 Streak: ${stats.streakDays} days\n` +
+                    `🎯 Total Claims: ${stats.totalClaims}\n` +
+                    `⏰ Next Claim Available: ${stats.nextClaimTime.toLocaleString()}`;
+                
+                vscode.window.showInformationMessage(message);
+            } else {
+                vscode.window.showInformationMessage('Connect your wallet to view stats');
             }
-        });
+        } catch (error) {
+            vscode.window.showErrorMessage('Failed to load stats');
+        }
     }
-    
-    private updateStatusBar() {
-        this.statusBarItem.text = `$(star) ${this.codeStats.tokensEarned} DAO tokens`;
-        this.statusBarItem.tooltip = `Lines written: ${this.codeStats.linesWritten} | Tokens earned: ${this.codeStats.tokensEarned}`;
+
+    async connectWallet() {
+        const connected = await this.rewardClaimer.connectWallet();
+        if (connected) {
+            this.updateStatusBar();
+        }
     }
-    
-    private saveStats() {
-        this.context.globalState.update('codeStats', this.codeStats);
+
+    async claimRewards() {
+        if (this.currentSession.linesOfCode === 0) {
+            vscode.window.showWarningMessage('No code to claim rewards for. Start coding!');
+            return;
+        }
+
+        const success = await this.rewardClaimer.claimRewards(this.currentSession);
+        if (success) {
+            // Reset session after successful claim
+            this.currentSession = this.initializeSession();
+            this.updateStatusBar();
+        }
     }
-    
-    public showStats() {
-        const panel = vscode.window.createWebviewPanel(
-            'codeDAOStats',
-            'CodeDAO Stats',
-            vscode.ViewColumn.Two,
-            {
-                enableScripts: true
-            }
-        );
-        
-        panel.webview.html = this.getStatsWebviewContent();
-    }
-    
-    public connectWallet() {
-        vscode.window.showInformationMessage(
-            'Connect your MetaMask wallet to claim tokens on-chain!',
-            'Coming Soon...'
-        );
-    }
-    
-    private getStatsWebviewContent(): string {
-        return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>CodeDAO Stats</title>
-            <style>
-                body {
-                    font-family: var(--vscode-font-family);
-                    padding: 20px;
-                    color: var(--vscode-foreground);
-                    background: var(--vscode-editor-background);
-                }
-                .stat-card {
-                    background: var(--vscode-editor-selectionBackground);
-                    padding: 20px;
-                    margin: 10px 0;
-                    border-radius: 8px;
-                    border: 1px solid var(--vscode-panel-border);
-                }
-                .big-number {
-                    font-size: 2.5em;
-                    font-weight: bold;
-                    color: var(--vscode-textLink-foreground);
-                }
-                .label {
-                    font-size: 0.9em;
-                    opacity: 0.8;
-                    margin-top: 5px;
-                }
-                .progress-bar {
-                    width: 100%;
-                    height: 10px;
-                    background: var(--vscode-progressBar-background);
-                    border-radius: 5px;
-                    margin: 10px 0;
-                }
-                .progress-fill {
-                    height: 100%;
-                    background: var(--vscode-progressBar-foreground);
-                    border-radius: 5px;
-                    transition: width 0.3s ease;
-                }
-            </style>
-        </head>
-        <body>
-            <h1>🎯 Your CodeDAO Progress</h1>
-            
-            <div class="stat-card">
-                <div class="big-number">${this.codeStats.tokensEarned}</div>
-                <div class="label">DAO Tokens Earned</div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="big-number">${this.codeStats.linesWritten}</div>
-                <div class="label">Lines of Code Written</div>
-            </div>
-            
-            <div class="stat-card">
-                <h3>Next Milestone</h3>
-                <div class="label">Reach 100 tokens to unlock premium AI agent features</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${Math.min(100, (this.codeStats.tokensEarned / 100) * 100)}%"></div>
-                </div>
-                <div class="label">${Math.max(0, 100 - this.codeStats.tokensEarned)} tokens to go!</div>
-            </div>
-            
-            <div class="stat-card">
-                <h3>🤖 AI Agent Status</h3>
-                <p>Your coding companion "Alex" is learning from your contributions!</p>
-                <p><strong>Specialization:</strong> ${this.getAgentSpecialization()}</p>
-                <p><strong>Trust Level:</strong> ${this.getAgentTrustLevel()}</p>
-            </div>
-        </body>
-        </html>
-        `;
-    }
-    
-    private getAgentSpecialization(): string {
-        if (this.codeStats.linesWritten < 50) return "Beginner Assistant";
-        if (this.codeStats.linesWritten < 200) return "Code Completion Specialist";
-        if (this.codeStats.linesWritten < 500) return "Full-Stack Helper";
-        return "Advanced Architecture Advisor";
-    }
-    
-    private getAgentTrustLevel(): string {
-        const trust = Math.min(100, Math.floor((this.codeStats.tokensEarned / 500) * 100));
-        return `${trust}% - ${trust < 25 ? 'Building Trust' : trust < 50 ? 'Reliable' : trust < 75 ? 'Trusted Partner' : 'Elite Collaborator'}`;
+
+    dispose() {
+        this.statusBarItem.dispose();
+        if (this.documentChangeListener) {
+            this.documentChangeListener.dispose();
+        }
     }
 }
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('CodeDAO extension is now active!');
-    
+
     const codeDAOExtension = new CodeDAOExtension(context);
-    
+
     // Register commands
     const showStatsCommand = vscode.commands.registerCommand('codedao.showStats', () => {
         codeDAOExtension.showStats();
     });
-    
+
     const connectWalletCommand = vscode.commands.registerCommand('codedao.connectWallet', () => {
         codeDAOExtension.connectWallet();
     });
-    
-    context.subscriptions.push(showStatsCommand, connectWalletCommand);
-    
+
+    const claimRewardsCommand = vscode.commands.registerCommand('codedao.claimRewards', () => {
+        codeDAOExtension.claimRewards();
+    });
+
+    context.subscriptions.push(
+        showStatsCommand, 
+        connectWalletCommand, 
+        claimRewardsCommand,
+        codeDAOExtension
+    );
+
     // Welcome message
     vscode.window.showInformationMessage(
-        '🚀 CodeDAO is active! Start coding to earn DAO tokens!',
-        'View Stats'
+        '🚀 CodeDAO is active! Start coding to earn CODE tokens!',
+        'Connect Wallet'
     ).then(selection => {
-        if (selection === 'View Stats') {
-            codeDAOExtension.showStats();
+        if (selection === 'Connect Wallet') {
+            vscode.commands.executeCommand('codedao.connectWallet');
         }
     });
 }
