@@ -1,0 +1,19 @@
+name: Simple Build
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Create package
+      run: |
+        ls -la
+        echo "Creating extension package..."
+        tar -czf codedao-extension.tar.gz --exclude='.git' --exclude='.github' --exclude='node_modules' .
+        ls -la *.tar.gz
+    - name: Upload package
+      uses: actions/upload-artifact@v4
+      with:
+        name: extension-files
+        path: codedao-extension.tar.gz
