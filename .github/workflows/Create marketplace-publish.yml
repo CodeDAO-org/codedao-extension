@@ -1,4 +1,4 @@
-name: Publish VS Code Extension
+name: Publish VS Code Extension (Manual .tgz Install)
 
 on:
   push:
@@ -8,21 +8,33 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      
-      - uses: actions/setup-node@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '16'
-          
-      - run: npm install
-      
-      - run: npm run compile
-      
-      # Install the original, unscoped vsce (pre-undici)
-      - run: npm install -g vsce@1.103.1
-      
-      # Verify we got the right package
-      - run: vsce --version
-      
-      - run: vsce publish -p ${{ secrets.VSCE_PAT }}
+
+      - name: Install dependencies and compile
+        run: |
+          npm install
+          npm run compile
+
+      - name: Download original vsce@1.103.1 .tgz
+        run: wget https://registry.npmjs.org/vsce/-/vsce-1.103.1.tgz
+
+      - name: Install vsce manually from .tgz
+        run: npm install -g ./vsce-1.103.1.tgz
+
+      - name: Verify vsce install
+        run: |
+          which vsce
+          vsce --version
+          npm list -g vsce || true
+          cat "$(which vsce)" | head -n 10 || true
+
+      - name: Publish extension
+        run: vsce publish -p ${{ secrets.VSCE_PAT }}
