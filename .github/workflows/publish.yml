@@ -3,9 +3,7 @@ name: Publish VS Code Extension
 on:
   push:
     branches: [ main ]
-    paths: 
-      - 'package.json'
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -13,32 +11,23 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
-      
+      uses: actions/checkout@v4
+
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
-        
+        cache: 'npm'
+
     - name: Install dependencies
-      run: npm install
+      run: npm ci
+
+    - name: Compile TypeScript
+      run: npm run compile
+
+    - name: Package Extension
+      run: npx vsce package
+
+    - name: Publish to VS Code Marketplace
+      run: npx vsce publish -p ${{ secrets.VSCE_PAT }}
       
-    - name: Install vsce
-      run: npm install -g vsce
-      
-    - name: Create publisher (if needed)
-      run: |
-        echo "${{ secrets.VSCE_PAT }}" | vsce create-publisher codedao-org --pat || echo "Publisher already exists"
-      continue-on-error: true
-      
-    - name: Package extension
-      run: vsce package
-      
-    - name: Publish to marketplace
-      run: vsce publish -p ${{ secrets.VSCE_PAT }}
-      
-    - name: Upload VSIX artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: codedao-extension
-        path: "*.vsix"
