@@ -3,476 +3,430 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeDAO Wallet Dashboard - Claim Your Rewards</title>
+    <title>CodeDAO Wallet Dashboard</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: #f7fafc;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             min-height: 100vh;
-            color: #2d3748;
+            color: #1e293b;
         }
-        
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .dashboard-header {
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
+
         .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-        
-        .live-indicator {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(72, 187, 120, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            border: 1px solid rgba(72, 187, 120, 0.3);
-            color: #48bb78;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
         }
-        
+
+        .live-indicator {
+            background: #10b981;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
         .live-dot {
             width: 8px;
             height: 8px;
-            background: #48bb78;
+            background: white;
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
-        
-        .wallet-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .wallet-connection {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .wallet-options {
+
+        .wallet-buttons {
             display: flex;
             gap: 1rem;
         }
-        
-        .wallet-btn {
+
+        .wallet-connect-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
             padding: 0.75rem 1.5rem;
-            border: 2px solid #667eea;
-            background: transparent;
-            color: #667eea;
-            border-radius: 6px;
-            cursor: pointer;
+            border-radius: 12px;
             font-weight: 600;
+            cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        
-        .wallet-btn:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-1px);
+
+        .wallet-connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
-        
-        .wallet-btn.connected {
-            background: #48bb78;
-            border-color: #48bb78;
-            color: white;
+
+        .wallet-connected {
+            display: none;
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 2px solid rgba(16, 185, 129, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            align-items: center;
+            gap: 0.5rem;
         }
-        
-        .portfolio-widget {
-            background: white;
-            padding: 1rem;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            min-width: 200px;
-        }
-        
-        .portfolio-balance {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-            color: #2d3748;
-        }
-        
-        .portfolio-usd {
-            font-size: 0.9rem;
-            color: #718096;
-        }
-        
+
         .banner {
             background: linear-gradient(90deg, #a78bfa, #8b5cf6);
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
+            padding: 1rem;
             text-align: center;
             font-weight: 600;
-            opacity: 0.95;
+            font-size: 1.1rem;
         }
-        
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-        
+
         .metric-card {
             background: white;
             padding: 2rem;
-            border-radius: 8px;
+            border-radius: 16px;
             text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
         }
-        
-        .metric-card:hover {
-            transform: translateY(-2px);
-        }
-        
+
         .metric-value {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            line-height: 1;
         }
-        
+
         .metric-label {
-            font-size: 1rem;
-            color: #718096;
+            color: #64748b;
+            font-size: 0.9rem;
             font-weight: 500;
         }
-        
-        .content-grid {
+
+        .main-content {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 2rem;
-            margin-bottom: 2rem;
+            margin-top: 2rem;
         }
-        
-        .activity-feed, .earnings-widget {
+
+        .feed-section {
             background: white;
-            border-radius: 8px;
+            border-radius: 16px;
             padding: 2rem;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
-        
+
         .feed-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
         }
-        
-        .feed-title, .earnings-title {
+
+        .feed-title {
             font-size: 1.3rem;
-            font-weight: 600;
-            color: #2d3748;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        
+
         .refresh-btn {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            color: #4a5568;
+            background: #f1f5f9;
+            border: none;
             padding: 0.5rem 1rem;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            color: #64748b;
+            font-weight: 500;
         }
-        
-        .refresh-btn:hover {
-            background: #edf2f7;
-        }
-        
-        .activity-item {
+
+        .commit-item {
             display: flex;
             gap: 1rem;
             padding: 1rem;
-            background: #f7fafc;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
             border-left: 4px solid #667eea;
-            transition: all 0.3s ease;
         }
-        
-        .activity-item:hover {
-            background: #edf2f7;
-        }
-        
-        .activity-avatar {
+
+        .commit-avatar {
             width: 40px;
             height: 40px;
             background: #667eea;
+            color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            color: white;
             flex-shrink: 0;
         }
-        
-        .activity-content {
-            flex: 1;
+
+        .commit-details h4 {
+            margin-bottom: 0.3rem;
+            color: #1e293b;
         }
-        
-        .activity-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #2d3748;
-        }
-        
-        .activity-description {
-            font-size: 0.9rem;
-            color: #4a5568;
-            margin-bottom: 0.5rem;
-        }
-        
-        .activity-meta {
-            display: flex;
-            gap: 1rem;
+
+        .commit-meta {
             font-size: 0.8rem;
-            color: #718096;
+            color: #64748b;
         }
-        
-        .earnings-widget {
-            height: fit-content;
+
+        .earnings-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
-        
-        .earnings-header {
+
+        .earnings-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1e293b;
+        }
+
+        .balance-display {
             text-align: center;
             margin-bottom: 2rem;
         }
-        
-        .total-earnings {
-            font-size: 2.5rem;
+
+        .balance-amount {
+            font-size: 3rem;
             font-weight: 700;
-            color: #48bb78;
-            margin-bottom: 0.25rem;
+            color: #10b981;
+            margin-bottom: 0.5rem;
         }
-        
-        .earnings-usd {
-            font-size: 1rem;
-            color: #718096;
+
+        .balance-usd {
+            color: #64748b;
+            font-size: 1.1rem;
         }
-        
-        .claim-section {
-            margin: 2rem 0;
-        }
-        
+
         .pending-rewards {
-            background: rgba(72, 187, 120, 0.1);
-            border: 1px solid rgba(72, 187, 120, 0.3);
+            background: #fef3c7;
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
             text-align: center;
-            margin-bottom: 1rem;
-            color: #2d3748;
         }
-        
-        .claim-btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #48bb78, #38a169);
-            border: none;
-            color: white;
-            border-radius: 8px;
+
+        .pending-title {
             font-weight: 600;
-            font-size: 1rem;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        .pending-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #d97706;
+        }
+
+        .claim-button {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-bottom: 2rem;
         }
-        
-        .claim-btn:hover {
+
+        .claim-button:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
-        
-        .claim-btn:disabled {
+
+        .claim-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
-            background: #cbd5e0;
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
-            margin-top: 1.5rem;
         }
-        
+
         .stat-item {
-            background: #f7fafc;
+            text-align: center;
             padding: 1rem;
-            border-radius: 6px;
-            text-align: center;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .stat-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-            color: #2d3748;
-        }
-        
-        .stat-label {
-            font-size: 0.8rem;
-            color: #718096;
-        }
-        
-        .sdk-promo {
-            background: white;
+            background: #f8fafc;
             border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .sdk-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
         .sdk-title {
             font-size: 1.3rem;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 1rem;
-            color: #2d3748;
         }
-        
-        .install-command {
-            background: #2d3748;
-            color: #81e6d9;
+
+        .code-snippet {
+            background: #1e293b;
+            color: #e2e8f0;
             padding: 1rem;
-            border-radius: 6px;
-            font-family: 'Monaco', 'Menlo', monospace;
+            border-radius: 8px;
+            font-family: 'Monaco', monospace;
             margin: 1rem 0;
-            border: 1px solid #4a5568;
         }
-        
+
         .sdk-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
-            margin-top: 1rem;
         }
-        
-        .sdk-btn {
+
+        .btn {
             padding: 0.75rem 1.5rem;
-            background: #667eea;
-            border: none;
-            color: white;
-            border-radius: 6px;
-            text-decoration: none;
+            border-radius: 8px;
             font-weight: 600;
+            text-decoration: none;
             transition: all 0.3s ease;
         }
-        
-        .sdk-btn:hover {
-            background: #5a67d8;
-            transform: translateY(-2px);
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
         }
-        
-        @media (max-width: 768px) {
-            .dashboard-header {
-                flex-direction: column;
-                gap: 1rem;
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
             }
-            
-            .content-grid {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification {
+            animation: slideIn 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
                 grid-template-columns: 1fr;
             }
             
             .metrics-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
-            .wallet-options {
-                flex-direction: column;
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- Header with Wallet Integration -->
-        <div class="dashboard-header">
-            <div class="logo-section">
-                <div class="logo">🤖 CodeDAO Wallet Dashboard</div>
-                <div class="live-indicator">
-                    <div class="live-dot"></div>
-                    <span>LIVE</span>
-                </div>
-            </div>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            🤖 CodeDAO Wallet Dashboard
+        </div>
+        
+        <div class="live-indicator">
+            <div class="live-dot"></div>
+            LIVE
+        </div>
+        
+        <div class="wallet-buttons">
+            <button class="wallet-connect-btn" data-wallet="metamask">
+                🦊 MetaMask
+            </button>
+            <button class="wallet-connect-btn" data-wallet="coinbase">
+                🔵 Coinbase
+            </button>
+            <button class="wallet-connect-btn" data-wallet="generic">
+                🔗 Connect
+            </button>
             
-            <div class="wallet-section">
-                <!-- Wallet Connection Options -->
-                <div class="wallet-connection" id="walletConnection">
-                    <div class="wallet-options">
-                        <button class="wallet-btn" id="metamaskBtn">
-                            🦊 MetaMask
-                        </button>
-                        <button class="wallet-btn" id="coinbaseBtn">
-                            🔵 Coinbase
-                        </button>
-                        <button class="wallet-btn" id="connectBtn">
-                            🔗 Connect
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Portfolio Widget (shown when connected) -->
-                <div class="portfolio-widget" id="portfolioWidget" style="display: none;">
-                    <div class="portfolio-balance" id="portfolioBalance">0 CODE</div>
-                    <div class="portfolio-usd" id="portfolioUSD">$0.00</div>
-                </div>
+            <div class="wallet-connected">
+                <div class="live-dot"></div>
+                <span class="wallet-address">0x1234...5678</span>
             </div>
         </div>
-        
-        <!-- Live Banner -->
-        <div class="banner">
-            🔗 LIVE: Connect Wallet to Claim Your AI Collaboration Rewards • Earn CODE Tokens for Coding!
-        </div>
-        
+    </div>
+
+    <!-- Banner -->
+    <div class="banner">
+        🔗 LIVE: Connect Wallet to Claim Your AI Collaboration Rewards • Earn CODE Tokens for Coding!
+    </div>
+
+    <div class="container">
         <!-- Metrics Grid -->
         <div class="metrics-grid">
             <div class="metric-card">
@@ -492,351 +446,101 @@
                 <div class="metric-label">Success Rate</div>
             </div>
         </div>
-        
+
         <!-- Main Content -->
-        <div class="content-grid">
-            <!-- Activity Feed -->
-            <div class="activity-feed">
+        <div class="main-content">
+            <!-- Live Feed -->
+            <div class="feed-section">
                 <div class="feed-header">
-                    <div class="feed-title">🤖 Live AI Collaboration Feed</div>
-                    <button class="refresh-btn" onclick="refreshFeed()">🔄 Refresh</button>
-                </div>
-                
-                <div class="activity-item">
-                    <div class="activity-avatar">C</div>
-                    <div class="activity-content">
-                        <div class="activity-title">Claude</div>
-                        <div class="activity-description">Add AI collaboration system tracking and metrics</div>
-                        <div class="activity-meta">
-                            <span>6d0419f</span>
-                            <span>by adminpipelabs</span>
-                            <span>5m ago</span>
-                            <span>📄 documentation</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="activityFeed">
-                    <!-- Dynamic activity items will be loaded here -->
-                </div>
-            </div>
-            
-            <!-- Earnings Widget -->
-            <div class="earnings-widget">
-                <div class="earnings-header">
-                    <div class="earnings-title">💎 Your AI Earnings</div>
-                    <div class="total-earnings" id="totalEarnings">0</div>
-                    <div class="earnings-usd" id="earningsUSD">$0.00 USD</div>
-                </div>
-                
-                <div class="claim-section">
-                    <div class="pending-rewards">
-                        <strong>Pending Rewards</strong><br>
-                        <span id="pendingAmount">0 CODE</span>
-                    </div>
-                    <button class="claim-btn" id="claimBtn" disabled>
-                        Connect Wallet to Claim
+                    <h2 class="feed-title">
+                        🤖 Live AI Collaboration Feed
+                    </h2>
+                    <button class="refresh-btn" onclick="location.reload()">
+                        🔄 Refresh
                     </button>
                 </div>
                 
+                <div class="commit-item">
+                    <div class="commit-avatar">C</div>
+                    <div class="commit-details">
+                        <h4>Claude</h4>
+                        <p>Add AI collaboration system tracking and metrics</p>
+                        <div class="commit-meta">
+                            6d0419f • by adminpipelabs • 5m ago • 📄 documentation
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earnings Section -->
+            <div class="earnings-section">
+                <h2 class="earnings-title">
+                    💎 Your AI Earnings
+                </h2>
+                
+                <div class="balance-display">
+                    <div class="balance-amount" id="codeBalance">0</div>
+                    <div class="balance-usd">$<span id="usdValue">0.00</span> USD</div>
+                </div>
+
+                <div class="pending-rewards">
+                    <div class="pending-title">Pending Rewards</div>
+                    <div class="pending-amount" id="pendingRewards">0</div>
+                    <div style="font-size: 0.8rem; color: #92400e; margin-top: 0.3rem;">CODE</div>
+                </div>
+
+                <button id="claimButton" class="claim-button" style="display: none;">
+                    Connect Wallet to Claim
+                </button>
+
                 <div class="stats-grid">
                     <div class="stat-item">
-                        <div class="stat-value" id="dailyEarnings">0</div>
+                        <div class="stat-value">0</div>
                         <div class="stat-label">Today</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="weeklyEarnings">0</div>
+                        <div class="stat-value">0</div>
                         <div class="stat-label">This Week</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="monthlyEarnings">0</div>
+                        <div class="stat-value">0</div>
                         <div class="stat-label">This Month</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="earningsStreak">0</div>
+                        <div class="stat-value">0</div>
                         <div class="stat-label">Day Streak</div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- SDK Promotion -->
-        <div class="sdk-promo">
-            <div class="sdk-title">🚀 Try Our SDK!</div>
+
+        <!-- SDK Section -->
+        <div class="sdk-section">
+            <h2 class="sdk-title">🚀 Try Our SDK!</h2>
             <p>Add AI collaboration transparency to your projects</p>
-            <div class="install-command">npm install codedao-dashboard-sdk</div>
+            
+            <div class="code-snippet">
+                npm install codedao-dashboard-sdk
+            </div>
+            
             <div class="sdk-buttons">
-                <a href="https://github.com/CodeDAO-org" class="sdk-btn">📁 SDK Repo</a>
-                <a href="#" class="sdk-btn">📄 Copy</a>
+                <a href="https://github.com/CodeDAO-org/codedao-extension" class="btn btn-primary">
+                    📁 SDK Repo
+                </a>
+                <button class="btn btn-secondary" onclick="copyToClipboard('npm install codedao-dashboard-sdk')">
+                    📄 Copy
+                </button>
             </div>
         </div>
     </div>
+
+    <!-- Load the wallet claiming system -->
+    <script src="wallet-claim.js"></script>
     
     <script>
-        // Wallet connection state
-        let connectedWallet = null;
-        let userAddress = null;
-        let codeTokenBalance = 0;
-        
-        // Contract addresses
-        const CODE_TOKEN_ADDRESS = '0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0';
-        const BASE_CHAIN_ID = 8453;
-        
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDashboard();
-            checkExistingWalletConnection();
-        });
-        
-        // Check for existing wallet connections
-        async function checkExistingWalletConnection() {
-            // Check MetaMask
-            if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-                    if (accounts.length > 0) {
-                        await connectMetaMask(false);
-                    }
-                } catch (error) {
-                    console.log('No existing MetaMask connection');
-                }
-            }
-        }
-        
-        // MetaMask connection
-        document.getElementById('metamaskBtn').addEventListener('click', () => connectMetaMask(true));
-        
-        async function connectMetaMask(requestConnection = true) {
-            if (typeof window.ethereum === 'undefined') {
-                alert('Please install MetaMask to connect your wallet\n\nVisit: https://metamask.io');
-                return;
-            }
-            
-            try {
-                let accounts;
-                if (requestConnection) {
-                    accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                } else {
-                    accounts = await window.ethereum.request({ method: 'eth_accounts' });
-                }
-                
-                if (accounts.length === 0) return;
-                
-                // Switch to Base network if needed
-                await switchToBase();
-                
-                userAddress = accounts[0];
-                connectedWallet = 'metamask';
-                
-                await updateWalletUI();
-                await loadPortfolioData();
-                
-                // Update UI
-                document.getElementById('metamaskBtn').textContent = '✅ MetaMask';
-                document.getElementById('metamaskBtn').classList.add('connected');
-                
-            } catch (error) {
-                console.error('MetaMask connection failed:', error);
-                alert('Failed to connect MetaMask. Please try again.');
-            }
-        }
-        
-        // Switch to Base network
-        async function switchToBase() {
-            try {
-                await window.ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: `0x${BASE_CHAIN_ID.toString(16)}` }],
-                });
-            } catch (switchError) {
-                // Add Base network if not found
-                if (switchError.code === 4902) {
-                    await window.ethereum.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [{
-                            chainId: `0x${BASE_CHAIN_ID.toString(16)}`,
-                            chainName: 'Base',
-                            rpcUrls: ['https://mainnet.base.org'],
-                            nativeCurrency: {
-                                name: 'Ethereum',
-                                symbol: 'ETH',
-                                decimals: 18,
-                            },
-                            blockExplorerUrls: ['https://basescan.org'],
-                        }],
-                    });
-                }
-            }
-        }
-        
-        // Coinbase Wallet connection (placeholder for OnchainKit integration)
-        document.getElementById('coinbaseBtn').addEventListener('click', connectCoinbaseWallet);
-        
-        function connectCoinbaseWallet() {
-            alert('Coinbase Wallet integration coming soon!\n\nOnchainKit implementation needed:\n- npm install @coinbase/onchainkit\n- Add API key and provider setup');
-        }
-        
-        // Generic wallet connect
-        document.getElementById('connectBtn').addEventListener('click', function() {
-            if (!connectedWallet) {
-                showWalletModal();
-            } else {
-                disconnectWallet();
-            }
-        });
-        
-        function showWalletModal() {
-            alert('Please choose your preferred wallet:\n\n🦊 MetaMask - Most popular Web3 wallet\n🔵 Coinbase - Coming soon with OnchainKit\n\nFor now, please use MetaMask to connect.');
-        }
-        
-        function disconnectWallet() {
-            connectedWallet = null;
-            userAddress = null;
-            codeTokenBalance = 0;
-            
-            // Reset UI
-            document.getElementById('metamaskBtn').textContent = '🦊 MetaMask';
-            document.getElementById('metamaskBtn').classList.remove('connected');
-            document.getElementById('portfolioWidget').style.display = 'none';
-            document.getElementById('walletConnection').style.display = 'flex';
-            document.getElementById('claimBtn').disabled = true;
-            document.getElementById('claimBtn').textContent = 'Connect Wallet to Claim';
-        }
-        
-        // Update wallet UI when connected
-        async function updateWalletUI() {
-            if (!userAddress) return;
-            
-            // Show portfolio widget, hide connection options
-            document.getElementById('portfolioWidget').style.display = 'block';
-            document.getElementById('walletConnection').style.display = 'none';
-            
-            // Enable claim button
-            document.getElementById('claimBtn').disabled = false;
-            document.getElementById('claimBtn').textContent = 'Claim Rewards';
-        }
-        
-        // Load portfolio data
-        async function loadPortfolioData() {
-            if (!userAddress) return;
-            
-            try {
-                // TODO: Integrate with OnchainKit Portfolio API
-                // const portfolioData = await getPortfolios({
-                //     address: userAddress,
-                //     chains: [BASE_CHAIN_ID],
-                //     tokens: [CODE_TOKEN_ADDRESS]
-                // });
-                
-                // Mock data for demonstration
-                const mockBalance = Math.floor(Math.random() * 1000) + 100;
-                const usdPrice = 0.05; // Assume 1 CODE = $0.05
-                const usdValue = (mockBalance * usdPrice).toFixed(2);
-                
-                codeTokenBalance = mockBalance;
-                
-                // Update portfolio display
-                document.getElementById('portfolioBalance').textContent = `${mockBalance.toLocaleString()} CODE`;
-                document.getElementById('portfolioUSD').textContent = `$${usdValue}`;
-                
-                // Update earnings display
-                document.getElementById('totalEarnings').textContent = mockBalance.toLocaleString();
-                document.getElementById('earningsUSD').textContent = `$${usdValue} USD`;
-                
-                // Update pending rewards (simulate earning 10-50 CODE)
-                const pendingRewards = Math.floor(Math.random() * 40) + 10;
-                document.getElementById('pendingAmount').textContent = `${pendingRewards} CODE`;
-                
-                // Update stats with realistic numbers
-                document.getElementById('dailyEarnings').textContent = Math.floor(Math.random() * 20) + 5;
-                document.getElementById('weeklyEarnings').textContent = Math.floor(Math.random() * 100) + 50;
-                document.getElementById('monthlyEarnings').textContent = Math.floor(Math.random() * 400) + 200;
-                document.getElementById('earningsStreak').textContent = Math.floor(Math.random() * 30) + 1;
-                
-            } catch (error) {
-                console.error('Failed to load portfolio data:', error);
-                alert('Error loading portfolio data. Please refresh and try again.');
-            }
-        }
-        
-        // Claim rewards functionality
-        document.getElementById('claimBtn').addEventListener('click', claimRewards);
-        
-        async function claimRewards() {    
-            if (!connectedWallet || !userAddress) {
-                alert('Please connect your wallet first');
-                return;
-            }
-            
-            try {
-                document.getElementById('claimBtn').textContent = 'Claiming...';
-                document.getElementById('claimBtn').disabled = true;
-                
-                // TODO: Implement actual smart contract interaction
-                // const contract = new ethers.Contract(CODE_TOKEN_ADDRESS, ABI, signer);
-                // const tx = await contract.claimRewards();
-                // await tx.wait();
-                
-                // Simulate transaction for now
-                setTimeout(() => {
-                    alert('🎉 Rewards claimed successfully!\n\nYour CODE tokens have been transferred to your wallet.\n\nTransaction will appear on BaseScan shortly.');
-                    document.getElementById('claimBtn').textContent = 'Claim Rewards';
-                    document.getElementById('claimBtn').disabled = false;
-                    loadPortfolioData(); // Refresh data
-                }, 2000);
-                
-            } catch (error) {
-                console.error('Claim failed:', error);
-                alert('Failed to claim rewards. Please check your wallet and try again.\n\nMake sure you:\n- Have enough ETH for gas fees\n- Are connected to Base network\n- Have pending rewards to claim');
-                document.getElementById('claimBtn').textContent = 'Claim Rewards';
-                document.getElementById('claimBtn').disabled = false;
-            }
-        }
-        
-        // Refresh activity feed
-        function refreshFeed() {
-            console.log('Refreshing activity feed...');
-            
-            // Add refresh animation
-            const refreshBtn = document.querySelector('.refresh-btn');
-            refreshBtn.style.transform = 'rotate(360deg)';
-            setTimeout(() => {
-                refreshBtn.style.transform = 'rotate(0deg)';
-            }, 500);
-            
-            // TODO: Fetch latest activity from API
-            // This would connect to the same data source as the main dashboard
-        }
-        
-        // Initialize dashboard
-        function initializeDashboard() {
-            console.log('CodeDAO Wallet Dashboard initialized');
-            console.log('Contract Address:', CODE_TOKEN_ADDRESS);
-            console.log('Base Chain ID:', BASE_CHAIN_ID);
-            
-            // Set up periodic refresh for real-time data
-            setInterval(() => {
-                if (connectedWallet) {
-                    loadPortfolioData();
-                }
-            }, 30000); // Refresh every 30 seconds
-        }
-        
-        // Listen for account changes
-        if (typeof window.ethereum !== 'undefined') {
-            window.ethereum.on('accountsChanged', function (accounts) {
-                if (accounts.length === 0) {
-                    disconnectWallet();
-                } else if (connectedWallet === 'metamask') {
-                    userAddress = accounts[0];
-                    loadPortfolioData();
-                }
-            });
-            
-            window.ethereum.on('chainChanged', function (chainId) {
-                if (parseInt(chainId, 16) !== BASE_CHAIN_ID) {
-                    alert('⚠️ Please switch to Base network for full functionality\n\nNetwork: Base\nChain ID: 8453\nRPC: https://mainnet.base.org');
-                }
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
             });
         }
     </script>
