@@ -27,6 +27,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .logo {
@@ -36,6 +39,7 @@
             font-size: 1.5rem;
             font-weight: 700;
             color: #667eea;
+            text-decoration: none;
         }
 
         .live-indicator {
@@ -80,6 +84,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.9rem;
         }
 
         .wallet-connect-btn:hover {
@@ -97,6 +102,7 @@
             font-weight: 600;
             align-items: center;
             gap: 0.5rem;
+            cursor: pointer;
         }
 
         .banner {
@@ -179,6 +185,11 @@
             cursor: pointer;
             color: #64748b;
             font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #e2e8f0;
         }
 
         .commit-item {
@@ -248,11 +259,12 @@
         }
 
         .pending-rewards {
-            background: #fef3c7;
-            padding: 1rem;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            padding: 1.5rem;
             border-radius: 12px;
             margin-bottom: 1.5rem;
             text-align: center;
+            border: 1px solid #f59e0b;
         }
 
         .pending-title {
@@ -262,9 +274,15 @@
         }
 
         .pending-amount {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #d97706;
+            margin-bottom: 0.3rem;
+        }
+
+        .pending-code {
+            font-size: 0.9rem;
+            color: #92400e;
         }
 
         .claim-button {
@@ -289,6 +307,7 @@
         .claim-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
         .stats-grid {
@@ -338,12 +357,14 @@
             border-radius: 8px;
             font-family: 'Monaco', monospace;
             margin: 1rem 0;
+            font-size: 0.9rem;
         }
 
         .sdk-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -352,11 +373,18 @@
             font-weight: 600;
             text-decoration: none;
             transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
         }
 
         .btn-primary {
             background: #667eea;
             color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
@@ -365,19 +393,28 @@
             border: 2px solid #667eea;
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
         }
 
-        .notification {
-            animation: slideIn 0.3s ease;
+        .connection-guide {
+            background: #f0f9ff;
+            border: 1px solid #0284c7;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .connection-guide h3 {
+            color: #0284c7;
+            margin-bottom: 1rem;
+        }
+
+        .connection-guide p {
+            color: #0369a1;
+            margin-bottom: 1rem;
         }
 
         @media (max-width: 768px) {
@@ -388,15 +425,25 @@
             .metrics-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .wallet-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .wallet-connect-btn {
+                font-size: 0.8rem;
+                padding: 0.6rem 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Header -->
     <div class="header">
-        <div class="logo">
+        <a href="/" class="logo">
             🤖 CodeDAO Wallet Dashboard
-        </div>
+        </a>
         
         <div class="live-indicator">
             <div class="live-dot"></div>
@@ -410,8 +457,8 @@
             <button class="wallet-connect-btn" data-wallet="coinbase">
                 🔵 Coinbase
             </button>
-            <button class="wallet-connect-btn" data-wallet="generic">
-                🔗 Connect
+            <button class="wallet-connect-btn" data-wallet="walletconnect">
+                🔗 WalletConnect
             </button>
             
             <div class="wallet-connected">
@@ -427,6 +474,15 @@
     </div>
 
     <div class="container">
+        <!-- Connection Guide (shown when not connected) -->
+        <div id="connectionGuide" class="connection-guide">
+            <h3>🚀 Get Started with CodeDAO</h3>
+            <p>Connect your wallet to start earning CODE tokens for every line of quality code you write!</p>
+            <p><strong>Step 1:</strong> Connect your Web3 wallet above<br>
+               <strong>Step 2:</strong> Install our VS Code extension<br>
+               <strong>Step 3:</strong> Start coding and earning!</p>
+        </div>
+
         <!-- Metrics Grid -->
         <div class="metrics-grid">
             <div class="metric-card">
@@ -486,10 +542,10 @@
                 <div class="pending-rewards">
                     <div class="pending-title">Pending Rewards</div>
                     <div class="pending-amount" id="pendingRewards">0</div>
-                    <div style="font-size: 0.8rem; color: #92400e; margin-top: 0.3rem;">CODE</div>
+                    <div class="pending-code">CODE tokens</div>
                 </div>
 
-                <button id="claimButton" class="claim-button" style="display: none;">
+                <button id="claimButton" class="claim-button">
                     Connect Wallet to Claim
                 </button>
 
@@ -540,9 +596,35 @@
     <script>
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
+                // Use the wallet system's notification
+                if (window.codeDAOWallet) {
+                    window.codeDAOWallet.showSuccess('Command copied to clipboard!');
+                } else {
+                    alert('Copied to clipboard!');
+                }
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
                 alert('Copied to clipboard!');
             });
         }
+
+        // Hide connection guide when wallet is connected
+        document.addEventListener('DOMContentLoaded', () => {
+            const connectionGuide = document.getElementById('connectionGuide');
+            
+            // Check if wallet connects successfully
+            setTimeout(() => {
+                if (window.codeDAOWallet && window.codeDAOWallet.userAddress) {
+                    connectionGuide.style.display = 'none';
+                }
+            }, 1000);
+        });
     </script>
 </body>
 </html>
