@@ -1,1 +1,66 @@
+name: Dashboard Auto-Deploy
 
+on:
+  push:
+    paths:
+      - 'dashboard.html'
+      - '.nojekyll'
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Dashboard
+        run: |
+          echo "🔍 Validating dashboard.html..."
+          
+          if [ ! -f "dashboard.html" ]; then
+            echo "❌ dashboard.html not found!"
+            exit 1
+          fi
+          
+          if ! grep -q "<!DOCTYPE html>" dashboard.html; then
+            echo "⚠️ Warning: No DOCTYPE declaration found"
+          fi
+          
+          if grep -q "CodeDAO" dashboard.html; then
+            echo "✅ CodeDAO branding found"
+          fi
+          
+          if grep -q "Claude\|ChatGPT" dashboard.html; then
+            echo "✅ AI agent references found"
+          fi
+          
+          echo "✅ Dashboard validation complete"
+
+      - name: Ensure .nojekyll
+        run: |
+          if [ ! -f ".nojekyll" ]; then
+            echo "Creating .nojekyll file for GitHub Pages"
+            touch .nojekyll
+            
+            git config --local user.email "ai-bot@codedao.org"
+            git config --local user.name "CodeDAO AI Bot"
+            git add .nojekyll
+            git commit -m "🤖 Auto-add .nojekyll for GitHub Pages"
+            git push
+          fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: ./
+          keep_files: true
+          commit_message: "🤖 Auto-deploy dashboard updates"
+
+      - name: Verify Deployment
+        run: |
+          echo "🚀 Dashboard deployed successfully!"
+          echo "URL: https://${{ github.repository_owner }}.github.io/dashboard.html"
+          echo "Verification: curl -I https://${{ github.repository_owner }}.github.io/dashboard.html"
