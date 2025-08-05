@@ -1,0 +1,59 @@
+<!-- Updated Navigation for ALL your pages -->
+<!-- Copy this navigation section into: index.html, dashboard.html, wallet-dashboard.html -->
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">🤖 CodeDAO</div>
+        <ul class="nav-links">
+            <li><a href="https://codedao-org.github.io/">Home</a></li>
+            <li><a href="https://codedao-org.github.io/dashboard.html">Dashboard</a></li>
+            <li><a href="https://codedao-org.github.io/wallet-dashboard.html">Wallet</a></li>
+            <li><a href="https://codedao-org.github.io/peer-review.html">Peer Review</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#tokenomics">Tokenomics</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Add this CSS if not already present -->
+<style>
+.header {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #667eea;
+}
+</style>
