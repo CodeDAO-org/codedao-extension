@@ -10,13 +10,14 @@
             padding: 0;
             box-sizing: border-box;
         }
-        padding-top: 80px;
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             line-height: 1.6;
             color: #2d3748;
             background: #f7fafc;
             min-height: 100vh;
+            padding-top: 80px;
         }
         
         /* Navigation Styles */
@@ -26,7 +27,7 @@
             padding: 1rem 0;
             position: fixed;
             left: 0;
-            right: 0;          
+            right: 0;
             top: 0;
             z-index: 100;
         }
@@ -113,17 +114,157 @@
             50% { opacity: 0.8; }
         }
         
-        .hero-title {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #1a202c;
+        /* Hero CTA Styles */
+        .hero-cta-container {
+            max-width: 800px;
+            margin: 0 auto 3rem auto;
+            text-align: center;
         }
-        
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
         .hero-subtitle {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
+            font-size: 1.4rem;
             color: #4a5568;
+            margin-bottom: 3rem;
+            line-height: 1.5;
+        }
+
+        .live-earnings-preview {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem auto;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+
+        .earnings-demo {
+            text-align: center;
+        }
+
+        .demo-calculation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .code-lines { color: #667eea; }
+        .multiplier { color: #4a5568; }
+        .quality-bonus { color: #10b981; }
+        .equals { color: #4a5568; font-size: 1.5rem; }
+        .total-earned { 
+            color: #ed8936; 
+            font-size: 1.4rem; 
+            font-weight: 700;
+        }
+
+        .demo-subtitle {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .getting-started-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            min-width: 150px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .step-desc {
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        .step-arrow {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .hero-cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero {
+            padding: 1.2rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-hero.btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+        }
+
+        .btn-hero.btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-hero.btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-hero.btn-secondary:hover {
+            background: #667eea;
+            color: white;
         }
         
         .live-metrics {
@@ -503,203 +644,37 @@
             }
             
             .hero-title {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
             
             .metrics-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            
+            .getting-started-steps {
+                flex-direction: column;
+            }
+            
+            .step-arrow {
+                transform: rotate(90deg);
+            }
+            
+            .demo-calculation {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .hero-cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-hero {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
         }
-        }
-    }
-    
-    /* ADD ALL THE HERO CSS HERE - right after line 512 */
-    
-    /* Hero CTA Styles - Add these to your existing CSS */
-    .hero-cta-container {
-        max-width: 800px;
-        margin: 0 auto 3rem auto;
-        text-align: center;
-    }
-    
-    .hero-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        color: #1a202c;
-        margin-bottom: 1.5rem;
-        line-height: 1.1;
-    }
-    
-    /* ... (rest of the CSS from the artifact) ... */
-        .hero-subtitle {
-    font-size: 1.4rem;
-    color: #4a5568;
-    margin-bottom: 3rem;
-    line-height: 1.5;
-}
-
-.live-earnings-preview {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    margin: 2rem auto;
-    border: 2px solid #e2e8f0;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-}
-
-.earnings-demo {
-    text-align: center;
-}
-
-.demo-calculation {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-
-.code-lines { color: #667eea; }
-.multiplier { color: #4a5568; }
-.quality-bonus { color: #10b981; }
-.equals { color: #4a5568; font-size: 1.5rem; }
-.total-earned { 
-    color: #ed8936; 
-    font-size: 1.4rem; 
-    font-weight: 700;
-}
-
-.demo-subtitle {
-    color: #718096;
-    font-size: 0.9rem;
-}
-
-.getting-started-steps {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin: 3rem 0;
-    flex-wrap: wrap;
-}
-
-.step {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: white;
-    padding: 1rem 1.5rem;
-    border-radius: 12px;
-    border: 2px solid #e2e8f0;
-    min-width: 150px;
-}
-
-.step-number {
-    width: 32px;
-    height: 32px;
-    background: #667eea;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.step-title {
-    font-weight: 600;
-    color: #2d3748;
-}
-
-.step-desc {
-    font-size: 0.8rem;
-    color: #718096;
-}
-
-.step-arrow {
-    font-size: 1.5rem;
-    color: #667eea;
-    font-weight: 700;
-}
-
-.hero-cta-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin: 3rem 0;
-    flex-wrap: wrap;
-}
-
-.btn-hero {
-    padding: 1.2rem 2.5rem;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.btn-hero.btn-primary {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-}
-
-.btn-hero.btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-}
-
-.btn-hero.btn-secondary {
-    background: transparent;
-    color: #667eea;
-    border: 2px solid #667eea;
-}
-
-.btn-hero.btn-secondary:hover {
-    background: #667eea;
-    color: white;
-}
-
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 2.5rem;
-    }
-    
-    .getting-started-steps {
-        flex-direction: column;
-    }
-    
-    .step-arrow {
-        transform: rotate(90deg);
-    }
-    
-    .demo-calculation {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .hero-cta-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .btn-hero {
-        width: 100%;
-        max-width: 300px;
-        justify-content: center;
-    }
-}
-    
-</style>  <!-- This stays at line 513 -->
     </style>
 </head>
 <body>
@@ -724,109 +699,71 @@
             </div>
         </div>
     </nav>
+    
     <div class="hero-section">
         <div class="live-banner">
             🔥 LIVE: AI Collaboration Tracking System Now Active - Watch Real AI Agents Coding! 🔥
         </div>
-        <h1 class="hero-title">Write Better Code.<br>Earn Real Tokens.</h1>
-<p class="hero-subtitle">Get paid in cryptocurrency for every line of quality code you write</p>
-        <!-- NEW: Hero CTA Section -->
-<div class="hero-cta-container">
-    <h1 class="hero-title">Write Better Code.<br>Earn Real Tokens.</h1>
-    <p class="hero-subtitle">
-        First AI Collaboration Transparency Platform<br>
-        Get paid in cryptocurrency for every line of quality code you write
-    </p>
-    
-    <!-- Live Earnings Counter -->
-    <div class="live-earnings-preview">
-        <div class="earnings-demo">
-            <div class="demo-calculation">
-                <span class="code-lines">47 lines</span>
-                <span class="multiplier">× 0.1 CODE</span>
-                <span class="quality-bonus">× 1.8 quality</span>
-                <span class="equals">=</span>
-                <span class="total-earned">8.46 CODE earned</span>
+        
+        <!-- Hero CTA Section -->
+        <div class="hero-cta-container">
+            <h1 class="hero-title">Write Better Code.<br>Earn Real Tokens.</h1>
+            <p class="hero-subtitle">
+                First AI Collaboration Transparency Platform<br>
+                Get paid in cryptocurrency for every line of quality code you write
+            </p>
+            
+            <!-- Live Earnings Counter -->
+            <div class="live-earnings-preview">
+                <div class="earnings-demo">
+                    <div class="demo-calculation">
+                        <span class="code-lines">47 lines</span>
+                        <span class="multiplier">× 0.1 CODE</span>
+                        <span class="quality-bonus">× 1.8 quality</span>
+                        <span class="equals">=</span>
+                        <span class="total-earned">8.46 CODE earned</span>
+                    </div>
+                    <div class="demo-subtitle">Real-time reward calculation</div>
+                </div>
             </div>
-            <div class="demo-subtitle">Real-time reward calculation</div>
-        </div>
-    </div>
 
-    <!-- Getting Started Steps -->
-    <div class="getting-started-steps">
-        <div class="step">
-            <div class="step-number">1</div>
-            <div class="step-content">
-                <div class="step-title">Connect Wallet</div>
-                <div class="step-desc">30 seconds</div>
+            <!-- Getting Started Steps -->
+            <div class="getting-started-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Connect Wallet</div>
+                        <div class="step-desc">30 seconds</div>
+                    </div>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Install Extension</div>
+                        <div class="step-desc">1 minute</div>
+                    </div>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Start Earning</div>
+                        <div class="step-desc">Every commit</div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-content">
-                <div class="step-title">Install Extension</div>
-                <div class="step-desc">1 minute</div>
-            </div>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-content">
-                <div class="step-title">Start Earning</div>
-                <div class="step-desc">Every commit</div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Hero CTA Buttons -->
-    <div class="hero-cta-buttons">
-        <a href="wallet-dashboard.html" class="btn-hero btn-primary">
-            🚀 Connect Wallet & Start Earning
-        </a>
-        <a href="#how-it-works" class="btn-hero btn-secondary">
-            📖 How It Works
-        </a>
-    </div>
-</div>
-            📖 How It Works
-        </a>
-    </div>
-</div>
-            <div class="step-content">
-                <div class="step-title">Connect Wallet</div>
-                <div class="step-desc">30 seconds</div>
+            <!-- Hero CTA Buttons -->
+            <div class="hero-cta-buttons">
+                <a href="wallet-dashboard.html" class="btn-hero btn-primary">
+                    🚀 Connect Wallet & Start Earning
+                </a>
+                <a href="#how-it-works" class="btn-hero btn-secondary">
+                    📖 How It Works
+                </a>
             </div>
         </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-content">
-                <div class="step-title">Install Extension</div>
-                <div class="step-desc">1 minute</div>
-            </div>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-content">
-                <div class="step-title">Start Earning</div>
-                <div class="step-desc">Every commit</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hero CTA Buttons -->
-    <div class="hero-cta-buttons">
-        <a href="wallet-dashboard.html" class="btn-hero btn-primary">
-            🚀 Connect Wallet & Start Earning
-        </a>
-        <a href="#how-it-works" class="btn-hero btn-secondary">
-            📖 How It Works
-        </a>
-    </div>
-</div>
-        <p class="hero-subtitle">First AI Collaboration Transparency Platform<br>Earn Cryptocurrency for AI-Human Development</p>
         
         <div class="live-metrics">
             <h2 class="metrics-title">
@@ -903,12 +840,67 @@
         </div>
     </div>
     
+    <div class="content-section" id="how-it-works">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem;">How It Works</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3 class="feature-title">🤖 Real-Time AI Tracking</h3>
+                    <p>Monitor live AI contributions from Claude, ChatGPT, and other AI agents. Every commit, every line of code, transparently attributed and tracked.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-title">💎 CODE Rewards</h3>
+                    <p>Earn real CODE cryptocurrency on Base network. 0.1 CODE per line + bonuses for quality, testing, and collaboration streaks up to 200%.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-title">📊 Live Dashboard</h3>
+                    <p>Real-time collaboration metrics, success rates, and activity feeds. See exactly how AI agents contribute to your projects.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-title">🔧 VS Code Integration</h3>
+                    <p>Seamless integration with your development workflow. Install extension → Code as usual → Earn CODE tokens automatically.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-title">🏛️ Governance & Staking</h3>
+                    <p>CODE holders participate in platform decisions, stake for rewards, and help shape the future of AI-human collaboration.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3 class="feature-title">🌐 Open Source</h3>
+                    <p>Fully transparent, community-driven development. Audit the code, contribute improvements, and help build the future.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="sdk-section" id="sdk">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Try Our SDK</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">Add AI collaboration transparency to your projects in minutes</p>
+            
+            <div class="code-block">
+                <span class="highlight">npm install</span> codedao-dashboard-sdk
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="https://github.com/CodeDAO-org/codedao-extension" class="btn btn-primary">View Repository</a>
+                <a href="dashboard.html" class="btn btn-secondary">Live Dashboard</a>
+            </div>
+        </div>
+    </div>
+    
     <!-- Footer -->
     <footer>
         <div class="footer-container">
             <div class="footer-section">
                 <h3>Platform</h3>
                 <a href="dashboard.html">Live Dashboard</a>
+                <a href="wallet-dashboard.html">Wallet Dashboard</a>
                 <a href="https://github.com/CodeDAO-org/codedao-extension">VS Code Extension</a>
                 <a href="#sdk">SDK Documentation</a>
                 <a href="https://basescan.org/address/0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0">Smart Contract</a>
@@ -943,60 +935,6 @@
             <p>&copy; 2025 CodeDAO. Built entirely by AI agents. The future of collaborative development.</p>
         </div>
     </footer>
-    
-    <div class="content-section">
-        <div class="container">
-            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem;">How It Works</h2>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3 class="feature-title">🤖 Real-Time AI Tracking</h3>
-                    <p>Monitor live AI contributions from Claude, ChatGPT, and other AI agents. Every commit, every line of code, transparently attributed and tracked.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3 class="feature-title">💎 TOKEN Rewards</h3>
-                    <p>Earn real CODE cryptocurrency on Base network. 0.1 CODE per line + bonuses for quality, testing, and collaboration streaks up to 200%.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3 class="feature-title">📊 Live Dashboard</h3>
-                    <p>Real-time collaboration metrics, success rates, and activity feeds. See exactly how AI agents contribute to your projects.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3 class="feature-title">🔧 VS Code Integration</h3>
-                    <p>Seamless integration with your development workflow. Install extension → Code as usual → Earn CODE tokens automatically.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3 class="feature-title">🏛️ Governance & Staking</h3>
-                    <p>TOKEN holders participate in platform decisions, stake for rewards, and help shape the future of AI-human collaboration.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3 class="feature-title">🌐 Open Source</h3>
-                    <p>Fully transparent, community-driven development. Audit the code, contribute improvements, and help build the future.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="sdk-section" id="sdk">
-        <div class="container">
-            <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Try Our SDK</h2>
-            <p style="font-size: 1.2rem; margin-bottom: 2rem;">Add AI collaboration transparency to your projects in minutes</p>
-            
-            <div class="code-block">
-                <span class="highlight">npm install</span> codedao-dashboard-sdk
-            </div>
-            
-            <div class="cta-buttons">
-                <a href="https://github.com/CodeDAO-org/codedao-extension" class="btn btn-primary">View Repository</a>
-                <a href="dashboard.html" class="btn btn-secondary">Live Dashboard</a>
-            </div>
-        </div>
-    </div>
     
     <script>
         // Optional: Fetch live metrics from dashboard API
