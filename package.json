@@ -1,0 +1,119 @@
+{
+  "name": "codedao-extension",
+  "displayName": "CodeDAO - Earn CODE Tokens for Coding",
+  "description": "Earn real cryptocurrency (CODE tokens) for coding! Track your contributions and get rewarded with quality-based bonuses.",
+  "version": "1.2.0",
+  "publisher": "codedao",
+  "icon": "images/codedao-icon.png",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Analytics"
+  ],
+  "keywords": [
+    "cryptocurrency",
+    "rewards",
+    "coding",
+    "blockchain",
+    "ai collaboration",
+    "code quality",
+    "tokens",
+    "base network"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codedao.connectWallet",
+        "title": "CodeDAO: Connect Wallet",
+        "icon": "$(link)"
+      },
+      {
+        "command": "codedao.showStats",
+        "title": "CodeDAO: Show Stats",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "codedao.refreshRewards",
+        "title": "CodeDAO: Refresh Rewards",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "codedao.connectWallet",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "codedao.showStats",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "codedao.refreshRewards",
+          "when": "workspaceFolderCount > 0"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CodeDAO",
+      "properties": {
+        "codedao.enableNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show reward notifications after commits"
+        },
+        "codedao.walletAddress": {
+          "type": "string",
+          "default": "",
+          "description": "Your Base network wallet address for claiming rewards"
+        },
+        "codedao.apiEndpoint": {
+          "type": "string",
+          "default": "https://api.codedao.org",
+          "description": "API endpoint for submitting contributions"
+        },
+        "codedao.minimumReward": {
+          "type": "number",
+          "default": 0.1,
+          "description": "Minimum reward threshold for showing notifications"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js",
+    "vscode:prepublish": "npm run compile",
+    "compile": "echo 'No compilation needed for JavaScript'",
+    "watch": "echo 'No watch needed for JavaScript'"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "eslint": "^8.28.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodeDAO-org/codedao-extension.git"
+  },
+  "homepage": "https://codedao-org.github.io",
+  "bugs": {
+    "url": "https://github.com/CodeDAO-org/codedao-extension/issues"
+  },
+  "license": "MIT",
+  "badges": [
+    {
+      "url": "https://img.shields.io/badge/Base%20Network-Supported-blue",
+      "href": "https://base.org",
+      "description": "Built on Base Network"
+    }
+  ]
+}
