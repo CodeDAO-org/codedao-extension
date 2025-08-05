@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - CodeDAO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .step-card h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .step-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .formula {
+            background: #f0f4ff;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 1rem 0;
+        }
+
+        .quality-bonuses {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .bonus-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .bonus-item {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .bonus-item:hover {
+            border-color: #667eea;
+        }
+
+        .bonus-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .bonus-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .bonus-desc {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .faq-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.5rem 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #10b981;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .bonus-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🤖 CodeDAO</div>
+            <ul class="nav-links">
+                <li><a href="https://codedao-org.github.io/">Home</a></li>
+                <li><a href="https://codedao-org.github.io/dashboard.html">Dashboard</a></li>
+                <li><a href="https://codedao-org.github.io/wallet-dashboard.html">Wallet</a></li>
+                <li><a href="https://codedao-org.github.io/peer-review.html">Peer Review</a></li>
+                <li><a href="#" style="color: #667eea;">How It Works</a></li>
+                <li><a href="getting-started.html">Get Started</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>🤖 How CodeDAO Works</h1>
+            <p>Earn real cryptocurrency for writing quality code. Here's exactly how our AI collaboration transparency platform rewards developers.</p>
+        </div>
+
+        <!-- Steps Grid -->
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h2>🔗 Connect Your Wallet</h2>
+                <p>Connect MetaMask, Coinbase Wallet, or WalletConnect to the Base network. This is where your CODE token rewards will be sent.</p>
+                <p><strong>Why Base?</strong> Ultra-low fees (~$0.01) and fast transactions make claiming rewards affordable for everyone.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h2>⚡ Install VS Code Extension</h2>
+                <p>Our extension monitors your coding activity and calculates rewards automatically.</p>
+                <div class="code-block">
+git clone https://github.com/CodeDAO-org/codedao-extension.git
+cd codedao-extension && npm install
+code . # Press F5 to launch
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h2>💻 Start Coding</h2>
+                <p>Write code in any Git repository. Every commit is analyzed for quality and contribution value.</p>
+                <p><strong>What counts?</strong> Any committed code, but higher quality = higher rewards!</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h2>🎉 Claim Your Rewards</h2>
+                <p>Visit the Wallet Dashboard to see your earnings and claim CODE tokens directly to your wallet.</p>
+                <p><strong>Instant gratification:</strong> Confetti celebration included! 🎊</p>
+            </div>
+        </div>
+
+        <!-- Reward Formula -->
+        <div class="quality-bonuses">
+            <h2 style="text-align: center; margin-bottom: 1rem;">🧮 Reward Calculation</h2>
+            <div class="formula">
+                Final Reward = Lines Added × 0.1 × Quality Multiplier
+            </div>
+            <p style="text-align: center; color: #666; margin-bottom: 2rem;">
+                Base rate: 0.1 CODE per line • Quality bonuses multiply your earnings
+            </p>
+
+            <h3 style="margin-bottom: 1rem;">Quality Bonuses</h3>
+            <div class="bonus-grid">
+                <div class="bonus-item">
+                    <div class="bonus-icon">✅</div>
+                    <div class="bonus-title">Tests Included</div>
+                    <div class="bonus-desc">+20% bonus for adding test files</div>
+                </div>
+                <div class="bonus-item">
+                    <div class="bonus-icon">📁</div>
+                    <div class="bonus-title">Multi-file Changes</div>
+                    <div class="bonus-desc">+10% bonus for 3+ files modified</div>
+                </div>
+                <div class="bonus-item">
+                    <div class="bonus-icon">📝</div>
+                    <div class="bonus-title">Documentation</div>
+                    <div class="bonus-desc">+10% bonus for >15% comments</div>
+                </div>
+                <div class="bonus-item">
+                    <div class="bonus-icon">🔄</div>
+                    <div class="bonus-title">Active Contributor</div>
+                    <div class="bonus-desc">+10% bonus for frequent commits</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2 style="margin-bottom: 1.5rem;">❓ Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">💻 What kind of code counts for rewards?</div>
+                <div class="faq-answer">Any code committed to a Git repository! This includes bug fixes, new features, documentation, tests, refactoring, and even configuration files. Quality matters more than quantity.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">📈 How is code quality measured?</div>
+                <div class="faq-answer">Our algorithm analyzes multiple factors: presence of tests, code documentation, file complexity, commit frequency, and contribution scope. Better practices = higher multipliers.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">🎯 Can I use my existing projects?</div>
+                <div class="faq-answer">Absolutely! CodeDAO works with any Git repository - personal projects, open source contributions, work projects (with permission), or brand new experiments.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">💰 Are CODE tokens real cryptocurrency?</div>
+                <div class="faq-answer">Yes! CODE is an ERC-20 token deployed on Base network. You can transfer, trade, or hold them like any other cryptocurrency. Contract: 0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">🔒 Is my code data private?</div>
+                <div class="faq-answer">CodeDAO only analyzes commit metadata (lines changed, file types, etc.) - never your actual source code. Your intellectual property remains completely private.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">⚡ How often can I claim rewards?</div>
+                <div class="faq-answer">Anytime! Rewards accumulate automatically and you can claim them whenever you want. There's no minimum threshold or waiting period.</div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <h2>Ready to Start Earning?</h2>
+            <p>Join thousands of developers already earning CODE tokens for their contributions</p>
+            <a href="getting-started.html" class="cta-button">Get Started Now →</a>
+        </div>
+    </div>
+</body>
+</html>
