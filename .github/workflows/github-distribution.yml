@@ -1,1 +1,42 @@
+name: GitHub-Native Extension Distribution
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    name: Publish .vsix on GitHub Releases
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Package VS Code extension
+        run: |
+          npm install -g ovsx
+          npx vsce package
+
+      - name: Upload .vsix to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "*.vsix"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact for installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension
+          path: "*.vsix"
 
