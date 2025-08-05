@@ -8,27 +8,17 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '14'
-
-    - name: Install specific vsce version that works
-      run: npm install -g vsce@1.103.1
-
-    - name: Install dependencies
-      run: npm install --production
-
-    - name: Compile TypeScript
-      run: npm run compile
-
-    - name: Package Extension
-      run: vsce package
-
-    - name: Publish to VS Code Marketplace
-      run: vsce publish -p ${{ secrets.VSCE_PAT }}
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'  # Web Stream support starts here
+          
+      - run: npm install
+      
+      - run: npm run compile
+      
+      - run: npm install -g vsce@2.14.0
+      
+      - run: vsce publish -p ${{ secrets.VSCE_PAT }}
