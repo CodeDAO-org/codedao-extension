@@ -1,76 +1,115 @@
 {
-    "name": "codedao-extension",
-    "displayName": "CodeDAO - Earn Crypto by Coding",
-    "description": "🤖💰 The world's first VS Code extension that pays you real cryptocurrency for writing code! Earn CODE tokens automatically as you code.",
-    "version": "1.0.0",
-    "publisher": "codedao-org",
-    "engines": {
-        "vscode": "^1.73.0"
-    },
-    "categories": [
-        "Other",
-        "Productivity"
+  "name": "codedao-extension",
+  "displayName": "CodeDAO - Earn Crypto by Coding",
+  "description": "🚀💰 The world's first VS Code extension that pays you real cryptocurrency for writing code! Earn CODE tokens automatically as you code!",
+  "version": "1.0.1",
+  "publisher": "codedao-org",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "categories": [
+    "Other",
+    "Productivity"
+  ],
+  "keywords": [
+    "cryptocurrency",
+    "coding rewards",
+    "blockchain",
+    "web3",
+    "base network",
+    "earn money coding",
+    "passive income",
+    "developer rewards",
+    "code tokens",
+    "programming incentives"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodeDAO-org/codedao-extension"
+  },
+  "homepage": "https://codedao-org.github.io",
+  "bugs": {
+    "url": "https://github.com/CodeDAO-org/codedao-extension/issues"
+  },
+  "license": "MIT",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codedao.showStats",
+        "title": "CodeDAO: Show Stats",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "codedao.connectWallet",
+        "title": "CodeDAO: Connect Wallet",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "codedao.claimRewards",
+        "title": "CodeDAO: Claim Rewards",
+        "icon": "$(zap)"
+      }
     ],
-    "keywords": [
-        "cryptocurrency",
-        "coding rewards", 
-        "blockchain",
-        "web3",
-        "base network",
-        "earn money coding",
-        "passive income",
-        "developer rewards",
-        "code tokens",
-        "programming incentives"
-    ],
-    "activationEvents": [
-        "onStartupFinished"
-    ],
-    "main": "./out/extension.js",
-    "icon": "icon.png",
-    "galleryBanner": {
-        "color": "#1e1e1e",
-        "theme": "dark"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/CodeDAO-org/codedao-extension"
-    },
-    "homepage": "https://codedao-org.github.io",
-    "bugs": {
-        "url": "https://github.com/CodeDAO-org/codedao-extension/issues"
-    },
-    "license": "MIT",
-    "contributes": {
-        "commands": [
-            {
-                "command": "codedao.showStats",
-                "title": "CodeDAO: Show Stats",
-                "icon": "$(graph)"
-            },
-            {
-                "command": "codedao.connectWallet", 
-                "title": "CodeDAO: Connect Wallet",
-                "icon": "$(plug)"
-            },
-            {
-                "command": "codedao.claimRewards",
-                "title": "CodeDAO: Claim Rewards", 
-                "icon": "$(zap)"
-            }
-        ],
-        "menus": {
-            "commandPalette": [
-                {
-                    "command": "codedao.showStats"
-                },
-                {
-                    "command": "codedao.connectWallet"
-                },
-                {
-                    "command": "codedao.claimRewards"
-                }
-            ]
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "codedao.showStats"
+        },
+        {
+          "command": "codedao.connectWallet"
+        },
+        {
+          "command": "codedao.claimRewards"
         }
+      ]
+    },
+    "configuration": {
+      "title": "CodeDAO",
+      "properties": {
+        "codedao.apiEndpoint": {
+          "type": "string",
+          "default": "https://api.codedao.org",
+          "description": "CodeDAO API endpoint"
+        },
+        "codedao.enableNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable reward notifications"
+        }
+      }
     }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.73.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4",
+    "@vscode/test-electron": "^2.2.0",
+    "vsce": "^2.15.0"
+  },
+  "dependencies": {
+    "ethers": "^6.0.0",
+    "axios": "^1.6.0"
+  }
 }
