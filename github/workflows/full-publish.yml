@@ -1,0 +1,47 @@
+name: Build and Publish via Playwright
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      - name: Install dependencies & compile
+        run: |
+          npm ci
+          npm run compile
+
+      - name: Install ovsx & package
+        run: |
+          npm install -g ovsx
+          ovsx package
+
+      - name: Save artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: codedao-extension
+          path: '*.vsix'
+
+      - name: Setup Playwright
+        run: npm install playwright
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Run Playwright upload
+        run: node scripts/marketplace-upload.js
+        env:
+          VSIX_PATH: '*.vsix'
+          MKT_EMAIL: ${{ secrets.MKT_EMAIL }}
+          MKT_PASSWORD: ${{ secrets.MKT_PASSWORD }}
+          MKT_PUBLISHER: 'codedao-org'
