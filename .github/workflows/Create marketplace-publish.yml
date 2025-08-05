@@ -13,12 +13,12 @@ jobs:
       
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'  # Web Stream support starts here
+          node-version: '16'  # Node 16 LTS - no undici issues
           
       - run: npm install
       
       - run: npm run compile
       
-      - run: npm install -g vsce@2.14.0
+      - run: npm install -g vsce@2.12.0  # Last version before undici
       
       - run: vsce publish -p ${{ secrets.VSCE_PAT }}
