@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started - CodeDAO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .steps-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .step-content {
+            margin-left: 3rem;
+        }
+
+        .step-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            border-left: 4px solid #667eea;
+        }
+
+        .code-comment {
+            color: #94a3b8;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .warning-box .warning-title {
+            font-weight: bold;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-box {
+            background: #dcfce7;
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .success-box .success-title {
+            font-weight: bold;
+            color: #065f46;
+            margin-bottom: 0.5rem;
+        }
+
+        .tips-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .tip-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            margin-top: 0.2rem;
+        }
+
+        .tip-content {
+            flex: 1;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .tip-description {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .next-steps {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .next-steps h2 {
+            margin-bottom: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            display: inline-block;
+            background: white;
+            color: #10b981;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .button.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .step-content {
+                margin-left: 0;
+            }
+            
+            .step-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .step-number {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🤖 CodeDAO</div>
+            <ul class="nav-links">
+                <li><a href="https://codedao-org.github.io/">Home</a></li>
+                <li><a href="https://codedao-org.github.io/dashboard.html">Dashboard</a></li>
+                <li><a href="https://codedao-org.github.io/wallet-dashboard.html">Wallet</a></li>
+                <li><a href="https://codedao-org.github.io/peer-review.html">Peer Review</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="#" style="color: #667eea;">Get Started</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>🚀 Get Started with CodeDAO</h1>
+            <p>Follow this step-by-step guide to start earning CODE tokens for your code contributions in under 10 minutes.</p>
+        </div>
+
+        <!-- Installation Steps -->
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2 class="step-title">Install VS Code Extension</h2>
+                </div>
+                <div class="step-content">
+                    <p class="step-description">
+                        Clone and run the CodeDAO VS Code extension. This extension monitors your coding activity and calculates rewards automatically.
+                    </p>
+                    
+                    <div class="code-block">
+<span class="code-comment"># Clone the CodeDAO extension repository</span>
+git clone https://github.com/CodeDAO-org/codedao-extension.git
+
+<span class="code-comment"># Navigate to the directory and install dependencies</span>
+cd codedao-extension
+npm install
+
+<span class="code-comment"># Open in VS Code</span>
+code .
+
+<span class="code-comment"># Press F5 to launch Extension Development Host</span>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ Success!</div>
+                        You should see a new VS Code window open with "Extension Development Host" in the title. The CodeDAO extension is now running and monitoring your activity.
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2 class="step-title">Connect Your Wallet</h2>
+                </div>
+                <div class="step-content">
+                    <p class="step-description">
+                        Connect a Web3 wallet to the Base network where your CODE token rewards will be sent.
+                    </p>
+                    
+                    <ol style="margin-left: 1rem; color: #666; line-height: 1.6;">
+                        <li>Install <strong>MetaMask</strong>, <strong>Coinbase Wallet</strong>, or another Web3 wallet</li>
+                        <li>Add the Base network to your wallet</li>
+                        <li>Visit the <a href="https://codedao-org.github.io/wallet-dashboard.html" style="color: #667eea;">Wallet Dashboard</a></li>
+                        <li>Click "Connect Wallet" and select your wallet</li>
+                    </ol>
+
+                    <div class="warning-box">
+                        <div class="warning-title">⚠️ Base Network Setup</div>
+                        If you haven't added Base network to MetaMask, you can add it automatically at <a href="https://bridge.base.org/" target="_blank" style="color: #667eea;">bridge.base.org</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h2 class="step-title">Start Coding & Earning</h2>
+                </div>
+                <div class="step-content">
+                    <p class="step-description">
+                        Now you're ready to start earning! Write code in any Git repository and commit your changes.
+                    </p>
+                    
+                    <div class="code-block">
+<span class="code-comment"># Create a test project (or use an existing one)</span>
+mkdir my-codedao-project
+cd my-codedao-project
+git init
+
+<span class="code-comment"># Create a simple JavaScript file with quality bonuses</span>
+cat > app.js << 'EOF'
+/**
+ * A simple calculator with comprehensive documentation
+ * This demonstrates good coding practices for CodeDAO rewards
+ */
+class Calculator {
+    /**
+     * Add two numbers together
+     * @param {number} a - First number
+     * @param {number} b - Second number
+     * @returns {number} Sum of a and b
+     */
+    add(a, b) {
+        return a + b;
+    }
+    
+    /**
+     * Subtract b from a
+     * @param {number} a - First number
+     * @param {number} b - Second number to subtract
+     * @returns {number} Difference of a and b
+     */
+    subtract(a, b) {
+        return a - b;
+    }
+}
+
+module.exports = Calculator;
+EOF
+
+<span class="code-comment"># Create test file for bonus points</span>
+cat > app.test.js << 'EOF'
+const Calculator = require('./app');
+
+describe('Calculator', () => {
+    let calc;
+    
+    beforeEach(() => {
+        calc = new Calculator();
+    });
+    
+    test('should add two numbers correctly', () => {
+        expect(calc.add(2, 3)).toBe(5);
+        expect(calc.add(-1, 1)).toBe(0);
+    });
+    
+    test('should subtract two numbers correctly', () => {
+        expect(calc.subtract(5, 3)).toBe(2);
+        expect(calc.subtract(1, 1)).toBe(0);
+    });
+});
+EOF
+
+<span class="code-comment"># Commit your changes to trigger reward calculation</span>
+git add .
+git commit -m "Add Calculator class with comprehensive tests and documentation
+
+- Implements basic arithmetic operations
+- Includes JSDoc documentation for all methods
+- Comprehensive test coverage
+- Follows best practices for maintainability"
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">🎉 Expected Result</div>
+                        You should see a notification popup in VS Code showing something like: "✅ 45 lines × 0.1 × 1.4 = 6.3 CODE earned! 🎉 Tests (+20%), Documentation (+10%), Multi-file (+10%)"
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <h2 class="step-title">Claim Your Rewards</h2>
+                </div>
+                <div class="step-content">
+                    <p class="step-description">
+                        Visit the Wallet Dashboard to see your accumulated rewards and claim them to your wallet.
+                    </p>
+                    
+                    <ol style="margin-left: 1rem; color: #666; line-height: 1.6;">
+                        <li>Go to the <a href="https://codedao-org.github.io/wallet-dashboard.html" style="color: #667eea;">Wallet Dashboard</a></li>
+                        <li>Check your "Pending Rewards" section</li>
+                        <li>Click the "💎 Claim Rewards" button</li>
+                        <li>Enjoy the confetti celebration! 🎊</li>
+                        <li>Add CODE token to MetaMask for easy tracking</li>
+                    </ol>
+
+                    <div class="success-box">
+                        <div class="success-title">🎊 Congratulations!</div>
+                        You've successfully earned and claimed your first CODE tokens! The tokens are now in your wallet on the Base network.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="tips-section">
+            <h2 style="margin-bottom: 1.5rem;">💡 Pro Tips for Maximum Earnings</h2>
+            
+            <div class="tip-item">
+                <div class="tip-icon">✅</div>
+                <div class="tip-content">
+                    <div class="tip-title">Always Include Tests</div>
+                    <div class="tip-description">Test files give you a 20% bonus! Create .test.js, .spec.js files or use __tests__ directories.</div>
+                </div>
+            </div>
+            
+            <div class="tip-item">
+                <div class="tip-icon">📝</div>
+                <div class="tip-content">
+                    <div class="tip-title">Document Your Code</div>
+                    <div class="tip-description">Comments that make up >15% of your code earn a 10% bonus. Use JSDoc, inline comments, and README files.</div>
+                </div>
+            </div>
+            
+            <div class="tip-item">
+                <div class="tip-icon">🔄</div>
+                <div class="tip-content">
+                    <div class="tip-title">Commit Regularly</div>
+                    <div class="tip-description">Multiple commits per day earn you an "active contributor" bonus. Break large changes into logical commits.</div>
+                </div>
+            </div>
+            
+            <div class="tip-item">
+                <div class="tip-icon">📁</div>
+                <div class="tip-content">
+                    <div class="tip-title">Multi-file Changes</div>
+                    <div class="tip-description">Modifying 3+ files in a single commit shows you're making substantial contributions worth a 10% bonus.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+            <h2>🎯 What's Next?</h2>
+            <p>You're now earning CODE tokens! Here are some ways to maximize your rewards and get involved:</p>
+            
+            <div class="button-group">
+                <a href="https://codedao-org.github.io/wallet-dashboard.html" class="button">
+                    💳 View Wallet Dashboard
+                </a>
+                <a href="how-it-works.html" class="button secondary">
+                    📚 Learn More
+                </a>
+                <a href="https://codedao-org.github.io/peer-review.html" class="button secondary">
+                    👥 Join Peer Review
+                </a>
+                <a href="https://discord.gg/codedao" class="button secondary" target="_blank">
+                    💬 Join Community
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
