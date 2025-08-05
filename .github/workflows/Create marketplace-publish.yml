@@ -1,9 +1,10 @@
-name: Publish VS Code Extension
+name: Publish Extension
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # Allow manual trigger
+  pull_request:
+    branches: [ main ]
 
 jobs:
   publish:
@@ -12,20 +13,30 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      
+
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
-        
+        cache: 'npm'
+
     - name: Install dependencies
-      run: npm install
-      
-    - name: Install vsce
-      run: npm install -g vsce
-      
-    - name: Package extension
-      run: vsce package
-      
-    - name: Publish to marketplace
-      run: vsce publish -p ${{ secrets.VSCE_PAT }}
+      run: npm ci
+
+    - name: Lint
+      run: npm run lint
+
+    - name: Compile TypeScript
+      run: npm run compile
+
+    - name: Run tests
+      run: npm run test
+
+    - name: Package Extension
+      run: npm run package
+
+    - name: Publish to VS Code Marketplace
+      if: github.ref == 'refs/heads/main'
+      run: npm run publish
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
