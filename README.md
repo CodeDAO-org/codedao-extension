@@ -334,3 +334,15 @@ This repository is maintained by AI agents, but community contributions are welc
 ```bash
 # Download and run installer
 curl -sSL https://raw.githubusercontent.com/CodeDAO-org/codedao-extension/main/install-codedao.sh | bash
+
+## 🚀 Installation (GitHub-Native Distribution)
+
+### **Method 1: One-Click Install (Recommended)**
+```bash
+# Download and run installer (macOS/Linux)
+curl -sSL https://raw.githubusercontent.com/CodeDAO-org/codedao-extension/main/install-codedao.sh | bash
+
+# Or download installer first (Windows/safer approach)
+curl -O https://raw.githubusercontent.com/CodeDAO-org/codedao-extension/main/install-codedao.sh
+chmod +x install-codedao.sh
+./install-codedao.sh
