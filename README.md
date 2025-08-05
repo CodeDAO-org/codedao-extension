@@ -47,3 +47,24 @@ This extension was built entirely using Claude AI as the lead developer, proving
 
 ---
 **Start earning cryptocurrency for your code today!** 🚀
+## 🚀 Publishing Solution
+
+### The Problem
+VS Code's `vsce` tool has undici dependency issues in CI environments. This project uses an innovative AI-developed solution.
+
+### Our Solution
+1. **Package with ovsx** - Reliable .vsix generation
+2. **Playwright automation** - Automated marketplace upload
+3. **Multi-AI developed** - Built through Claude + ChatGPT collaboration
+
+### Setup GitHub Secrets
+- `MKT_EMAIL`: Your Microsoft account email
+- `MKT_PASSWORD`: Your Microsoft account password
+- `MKT_PUBLISHER`: Your publisher ID (codedao-org)
+
+### Usage
+- **Manual**: Push to main → Download .vsix artifact → Upload manually
+- **Automated**: Create tag (v1.0.0) → Fully automated publishing
+
+### Open Source Contribution
+This solution helps the entire VS Code extension community deal with vsce/undici issues.
