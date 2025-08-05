@@ -1,0 +1,85 @@
+{
+  "name": "AI-Maintained Repository Badge System",
+  "version": "1.0.0",
+  "description": "Community badge system for AI-maintained repositories",
+  
+  "badges": {
+    "ai_maintained": {
+      "name": "AI-Maintained",
+      "markdown": "[![AI-Maintained](https://img.shields.io/badge/AI--Maintained-CodeDAO-blueviolet?logo=github&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter)",
+      "html": "<a href=\"https://github.com/CodeDAO-org/multi-ai-starter\"><img src=\"https://img.shields.io/badge/AI--Maintained-CodeDAO-blueviolet?logo=github&logoColor=white\" alt=\"AI-Maintained\" /></a>",
+      "color": "blueviolet",
+      "description": "Repository is maintained by AI agents"
+    },
+    
+    "multi_ai": {
+      "name": "Multi-AI Collaboration", 
+      "markdown": "[![Multi-AI](https://img.shields.io/badge/Multi--AI-Claude%20%2B%20ChatGPT-ff6b6b?logo=openai&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter)",
+      "html": "<a href=\"https://github.com/CodeDAO-org/multi-ai-starter\"><img src=\"https://img.shields.io/badge/Multi--AI-Claude%20%2B%20ChatGPT-ff6b6b?logo=openai&logoColor=white\" alt=\"Multi-AI Collaboration\" /></a>",
+      "color": "ff6b6b",
+      "description": "Multiple AI agents collaborate on this repository"
+    },
+    
+    "self_healing": {
+      "name": "AI Self-Healing",
+      "markdown": "[![Self-Healing](https://img.shields.io/badge/Self--Healing-AI%20Powered-4ecdc4?logo=dependabot&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter)",
+      "html": "<a href=\"https://github.com/CodeDAO-org/multi-ai-starter\"><img src=\"https://img.shields.io/badge/Self--Healing-AI%20Powered-4ecdc4?logo=dependabot&logoColor=white\" alt=\"AI Self-Healing\" /></a>",
+      "color": "4ecdc4",
+      "description": "Repository automatically fixes build failures and issues"
+    },
+    
+    "ai_reviewed": {
+      "name": "AI Code Review",
+      "markdown": "[![AI-Reviewed](https://img.shields.io/badge/AI--Reviewed-Automated-45b7d1?logo=codereview&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter)",
+      "html": "<a href=\"https://github.com/CodeDAO-org/multi-ai-starter\"><img src=\"https://img.shields.io/badge/AI--Reviewed-Automated-45b7d1?logo=codereview&logoColor=white\" alt=\"AI Code Review\" /></a>",
+      "color": "45b7d1", 
+      "description": "All PRs are automatically reviewed by AI agents"
+    },
+    
+    "ai_published": {
+      "name": "AI Published",
+      "markdown": "[![AI-Published](https://img.shields.io/badge/AI--Published-Marketplace-f7b731?logo=visualstudiocode&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter)",
+      "html": "<a href=\"https://github.com/CodeDAO-org/multi-ai-starter\"><img src=\"https://img.shields.io/badge/AI--Published-Marketplace-f7b731?logo=visualstudiocode&logoColor=white\" alt=\"AI Published\" /></a>",
+      "color": "f7b731",
+      "description": "Extension is automatically published by AI agents"
+    },
+    
+    "codedao_flagship": {
+      "name": "CodeDAO Flagship",
+      "markdown": "[![CodeDAO](https://img.shields.io/badge/CodeDAO-Flagship-success?logo=ethereum&logoColor=white)](https://github.com/CodeDAO-org/codedao-extension)",
+      "html": "<a href=\"https://github.com/CodeDAO-org/codedao-extension\"><img src=\"https://img.shields.io/badge/CodeDAO-Flagship-success?logo=ethereum&logoColor=white\" alt=\"CodeDAO Flagship\" /></a>",
+      "color": "success",
+      "description": "Original AI-built cryptocurrency earning VS Code extension"
+    }
+  },
+  
+  "badge_combinations": {
+    "full_ai_stack": {
+      "name": "Complete AI Stack",
+      "badges": ["ai_maintained", "multi_ai", "self_healing", "ai_reviewed"],
+      "markdown": "[![AI-Maintained](https://img.shields.io/badge/AI--Maintained-CodeDAO-blueviolet?logo=github&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter) [![Multi-AI](https://img.shields.io/badge/Multi--AI-Claude%20%2B%20ChatGPT-ff6b6b?logo=openai&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter) [![Self-Healing](https://img.shields.io/badge/Self--Healing-AI%20Powered-4ecdc4?logo=dependabot&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter) [![AI-Reviewed](https://img.shields.io/badge/AI--Reviewed-Automated-45b7d1?logo=codereview&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter)"
+    },
+    
+    "vscode_extension": {
+      "name": "VS Code Extension AI Stack",
+      "badges": ["ai_maintained", "ai_published", "codedao_flagship"],
+      "markdown": "[![AI-Maintained](https://img.shields.io/badge/AI--Maintained-CodeDAO-blueviolet?logo=github&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter) [![AI-Published](https://img.shields.io/badge/AI--Published-Marketplace-f7b731?logo=visualstudiocode&logoColor=white)](https://github.com/CodeDAO-org/multi-ai-starter) [![CodeDAO](https://img.shields.io/badge/CodeDAO-Flagship-success?logo=ethereum&logoColor=white)](https://github.com/CodeDAO-org/codedao-extension)"
+    }
+  },
+  
+  "verification_config": {
+    "filename": ".ai-maintained.json",
+    "schema": {
+      "ai_maintained": true,
+      "agents": ["claude", "chatgpt"],
+      "features": {
+        "self_repair": true,
+        "code_review": true, 
+        "dependency_management": true,
+        "automated_publishing": true
+      },
+      "last_updated": "2025-01-01T00:00:00Z",
+      "contact": "ai@codedao.org"
+    }
+  }
+}
