@@ -1,10 +1,46 @@
+# Source files
 .vscode/**
 .vscode-test/**
 src/**
+**/*.ts
+**/*.map
+
+# Build files  
 .gitignore
 .yarnrc
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/.eslintrc.json
-**/*.map
-**/*.ts
+
+# Security sensitive files
+.env
+**/.env
+**/.env.*
+
+# Development files
+node_modules/**
+**/*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# GitHub workflows and other project files
+.github/**
+**/*.yml
+**/*.yaml
+
+# Smart contract files (not needed in extension)
+contracts/**
+scripts/**
+**/*.sol
+hardhat.config.js
+deploy-*.sh
+
+# AI and documentation
+ai-agents/**
+*.md
+!README.md
+
+# Dependencies and build artifacts
+package-dependencies.json
+final-build.yml
