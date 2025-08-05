@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp": "2025-08-04T12:00:00Z",
+    "agent": "Claude",
+    "action": "Detected invalid JSON in package.json"
+  },
+  {
+    "timestamp": "2025-08-04T12:01:15Z",
+    "agent": "ChatGPT",
+    "action": "Suggested fix and committed"
+  }
+]
