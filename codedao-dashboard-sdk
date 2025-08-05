@@ -1,0 +1,10 @@
+/sdk
+  agentLogger.js         # Main client
+  schema.json            # Event schema
+  webhookAdapter.js      # GitHub PR + CI integration
+/public
+  dashboard.html         # Embed-ready HTML viewer
+  style.css
+/examples
+  vite-dashboard-demo/   # Local test app
+  nextjs-ai-project/     # Sample integration
