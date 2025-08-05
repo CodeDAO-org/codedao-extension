@@ -1,0 +1,58 @@
+name: AI Repository Management
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'package.json'
+      - '.github/workflows/**'
+  schedule:
+    - cron: '0 0 * * *'  # Daily maintenance
+
+jobs:
+  ai-repository-maintenance:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🤖 AI Agents Starting
+        run: |
+          echo "🚀 Multi-AI Repository Management"
+          echo "🤖 Agents: Claude + ChatGPT" 
+          echo "📍 Target: CodeDAO Extension"
+          echo "⏰ Time: $(date)"
+          
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+          
+      - name: Install AI Manager Dependencies
+        run: |
+          npm install @octokit/rest
+          
+      - name: 🔧 AI Repository Analysis & Fixes
+        run: node scripts/ai-fix-repository.js
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          
+      - name: 📊 AI Status Report
+        run: |
+          echo "✅ AI Repository Management completed"
+          echo "🎯 Next: Extension publishing pipeline"
+          echo "🌍 Impact: Community gets working solution"
+          
+      - name: 🚀 Trigger Publishing if Fixed
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'marketplace-publish.yml'
+            })
