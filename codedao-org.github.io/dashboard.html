@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO Dashboard - AI Collaboration Live</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .ai-pulse {
+            animation: ai-pulse 2s infinite;
+        }
+        @keyframes ai-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .loading-dots::after {
+            content: '';
+            animation: loading-dots 1.5s infinite;
+        }
+        @keyframes loading-dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-green-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-robot text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900">CodeDAO Dashboard</h1>
+                            <p class="text-xs text-gray-600">AI Collaboration Live</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-green-500 ai-pulse"></div>
+                        <span class="text-sm text-gray-600 font-medium">Live</span>
+                    </div>
+                    <a href="https://github.com/CodeDAO-org/codedao-extension" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+                        <i class="fab fa-github mr-2"></i>View Repository
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Stats -->
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="flex items-center justify-center space-x-2 mb-2">
+                        <div class="w-4 h-4 rounded-full bg-purple-500"></div>
+                        <span class="text-sm font-medium text-gray-600">Claude Actions</span>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-900" id="claude-count">47</div>
+                </div>
+                <div class="text-center">
+                    <div class="flex items-center justify-center space-x-2 mb-2">
+                        <div class="w-4 h-4 rounded-full bg-green-500"></div>
+                        <span class="text-sm font-medium text-gray-600">ChatGPT Actions</span>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-900" id="chatgpt-count">52</div>
+                </div>
+                <div class="text-center">
+                    <div class="flex items-center justify-center space-x-2 mb-2">
+                        <div class="w-4 h-4 rounded-full bg-blue-500"></div>
+                        <span class="text-sm font-medium text-gray-600">Successful Fixes</span>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-900" id="fixes-count">23</div>
+                </div>
+                <div class="text-center">
+                    <div class="flex items-center justify-center space-x-2 mb-2">
+                        <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
+                        <span class="text-sm font-medium text-gray-600">Uptime</span>
+                    </div>
+                    <div class="text-3xl font-bold text-gray-900">99.8%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Activity Timeline -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-sm border">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold text-gray-900">Live Activity Feed</h2>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-sync-alt text-gray-400 text-sm"></i>
+                                <span class="text-sm text-gray-500">Auto-updating</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">Watch Claude and ChatGPT collaborate in real-time</p>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div id="activity-feed" class="space-y-6">
+                            <!-- Activity items will be dynamically inserted here -->
+                        </div>
+                        
+                        <!-- Loading indicator -->
+                        <div id="loading-indicator" class="text-center py-4 text-gray-500">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            <span class="loading-dots">Loading new activity</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Info -->
+            <div class="space-y-6">
+                
+                <!-- Current Status -->
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">System Status</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Repository Health</span>
+                            <span class="flex items-center text-green-600">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                Healthy
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">CI/CD Pipeline</span>
+                            <span class="flex items-center text-green-600">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                Passing
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Last Build</span>
+                            <span class="text-gray-900">2 min ago</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Next Scheduled Check</span>
+                            <span class="text-gray-900">5 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Agents -->
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Active AI Agents</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                                C
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-medium text-gray-900">Claude</span>
+                                    <div class="w-2 h-2 bg-green-500 rounded-full ai-pulse"></div>
+                                </div>
+                                <p class="text-sm text-gray-600">Code analysis & validation</p>
+                                <p class="text-xs text-gray-500">Last active: 30s ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                                G
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-medium text-gray-900">ChatGPT</span>
+                                    <div class="w-2 h-2 bg-green-500 rounded-full ai-pulse"></div>
+                                </div>
+                                <p class="text-sm text-gray-600">Problem solving & fixes</p>
+                                <p class="text-xs text-gray-500">Last active: 45s ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Links</h3>
+                    <div class="space-y-3">
+                        <a href="https://github.com/CodeDAO-org/codedao-extension" 
+                           class="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
+                            <i class="fab fa-github w-4"></i>
+                            <span>Main Repository</span>
+                        </a>
+                        <a href="https://github.com/CodeDAO-org/codedao-extension/releases" 
+                           class="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
+                            <i class="fas fa-download w-4"></i>
+                            <span>Latest Release</span>
+                        </a>
+                        <a href="https://github.com/CodeDAO-org/codedao-extension/actions" 
+                           class="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
+                            <i class="fas fa-cog w-4"></i>
+                            <span>CI/CD Actions</span>
+                        </a>
+                        <a href="/" 
+                           class="flex items-center space-x-3 text-gray-600 hover:text-purple-600 transition-colors">
+                            <i class="fas fa-home w-4"></i>
+                            <span>Back to Homepage</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="text-center text-gray-600">
+                <p class="font-medium">CodeDAO Dashboard - Multi-AI Collaboration Visualization</p>
+                <p class="text-sm mt-2">
+                    This dashboard shows real-time collaboration between Claude and ChatGPT | 
+                    <a href="/" class="text-purple-600 hover:underline">Learn More</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mock activity data - in production this would come from GitHub webhooks/API
+        const activityData = [
+            {
+                id: 1,
+                timestamp: new Date(Date.now() - 120000),
+                agent: 'Claude',
+                action: 'Detected syntax error in package.json',
+                type: 'detection',
+                status: 'info',
+                details: 'Missing comma on line 23'
+            },
+            {
+                id: 2,
+                timestamp: new Date(Date.now() - 90000),
+                agent: 'ChatGPT',
+                action: 'Analyzing error and generating fix strategy',
+                type: 'analysis',
+                status: 'processing',
+                details: 'Reviewing package.json structure'
+            },
+            {
+                id: 3,
+                timestamp: new Date(Date.now() - 60000),
+                agent: 'ChatGPT',
+                action: 'Committed fix: Updated package.json syntax',
+                type: 'commit',
+                status: 'success',
+                commitHash: 'a1b2c3d',
+                details: 'Fixed JSON syntax error'
+            },
+            {
+                id: 4,
+                timestamp: new Date(Date.now() - 30000),
+                agent: 'Claude',
+                action: 'Validated fix and triggered CI pipeline',
+                type: 'validation',
+                status: 'success',
+                details: 'All tests passing ✅'
+            },
+            {
+                id: 5,
+                timestamp: new Date(Date.now() - 15000),
+                agent: 'Claude',
+                action: 'Monitoring build status and dependencies',
+                type: 'monitoring',
+                status: 'processing',
+                details: 'Checking for security vulnerabilities'
+            }
+        ];
+
+        // Agent configurations
+        const agentConfig = {
+            'Claude': {
+                color: 'purple',
+                bgColor: 'bg-purple-500',
+                textColor: 'text-purple-600',
+                lightBg: 'bg-purple-50',
+                icon: 'C'
+            },
+            'ChatGPT': {
+                color: 'green',
+                bgColor: 'bg-green-500',
+                textColor: 'text-green-600',
+                lightBg: 'bg-green-50',
+                icon: 'G'
+            }
+        };
+
+        // Status configurations
+        const statusConfig = {
+            'success': { icon: 'fas fa-check-circle', color: 'text-green-500' },
+            'processing': { icon: 'fas fa-spinner fa-spin', color: 'text-blue-500' },
+            'error': { icon: 'fas fa-exclamation-triangle', color: 'text-red-500' },
+            'info': { icon: 'fas fa-info-circle', color: 'text-blue-500' }
+        };
+
+        // Type configurations
+        const typeConfig = {
+            'commit': { icon: 'fas fa-code-branch' },
+            'detection': { icon: 'fas fa-search' },
+            'analysis': { icon: 'fas fa-brain' },
+            'validation': { icon: 'fas fa-check-double' },
+            'monitoring': { icon: 'fas fa-eye' }
+        };
+
+        function formatTimestamp(timestamp) {
+            const now = new Date();
+            const diff = Math.floor((now - timestamp) / 1000);
+            
+            if (diff < 60) return `${diff}s ago`;
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return `${Math.floor(diff / 86400)}d ago`;
+        }
+
+        function createActivityItem(activity) {
+            const agent = agentConfig[activity.agent];
+            const status = statusConfig[activity.status];
+            const type = typeConfig[activity.type];
+
+            return `
+                <div class="flex items-start space-x-4 p-4 rounded-lg ${agent.lightBg} border border-gray-200">
+                    <!-- Agent Avatar -->
+                    <div class="${agent.bgColor} w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                        ${agent.icon}
+                    </div>
+                    
+                    <!-- Activity Content -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="${agent.textColor} font-semibold">${activity.agent}</span>
+                                <div class="flex items-center space-x-1">
+                                    <i class="${type.icon} text-gray-500 text-sm"></i>
+                                    <i class="${status.icon} ${status.color} text-sm"></i>
+                                </div>
+                            </div>
+                            <span class="text-sm text-gray-500">${formatTimestamp(activity.timestamp)}</span>
+                        </div>
+                        
+                        <p class="text-gray-900 font-medium mb-1">${activity.action}</p>
+                        
+                        ${activity.details ? `<p class="text-gray-600 text-sm mb-2">${activity.details}</p>` : ''}
+                        
+                        ${activity.commitHash ? `
+                            <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-800">
+                                <i class="fas fa-code-branch mr-1"></i>
+                                ${activity.commitHash}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderActivities() {
+            const feed = document.getElementById('activity-feed');
+            const sortedActivities = activityData.sort((a, b) => b.timestamp - a.timestamp);
+            
+            feed.innerHTML = sortedActivities.map(activity => createActivityItem(activity)).join('');
+        }
+
+        function simulateNewActivity() {
+            const agents = ['Claude', 'ChatGPT'];
+            const actions = [
+                'Checking repository health...',
+                'Scanning for dependency updates',
+                'Validating code quality metrics',
+                'Monitoring CI/CD pipeline',
+                'Analyzing recent commits',
+                'Checking for security vulnerabilities'
+            ];
+            
+            const randomAgent = agents[Math.floor(Math.random() * agents.length)];
+            const randomAction = actions[Math.floor(Math.random() * actions.length)];
+            
+            const newActivity = {
+                id: Date.now(),
+                timestamp: new Date(),
+                agent: randomAgent,
+                action: randomAction,
+                type: 'monitoring',
+                status: Math.random() > 0.8 ? 'processing' : 'info',
+                details: 'Automated system check'
+            };
+            
+            // Add to beginning of array and keep only last 20
+            activityData.unshift(newActivity);
+            activityData.splice(20);
+            
+            // Update counters
+            if (randomAgent === 'Claude') {
+                const count = document.getElementById('claude-count');
+                count.textContent = parseInt(count.textContent) + 1;
+            } else {
+                const count = document.getElementById('chatgpt-count');
+                count.textContent = parseInt(count.textContent) + 1;
+            }
+            
+            renderActivities();
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            renderActivities();
+            
+            // Hide loading indicator after initial load
+            setTimeout(() => {
+                document.getElementById('loading-indicator').style.display = 'none';
+            }, 2000);
+            
+            // Simulate new activity every 30 seconds
+            setInterval(simulateNewActivity, 30000);
+            
+            // Update timestamps every minute
+            setInterval(() => {
+                renderActivities();
+            }, 60000);
+        });
+
+        // Add some interactive features
+        document.addEventListener('click', function(e) {
+            // Add click effects for activity items
+            if (e.target.closest('[class*="bg-purple-50"], [class*="bg-green-50"]')) {
+                const item = e.target.closest('div');
+                item.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    item.style.transform = 'scale(1)';
+                }, 150);
+            }
+        });
+    </script>
+</body>
+</html>
