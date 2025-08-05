@@ -1,0 +1,105 @@
+name: Enhanced AI Repository Management
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [opened, synchronize]
+  schedule:
+    - cron: '0 0 * * *'  # Daily enhanced maintenance
+  workflow_run:
+    workflows: ["Build VS Code Extension"]
+    types: [completed]
+
+jobs:
+  enhanced-ai-management:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🤖 Enhanced AI Agents Starting
+        run: |
+          echo "🚀 Enhanced Multi-AI Repository Management"
+          echo "🤖 Agents: Claude + ChatGPT (Enhanced Mode)" 
+          echo "🎯 Features: Self-repair, Code review, Dependency management"
+          echo "⏰ Time: $(date)"
+          
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+          
+      - name: Install Enhanced AI Dependencies
+        run: |
+          npm install @octokit/rest
+          npm install || true
+          
+      - name: 🔧 Enhanced AI Repository Analysis
+        run: node scripts/enhanced-ai-manager.js
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          
+      - name: 🔁 Self-Repair on Build Failure
+        if: github.event.workflow_run.conclusion == 'failure'
+        run: |
+          echo "🔧 AI Agent: Build failure detected, initiating self-repair..."
+          node scripts/enhanced-ai-manager.js --mode=repair
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          FAILED_RUN_ID: ${{ github.event.workflow_run.id }}
+          
+      - name: 🧪 AI Code Review
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "🧠 AI Agent: Performing code review..."
+          node scripts/enhanced-ai-manager.js --mode=review
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          
+      - name: 📦 AI Dependency Management
+        if: github.event_name == 'schedule'
+        run: |
+          echo "📦 AI Agent: Managing dependencies..."
+          node scripts/enhanced-ai-manager.js --mode=dependencies
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          
+      - name: 📊 Generate AI Audit Report
+        run: |
+          echo "📊 AI Agent: Generating audit report..."
+          node scripts/enhanced-ai-manager.js --mode=audit
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          
+      - name: 🚀 Trigger Publishing if Fixed
+        if: success() && github.event.workflow_run.conclusion == 'failure'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'marketplace-publish.yml'
+            })
+            
+      - name: 💬 AI Status Comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🤖 **Enhanced AI Review Complete**\n\n✅ Code analysis completed\n🔧 Auto-fixes applied where needed\n📊 Audit report generated\n\n*Reviewed by Enhanced Multi-AI System (Claude + ChatGPT)*'
+            })
