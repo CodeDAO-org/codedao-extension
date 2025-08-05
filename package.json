@@ -113,3 +113,11 @@
     "axios": "^1.6.0"
   }
 }
+{
+  "devDependencies": {
+    "playwright": "^1.40.0"
+  },
+  "scripts": {
+    "publish:marketplace": "node scripts/marketplace-upload.js"
+  }
+}
