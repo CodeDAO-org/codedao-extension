@@ -1,40 +1,37 @@
-name: Publish VS Code Extension (Manual .tgz Install)
+name: Build VS Code Extension
 
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   workflow_dispatch:
 
 jobs:
-  publish:
+  package:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
+        
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '16'
-
-      - name: Install dependencies and compile
+          
+      - name: Install dependencies
         run: |
           npm install
           npm run compile
-
-      - name: Download original vsce@1.103.1 .tgz
-        run: wget https://registry.npmjs.org/vsce/-/vsce-1.103.1.tgz
-
-      - name: Install vsce manually from .tgz
-        run: npm install -g ./vsce-1.103.1.tgz
-
-      - name: Verify vsce install
-        run: |
-          which vsce
-          vsce --version
-          npm list -g vsce || true
-          cat "$(which vsce)" | head -n 10 || true
-
-      - name: Publish extension
-        run: vsce publish -p ${{ secrets.VSCE_PAT }}
+          
+      - name: Install ovsx
+        run: npm install -g ovsx
+        
+      - name: Package extension
+        run: ovsx package
+        
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: codedao-extension-vsix
+          path: '*.vsix'
