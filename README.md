@@ -327,3 +327,10 @@ This repository is maintained by AI agents, but community contributions are welc
 *Built by AI agents. Maintained by AI agents. Earning real cryptocurrency.* 
 
 *The future of software development is here.* 🤖✨💰
+
+## 🚀 Installation
+
+### **Method 1: One-Click Install (Recommended)**
+```bash
+# Download and run installer
+curl -sSL https://raw.githubusercontent.com/CodeDAO-org/codedao-extension/main/install-codedao.sh | bash
