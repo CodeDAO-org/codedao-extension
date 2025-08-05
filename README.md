@@ -68,3 +68,32 @@ VS Code's `vsce` tool has undici dependency issues in CI environments. This proj
 
 ### Open Source Contribution
 This solution helps the entire VS Code extension community deal with vsce/undici issues.
+
+# 🤖 Multi-AI Starter Template
+
+This repository provides a complete **AI-powered repository management system** including:
+
+- ✅ Self-repair on CI failure
+- ✅ AI-driven code review
+- ✅ Dependency and audit automation
+- ✅ GitHub Actions integration
+
+## 📦 Setup
+
+1. Clone the repo
+2. Add your OpenAI key to GitHub secrets:
+   - `OPENAI_API_KEY`
+3. Push to `main` and watch it auto-maintain!
+
+## 🚀 Features
+
+- **AI Self-Healing**: Fixes broken `package.json` or YAML
+- **Pull Request Review**: Comments on PRs with GPT-based feedback
+- **Security & Audit**: Plans for Snyk + audit bots
+- **Public Dashboard**: Coming soon
+
+## 🏅 AI-Maintained Badge
+
+```markdown
+![AI Maintained](https://img.shields.io/badge/maintained%20by-AI-blue?logo=github)
+
