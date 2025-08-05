@@ -13,12 +13,16 @@ jobs:
       
       - uses: actions/setup-node@v4
         with:
-          node-version: '16'  # Node 16 LTS - no undici issues
+          node-version: '16'
           
       - run: npm install
       
       - run: npm run compile
       
-      - run: npm install -g vsce@2.12.0  # Last version before undici
+      # Install the original, unscoped vsce (pre-undici)
+      - run: npm install -g vsce@1.103.1
+      
+      # Verify we got the right package
+      - run: vsce --version
       
       - run: vsce publish -p ${{ secrets.VSCE_PAT }}
