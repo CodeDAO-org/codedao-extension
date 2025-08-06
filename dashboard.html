@@ -1,158 +1,612 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CodeDAO Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      background: #f9f9f9;
-      color: #222;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CodeDAO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    header {
-      background: white;
-      border-bottom: 1px solid #eee;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.5;
+        }
 
-    nav a {
-      margin: 0 1rem;
-      text-decoration: none;
-      color: #555;
-      font-weight: 500;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
 
-    nav a.active {
-      color: #007aff;
-    }
+        /* Header */
+        .header {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 16px 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
 
-    .banner {
-      background: linear-gradient(to right, #5b1df7, #4f92ff);
-      color: white;
-      text-align: center;
-      padding: 0.75rem;
-      font-weight: 600;
-    }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .container {
-      max-width: 1100px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
+        .nav-menu {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
 
-    .card {
-      background: white;
-      border: 1px solid #eee;
-      padding: 1.25rem;
-      border-radius: 10px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-    }
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
 
-    .card h3 {
-      margin: 0 0 0.5rem;
-      font-size: 0.95rem;
-      color: #666;
-    }
+        .nav-link:hover, .nav-link.active {
+            color: #1a1a1a;
+        }
 
-    .card .value {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #222;
-    }
+        /* Status Banner */
+        .status-banner {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .section-title {
-      font-size: 1.25rem;
-      margin: 2rem 0 1rem;
-      font-weight: bold;
-    }
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+        }
 
-    .feed-item {
-      background: #f0fff4;
-      border-left: 4px solid #10b981;
-      padding: 0.75rem 1rem;
-      border-radius: 6px;
-      margin-bottom: 0.75rem;
-      font-size: 0.95rem;
-    }
+        .status-text {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
 
-    .footer {
-      text-align: center;
-      font-size: 0.85rem;
-      color: #aaa;
-      padding: 2rem 0;
-    }
-  </style>
+        /* Main Content */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 24px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 20px;
+            height: 20px;
+            color: #9ca3af;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        /* Activity Section */
+        .activity-section {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e1e1e1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .refresh-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #374151;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .refresh-btn:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .activity-list {
+            padding: 0;
+        }
+
+        .activity-item {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background-color 0.2s ease;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-item:hover {
+            background: #f9fafb;
+        }
+
+        .activity-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .activity-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+
+        .activity-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-message {
+            font-size: 14px;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .activity-meta {
+            font-size: 12px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .activity-tag {
+            background: #f3f4f6;
+            color: #6b7280;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 24px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .action-card:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .action-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .action-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #374151;
+        }
+
+        .action-btn.secondary {
+            background: #f8fafc;
+            color: #374151;
+            border: 1px solid #e2e8f0;
+        }
+
+        .action-btn.secondary:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+            
+            .nav-menu {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+        }
+
+        /* Loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>⚡ CodeDAO</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="dashboard.html" class="active">Dashboard</a>
-      <a href="wallet-dashboard.html">Wallet</a>
-      <a href="peer-review.html">Peer Review</a>
-      <a href="get-started.html">Get Started</a>
-    </nav>
-  </header>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                    CodeDAO
+                </div>
+                <nav class="nav-menu">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/dashboard.html" class="nav-link active">Dashboard</a>
+                    <a href="/wallet-dashboard.html" class="nav-link">Wallet</a>
+                    <a href="/peer-review.html" class="nav-link">Peer Review</a>
+                    <a href="/how-it-works.html" class="nav-link">How It Works</a>
+                    <a href="/get-started.html" class="nav-link">Get Started</a>
+                </nav>
+            </div>
+        </header>
 
-  <div class="banner">🔥 AI Collaboration Tracker is LIVE — 99% Attribution Accuracy!</div>
-
-  <main class="container">
-    <section class="grid">
-      <div class="card">
-        <h3>👥 Contributors</h3>
-        <div class="value">Claude: 2</div>
-      </div>
-      <div class="card">
-        <h3>🧠 Commits Today</h3>
-        <div class="value">6</div>
-      </div>
-      <div class="card">
-        <h3>💰 CODE Claimed</h3>
-        <div class="value">84.2 CODE</div>
-      </div>
-      <div class="card">
-        <h3>📊 Avg Quality Score</h3>
-        <div class="value">1.3x</div>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-title">🪶 Live Activity Feed</div>
-      <div class="feed-item">✅ Claude committed <code>reward-scoring.js</code> <em>(3 mins ago)</em></div>
-      <div class="feed-item">✅ You claimed <strong>8.4 CODE</strong> <em>(5 mins ago)</em></div>
-      <div class="feed-item">✅ Alice updated <code>wallet-claim.js</code> <em>(12 mins ago)</em></div>
-    </section>
-
-    <section>
-      <div class="section-title">🎯 Top Earners</div>
-      <div class="grid">
-        <div class="card">
-          <h3>Claude</h3>
-          <div class="value">12.3 CODE</div>
+        <!-- Status Banner -->
+        <div class="status-banner">
+            <div class="status-indicator"></div>
+            <span class="status-text">AI collaboration tracking system is active</span>
         </div>
-        <div class="card">
-          <h3>Alice</h3>
-          <div class="value">9.7 CODE</div>
-        </div>
-      </div>
-    </section>
-  </main>
 
-  <footer class="footer">© 2025 CodeDAO. All rights reserved.</footer>
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Real-time monitoring of AI contributions and code quality metrics</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Claude Actions</span>
+                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div class="stat-value" id="claudeActions">1</div>
+                <div class="stat-change">AI contributions tracked</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">ChatGPT Actions</span>
+                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <div class="stat-value" id="chatgptActions">0</div>
+                <div class="stat-change">AI contributions tracked</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Live Commits</span>
+                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="stat-value" id="liveCommits">1</div>
+                <div class="stat-change">Real-time git tracking</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Success Rate</span>
+                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div class="stat-value" id="successRate">99%</div>
+                <div class="stat-change">Attribution accuracy</div>
+            </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="activity-section">
+            <div class="section-header">
+                <h2 class="section-title">Live AI Collaboration Feed</h2>
+                <button class="refresh-btn" onclick="refreshFeed()">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+            <div class="activity-list" id="activityList">
+                <div class="activity-item">
+                    <div class="activity-content">
+                        <div class="activity-avatar">C</div>
+                        <div class="activity-details">
+                            <div class="activity-message">Add AI collaboration system tracking and metrics</div>
+                            <div class="activity-meta">
+                                <span>6d0419f</span>
+                                <span>5 minutes ago</span>
+                                <span>by adminpipelabs</span>
+                                <span class="activity-tag">documentation</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-content">
+                        <div class="activity-avatar">G</div>
+                        <div class="activity-details">
+                            <div class="activity-message">System monitoring active</div>
+                            <div class="activity-meta">
+                                <span>2 hours ago</span>
+                                <span class="activity-tag">system</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="action-card">
+                <h3 class="action-title">Start Earning Tokens</h3>
+                <p class="action-description">Install the VS Code extension to automatically track your commits and earn CODE tokens for quality contributions.</p>
+                <a href="/get-started.html" class="action-btn">Install Extension</a>
+            </div>
+
+            <div class="action-card">
+                <h3 class="action-title">Connect Wallet</h3>
+                <p class="action-description">Link your crypto wallet to claim earned CODE tokens. Built on Base network for minimal gas fees.</p>
+                <a href="/wallet-dashboard.html" class="action-btn secondary">Connect Wallet</a>
+            </div>
+
+            <div class="action-card">
+                <h3 class="action-title">View Quality Scores</h3>
+                <p class="action-description">See detailed analysis of how your code quality metrics are calculated and learn to maximize rewards.</p>
+                <a href="/peer-review.html" class="action-btn secondary">View Peer Review</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isRefreshing = false;
+        
+        function refreshFeed() {
+            if (isRefreshing) return;
+            
+            isRefreshing = true;
+            const btn = document.querySelector('.refresh-btn');
+            btn.classList.add('loading');
+            
+            // Simulate API call
+            setTimeout(() => {
+                updateStats();
+                addNewActivity();
+                
+                btn.classList.remove('loading');
+                isRefreshing = false;
+            }, 1000);
+        }
+
+        function updateStats() {
+            const stats = {
+                claude: Math.floor(Math.random() * 3) + 1,
+                chatgpt: Math.floor(Math.random() * 2),
+                commits: Math.floor(Math.random() * 5) + 1,
+                success: 95 + Math.floor(Math.random() * 5)
+            };
+            
+            document.getElementById('claudeActions').textContent = stats.claude;
+            document.getElementById('chatgptActions').textContent = stats.chatgpt;
+            document.getElementById('liveCommits').textContent = stats.commits;
+            document.getElementById('successRate').textContent = stats.success + '%';
+        }
+
+        function addNewActivity() {
+            const activities = [
+                {
+                    avatar: 'C',
+                    message: 'Optimize reward calculation algorithm',
+                    meta: 'abc123e • just now • by developer',
+                    tag: 'enhancement'
+                },
+                {
+                    avatar: 'G',
+                    message: 'New commit detected and processed',
+                    meta: 'just now',
+                    tag: 'system'
+                }
+            ];
+            
+            const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+            const activityList = document.getElementById('activityList');
+            
+            const newItem = document.createElement('div');
+            newItem.className = 'activity-item';
+            newItem.innerHTML = `
+                <div class="activity-content">
+                    <div class="activity-avatar">${randomActivity.avatar}</div>
+                    <div class="activity-details">
+                        <div class="activity-message">${randomActivity.message}</div>
+                        <div class="activity-meta">
+                            <span>${randomActivity.meta}</span>
+                            <span class="activity-tag">${randomActivity.tag}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            activityList.insertBefore(newItem, activityList.firstChild);
+            
+            // Remove old items if too many
+            const items = activityList.children;
+            if (items.length > 8) {
+                activityList.removeChild(items[items.length - 1]);
+            }
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            if (!isRefreshing) {
+                updateStats();
+            }
+        }, 30000);
+    </script>
 </body>
 </html>
