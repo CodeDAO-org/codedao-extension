@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VS Code Reward Simulation - CodeDAO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 16px 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #1a1a1a;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Simulation Container */
+        .simulation-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        /* VS Code Mockup */
+        .vscode-mockup {
+            background: #1e1e1e;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .vscode-titlebar {
+            background: #323233;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 8px;
+        }
+
+        .titlebar-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .titlebar-button.close { background: #ff5f57; }
+        .titlebar-button.minimize { background: #ffbd2e; }
+        .titlebar-button.maximize { background: #28ca42; }
+
+        .titlebar-text {
+            color: #cccccc;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+
+        .vscode-tabs {
+            background: #252526;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+
+        .vscode-tab {
+            background: #2d2d30;
+            color: #cccccc;
+            padding: 8px 16px;
+            border-radius: 4px 4px 0 0;
+            font-size: 13px;
+            margin-right: 2px;
+        }
+
+        .vscode-tab.active {
+            background: #1e1e1e;
+            color: white;
+        }
+
+        .vscode-editor {
+            background: #1e1e1e;
+            padding: 16px;
+            min-height: 400px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            line-height: 1.5;
+        }
+
+        .line-number {
+            color: #858585;
+            width: 30px;
+            display: inline-block;
+            text-align: right;
+            margin-right: 16px;
+            user-select: none;
+        }
+
+        .code-line {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .code-line.new {
+            background: rgba(46, 160, 67, 0.2);
+            margin: 0 -16px;
+            padding: 0 16px;
+        }
+
+        .code-line.new::before {
+            content: "+";
+            color: #46a05b;
+            margin-right: 8px;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .function { color: #dcdcaa; }
+        .variable { color: #9cdcfe; }
+
+        /* Notification Popup */
+        .notification-popup {
+            position: absolute;
+            top: 50px;
+            right: 20px;
+            background: #0e639c;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            min-width: 300px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification-popup.show {
+            transform: translateX(0);
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .notification-body {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+
+        .control-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .control-section {
+            margin-bottom: 24px;
+        }
+
+        .control-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .control-slider {
+            width: 100%;
+            margin-bottom: 12px;
+            accent-color: #1a1a1a;
+        }
+
+        .quality-indicator {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .reward-preview {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .reward-calculation {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 12px;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .reward-result {
+            font-size: 20px;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .quality-bonuses {
+            margin-top: 12px;
+        }
+
+        .bonus-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .bonus-item.active {
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        .simulation-btn {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 12px;
+            transition: background-color 0.2s ease;
+        }
+
+        .simulation-btn:hover {
+            background: #374151;
+        }
+
+        .simulation-btn.secondary {
+            background: #f8fafc;
+            color: #374151;
+            border: 1px solid #e2e8f0;
+        }
+
+        .simulation-btn.secondary:hover {
+            background: #f1f5f9;
+        }
+
+        /* Commit History */
+        .commit-history {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .history-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .commit-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .commit-item:hover {
+            background: #f8fafc;
+        }
+
+        .commit-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #10b981;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .commit-details {
+            flex: 1;
+        }
+
+        .commit-message {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .commit-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .commit-reward {
+            font-size: 14px;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .simulation-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .nav-menu {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .notification-popup {
+                right: 16px;
+                left: 16px;
+                min-width: auto;
+            }
+        }
+
+        /* Animations */
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .typing-cursor::after {
+            content: "|";
+            animation: blink 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                    CodeDAO
+                </div>
+                <nav class="nav-menu">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="/get-started.html" class="nav-link">Get Started</a>
+                    <a href="/simulation.html" class="nav-link active">Demo</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">VS Code Reward Simulation</h1>
+            <p class="page-subtitle">Experience how CodeDAO tracks your coding activity and calculates rewards in real-time</p>
+        </div>
+
+        <!-- Simulation Container -->
+        <div class="simulation-container">
+            <!-- VS Code Mockup -->
+            <div class="vscode-mockup">
+                <div class="vscode-titlebar">
+                    <div class="titlebar-button close"></div>
+                    <div class="titlebar-button minimize"></div>
+                    <div class="titlebar-button maximize"></div>
+                    <span class="titlebar-text">Visual Studio Code</span>
+                </div>
+                
+                <div class="vscode-tabs">
+                    <div class="vscode-tab active">app.js</div>
+                    <div class="vscode-tab">package.json</div>
+                    <div class="vscode-tab">README.md</div>
+                </div>
+                
+                <div class="vscode-editor" id="codeEditor">
+                    <div class="code-line">
+                        <span class="line-number">1</span>
+                        <span class="comment">// CodeDAO Reward Calculator</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">2</span>
+                        <span class="comment">// Demonstrates quality code for maximum rewards</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">3</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">4</span>
+                        <span class="comment">/**</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">5</span>
+                        <span class="comment"> * Calculate CODE token rewards for developer contributions</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">6</span>
+                        <span class="comment"> * @param {number} linesAdded - Number of meaningful lines added</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">7</span>
+                        <span class="comment"> * @param {number} qualityMultiplier - Quality score multiplier</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">8</span>
+                        <span class="comment"> * @returns {number} Total CODE tokens earned</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">9</span>
+                        <span class="comment"> */</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">10</span>
+                        <span class="keyword">function</span> <span class="function">calculateReward</span>(<span class="variable">linesAdded</span>, <span class="variable">qualityMultiplier</span>) {
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">11</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">baseRate</span> = <span class="string">0.1</span>;
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">12</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">linesAdded</span> * <span class="variable">baseRate</span> * <span class="variable">qualityMultiplier</span>;
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">13</span>
+                        }
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">14</span>
+                    </div>
+                    <div id="newCodeLines"></div>
+                </div>
+
+                <!-- Notification Popup -->
+                <div class="notification-popup" id="rewardNotification">
+                    <div class="notification-header">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                        </svg>
+                        CodeDAO Extension
+                    </div>
+                    <div class="notification-body" id="notificationText">
+                        You earned 8.46 CODE tokens! 🎉
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <h3 class="control-title">Simulation Controls</h3>
+                
+                <div class="control-section">
+                    <label class="control-label">Lines of Code</label>
+                    <input type="range" class="control-slider" id="linesSlider" min="5" max="100" value="25" 
+                           oninput="updateCalculation()">
+                    <div class="quality-indicator">
+                        <span>5</span>
+                        <span id="linesDisplay">25 lines</span>
+                        <span>100</span>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <label class="control-label">Code Quality</label>
+                    <input type="range" class="control-slider" id="qualitySlider" min="100" max="200" value="130" 
+                           oninput="updateCalculation()">
+                    <div class="quality-indicator">
+                        <span>Basic</span>
+                        <span id="qualityDisplay">Good (1.3x)</span>
+                        <span>Excellent</span>
+                    </div>
+                </div>
+
+                <div class="reward-preview">
+                    <div class="reward-calculation" id="calculationDisplay">
+                        25 lines × 0.1 × 1.30 = 3.25 CODE
+                    </div>
+                    <div class="reward-result" id="rewardResult">3.25 CODE tokens</div>
+                    
+                    <div class="quality-bonuses">
+                        <div class="bonus-item" id="testBonus">
+                            <span>Tests</span>
+                            <span>+20%</span>
+                        </div>
+                        <div class="bonus-item" id="docBonus">
+                            <span>Documentation</span>
+                            <span>+10%</span>
+                        </div>
+                        <div class="bonus-item" id="multiFileBonus">
+                            <span>Multi-file</span>
+                            <span>+10%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="simulation-btn" onclick="simulateCommit()">
+                    Simulate Git Commit
+                </button>
+                
+                <button class="simulation-btn secondary" onclick="addQualityCode()">
+                    Add Quality Code
+                </button>
+
+                <button class="simulation-btn secondary" onclick="resetSimulation()">
+                    Reset Simulation
+                </button>
+            </div>
+        </div>
+
+        <!-- Commit History -->
+        <div class="commit-history">
+            <h3 class="history-title">Recent Commits & Rewards</h3>
+            <div id="commitHistory">
+                <div class="commit-item">
+                    <div class="commit-avatar">You</div>
+                    <div class="commit-details">
+                        <div class="commit-message">Initial commit - Add reward calculation function</div>
+                        <div class="commit-meta">2 minutes ago • 13 lines added • Quality: Good</div>
+                    </div>
+                    <div class="commit-reward">1.69 CODE</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLines = 25;
+        let currentQuality = 1.30;
+        let commitCount = 1;
+
+        const codeExamples = [
+            {
+                lines: [
+                    "// Add input validation for better reliability",
+                    "if (!linesAdded || linesAdded < 0) {",
+                    "    throw new Error('Invalid lines count');",
+                    "}"
+                ],
+                bonus: "validation",
+                quality: 0.1
+            },
+            {
+                lines: [
+                    "// Unit tests for reward calculation",
+                    "describe('calculateReward', () => {",
+                    "    it('should calculate basic reward correctly', () => {",
+                    "        expect(calculateReward(10, 1.0)).toBe(1.0);",
+                    "    });",
+                    "});"
+                ],
+                bonus: "tests",
+                quality: 0.2
+            },
+            {
+                lines: [
+                    "/**",
+                    " * Export reward calculator for use in other modules",
+                    " * Supports both CommonJS and ES6 imports",
+                    " */",
+                    "module.exports = { calculateReward };"
+                ],
+                bonus: "documentation",
+                quality: 0.1
+            }
+        ];
+
+        function updateCalculation() {
+            const linesSlider = document.getElementById('linesSlider');
+            const qualitySlider = document.getElementById('qualitySlider');
+            
+            currentLines = parseInt(linesSlider.value);
+            currentQuality = parseInt(qualitySlider.value) / 100;
+            
+            document.getElementById('linesDisplay').textContent = `${currentLines} lines`;
+            
+            let qualityText = 'Basic';
+            if (currentQuality >= 1.5) qualityText = 'Excellent';
+            else if (currentQuality >= 1.2) qualityText = 'Good';
+            
+            document.getElementById('qualityDisplay').textContent = 
+                `${qualityText} (${currentQuality.toFixed(2)}x)`;
+            
+            const reward = currentLines * 0.1 * currentQuality;
+            document.getElementById('calculationDisplay').textContent = 
+                `${currentLines} lines × 0.1 × ${currentQuality.toFixed(2)} = ${reward.toFixed(2)} CODE`;
+            document.getElementById('rewardResult').textContent = 
+                `${reward.toFixed(2)} CODE tokens`;
+            
+            // Update bonus indicators
+            updateBonusIndicators();
+        }
+
+        function updateBonusIndicators() {
+            const testBonus = document.getElementById('testBonus');
+            const docBonus = document.getElementById('docBonus');
+            const multiFileBonus = document.getElementById('multiFileBonus');
+            
+            // Simulate bonus activation based on quality
+            testBonus.classList.toggle('active', currentQuality >= 1.2);
+            docBonus.classList.toggle('active', currentQuality >= 1.3);
+            multiFileBonus.classList.toggle('active', currentQuality >= 1.4);
+        }
+
+        function simulateCommit() {
+            const reward = currentLines * 0.1 * currentQuality;
+            
+            // Show notification
+            showRewardNotification(reward);
+            
+            // Add to commit history
+            addCommitToHistory(reward);
+            
+            // Reset for next commit
+            setTimeout(() => {
+                resetForNext();
+            }, 3000);
+        }
+
+        function showRewardNotification(reward) {
+            const notification = document.getElementById('rewardNotification');
+            const notificationText = document.getElementById('notificationText');
+            
+            let bonusText = '';
+            if (currentQuality >= 1.2) bonusText += ' (+20% tests)';
+            if (currentQuality >= 1.3) bonusText += ' (+10% docs)';
+            
+            notificationText.innerHTML = 
+                `You earned <strong>${reward.toFixed(2)} CODE tokens</strong>! 🎉${bonusText}`;
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        function addCommitToHistory(reward) {
+            const historyContainer = document.getElementById('commitHistory');
+            const newCommit = document.createElement('div');
+            newCommit.className = 'commit-item';
+            newCommit.style.opacity = '0';
+            newCommit.style.transform = 'translateY(-10px)';
+            
+            let qualityText = 'Basic';
+            if (currentQuality >= 1.5) qualityText = 'Excellent';
+            else if (currentQuality >= 1.2) qualityText = 'Good';
+            
+            newCommit.innerHTML = `
+                <div class="commit-avatar">You</div>
+                <div class="commit-details">
+                    <div class="commit-message">Commit #${commitCount + 1} - Add quality improvements</div>
+                    <div class="commit-meta">just now • ${currentLines} lines added • Quality: ${qualityText}</div>
+                </div>
+                <div class="commit-reward">${reward.toFixed(2)} CODE</div>
+            `;
+            
+            historyContainer.insertBefore(newCommit, historyContainer.firstChild);
+            
+            // Animate in
+            setTimeout(() => {
+                newCommit.style.transition = 'all 0.3s ease';
+                newCommit.style.opacity = '1';
+                newCommit.style.transform = 'translateY(0)';
+            }, 100);
+            
+            commitCount++;
+            
+            // Remove old commits if too many
+            const commits = historyContainer.children;
+            if (commits.length > 5) {
+                historyContainer.removeChild(commits[commits.length - 1]);
+            }
+        }
+
+        function addQualityCode() {
+            const editor = document.getElementById('newCodeLines');
+            const randomExample = codeExamples[Math.floor(Math.random() * codeExamples.length)];
+            
+            let lineNumber = 15 + editor.children.length;
+            
+            randomExample.lines.forEach((line, index) => {
+                const codeLine = document.createElement('div');
+                codeLine.className = 'code-line new';
+                codeLine.innerHTML = `
+                    <span class="line-number">${lineNumber + index}</span>
+                    ${line}
+                `;
+                editor.appendChild(codeLine);
+            });
+            
+            // Update quality and lines
+            currentQuality = Math.min(2.0, currentQuality + randomExample.quality);
+            currentLines += randomExample.lines.length;
+            
+            // Update sliders
+            document.getElementById('linesSlider').value = Math.min(100, currentLines);
+            document.getElementById('qualitySlider').value = Math.min(200, currentQuality * 100);
+            
+            updateCalculation();
+        }
+
+        function resetSimulation() {
+            document.getElementById('newCodeLines').innerHTML = '';
+            currentLines = 25;
+            currentQuality = 1.30;
+            
+            document.getElementById('linesSlider').value = 25;
+            document.getElementById('qualitySlider').value = 130;
+            
+            updateCalculation();
+        }
+
+        function resetForNext() {
+            // Clear new code lines
+            document.getElementById('newCodeLines').innerHTML = '';
+            
+            // Reset to moderate values for next demo
+            currentLines = Math.floor(Math.random() * 30) + 15;
+            currentQuality = 1.0 + (Math.random() * 0.5);
+            
+            document.getElementById('linesSlider').value = currentLines;
+            document.getElementById('qualitySlider').value = currentQuality * 100;
+            
+            updateCalculation();
+        }
+
+        // Initialize
+        updateCalculation();
+
+        // Auto-demo mode
+        let autoDemoInterval;
+        function startAutoDemo() {
+            autoDemoInterval = setInterval(() => {
+                if (Math.random() > 0.3) {
+                    addQualityCode();
+                }
+                setTimeout(() => {
+                    simulateCommit();
+                }, 2000);
+            }, 8000);
+        }
+
+        // Start auto demo after 5 seconds
+        setTimeout(startAutoDemo, 5000);
+    </script>
+</body>
+</html>
