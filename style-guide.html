@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO Design System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .guide-header {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .guide-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .guide-subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .section {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .subsection {
+            margin-bottom: 24px;
+        }
+
+        .subsection-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #374151;
+        }
+
+        /* Color Palette */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .color-item {
+            border: 1px solid #e1e1e1;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .color-swatch {
+            height: 80px;
+            width: 100%;
+        }
+
+        .color-info {
+            padding: 12px;
+        }
+
+        .color-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .color-value {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Typography */
+        .typo-example {
+            margin-bottom: 16px;
+            padding: 16px;
+            border: 1px solid #f3f4f6;
+            border-radius: 6px;
+        }
+
+        .typo-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        /* Component Examples */
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .component-example {
+            padding: 20px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            background: #f9fafb;
+        }
+
+        .component-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        /* Actual component styles from our design */
+        .btn-primary {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #374151;
+        }
+
+        .btn-secondary {
+            background: #f8fafc;
+            color: #374151;
+            border: 1px solid #e2e8f0;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .card-example {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 24px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-example:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-example {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e1e1e1;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-example:focus {
+            outline: none;
+            border-color: #6b7280;
+        }
+
+        .badge-example {
+            background: #f3f4f6;
+            color: #6b7280;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Spacing Guide */
+        .spacing-example {
+            background: #e5e7eb;
+            height: 20px;
+            border-radius: 2px;
+            margin-bottom: 8px;
+        }
+
+        .spacing-label {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Code block */
+        .code-block {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 16px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 14px;
+            color: #374151;
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+
+        .do-dont-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .do-example, .dont-example {
+            padding: 16px;
+            border-radius: 6px;
+            border: 2px solid;
+        }
+
+        .do-example {
+            background: #f0fdf4;
+            border-color: #10b981;
+        }
+
+        .dont-example {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+
+        .example-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .do-example .example-label {
+            color: #065f46;
+        }
+
+        .dont-example .example-label {
+            color: #991b1b;
+        }
+
+        .logo-example {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .nav-example {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-link-example {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link-example:hover,
+        .nav-link-example.active {
+            color: #1a1a1a;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .color-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .component-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .do-dont-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="guide-header">
+            <h1 class="guide-title">CodeDAO Design System</h1>
+            <p class="guide-subtitle">Professional, clean, developer-first visual standards</p>
+        </div>
+
+        <!-- Brand Identity -->
+        <div class="section">
+            <h2 class="section-title">Brand Identity</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">Logo & Typography</h3>
+                <div class="logo-example">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                    <span style="font-size: 20px; font-weight: 600;">CodeDAO</span>
+                </div>
+                <p style="color: #666; margin-bottom: 16px;">Clean, technical lightning bolt + wordmark. No gradients, no colors.</p>
+                <div class="code-block">
+Font: System font stack (-apple-system, BlinkMacSystemFont, 'Segoe UI', etc.)
+Weight: 600 (Semi-bold)
+Color: #1a1a1a (Primary text)</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Voice & Tone</h3>
+                <ul style="color: #666; line-height: 1.6;">
+                    <li><strong>Professional:</strong> Like Vercel, Linear, or Dune Analytics</li>
+                    <li><strong>Technical:</strong> Developer-first language and concepts</li>
+                    <li><strong>Minimal:</strong> Clean, uncluttered, information-focused</li>
+                    <li><strong>Trustworthy:</strong> No hype, clear value propositions</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="section">
+            <h2 class="section-title">Color Palette</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">Primary Colors</h3>
+                <div class="color-grid">
+                    <div class="color-item">
+                        <div class="color-swatch" style="background: #1a1a1a;"></div>
+                        <div class="color-info">
+                            <div class="color-name">Primary Text</div>
+                            <div class="color-value">#1a1a1a</div>
+                        </div>
+                    </div>
+                    <div class="color-item">
+                        <div class="color-swatch" style="background: #666;"></div>
+                        <div class="color-info">
+                            <div class="color-name">Secondary Text</div>
+                            <div class="color-value">#666</div>
+                        </div>
+                    </div>
+                    <div class="color-item">
+                        <div class="color-swatch" style="background: #fafafa;"></div>
+                        <div class="color-info">
+                            <div class="color-name">Background</div>
+                            <div class="color-value">#fafafa</div>
+                        </div>
+                    </div>
+                    <div class="color-item">
+                        <div class="color-swatch" style="background: white;"></div>
+                        <div class="color-info">
+                            <div class="color-name">Card Background</div>
+                            <div class="color-value">#ffffff</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Border & State Colors</h3>
+                <div class="color-grid">
+                    <div class="color-item">
+                        <div class="color-swatch" style="background: #e1e1e1;"></div>
+                        <div class="color-info">
+                            <div class="color-name">Border</div>
+                            <div class="color-value">#e1e1e1</div>
+                        </div>
+                    </div>
+                    <div class="color-item">
+                        <div class="color-swatch" style="background: #f3f4f6;"></div>
+                        <div class="color-info">
+                            <div class="color-name">Subtle Background</div>
+                            <div class="color-value">#f3f4f6</div>
+                        </div>
+                    </div>
+                    <div class="color-item">
+                        <div class="color-swatch" style="background: #10b981;"></div>
+                        <div class="color-info">
+                            <div class="color-name">Success/Active</div>
+                            <div class="color-value">#10b981</div>
+                        </div>
+                    </div>
+                    <div class="color-item">
+                        <div class="color-swatch" style="background: #6b7280;"></div>
+                        <div class="color-info">
+                            <div class="color-name">Muted</div>
+                            <div class="color-value">#6b7280</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typography -->
+        <div class="section">
+            <h2 class="section-title">Typography</h2>
+            
+            <div class="typo-example">
+                <div class="typo-label">Page Title (28px, 600)</div>
+                <div style="font-size: 28px; font-weight: 600; color: #1a1a1a;">Dashboard</div>
+            </div>
+
+            <div class="typo-example">
+                <div class="typo-label">Section Title (20px, 600)</div>
+                <div style="font-size: 20px; font-weight: 600; color: #1a1a1a;">Live AI Collaboration Feed</div>
+            </div>
+
+            <div class="typo-example">
+                <div class="typo-label">Card Title (16px, 600)</div>
+                <div style="font-size: 16px; font-weight: 600; color: #1a1a1a;">Start Earning Tokens</div>
+            </div>
+
+            <div class="typo-example">
+                <div class="typo-label">Body Text (14px, 400)</div>
+                <div style="font-size: 14px; color: #666;">Install the VS Code extension to automatically track your commits and earn CODE tokens.</div>
+            </div>
+
+            <div class="typo-example">
+                <div class="typo-label">Label Text (14px, 500)</div>
+                <div style="font-size: 14px; font-weight: 500; color: #666;">Claude Actions</div>
+            </div>
+
+            <div class="typo-example">
+                <div class="typo-label">Small Text (12px, 500)</div>
+                <div style="font-size: 12px; font-weight: 500; color: #6b7280;">5 minutes ago</div>
+            </div>
+        </div>
+
+        <!-- Components -->
+        <div class="section">
+            <h2 class="section-title">Components</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">Navigation</h3>
+                <div class="nav-example">
+                    <div class="logo-example">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                        <span style="font-size: 18px; font-weight: 600;">CodeDAO</span>
+                    </div>
+                    <div class="nav-links">
+                        <a href="#" class="nav-link-example">Home</a>
+                        <a href="#" class="nav-link-example active">Dashboard</a>
+                        <a href="#" class="nav-link-example">Wallet</a>
+                        <a href="#" class="nav-link-example">Get Started</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Buttons</h3>
+                <div class="component-grid">
+                    <div class="component-example">
+                        <div class="component-label">Primary Button</div>
+                        <button class="btn-primary">Install Extension</button>
+                    </div>
+                    <div class="component-example">
+                        <div class="component-label">Secondary Button</div>
+                        <button class="btn-secondary">Connect Wallet</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Cards</h3>
+                <div class="component-example">
+                    <div class="component-label">Standard Card</div>
+                    <div class="card-example">
+                        <div style="font-size: 14px; color: #666; margin-bottom: 8px;">Claude Actions</div>
+                        <div style="font-size: 24px; font-weight: 600; color: #1a1a1a;">1</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Form Elements</h3>
+                <div class="component-example">
+                    <div class="component-label">Input Field</div>
+                    <input type="text" class="input-example" placeholder="Search...">
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Badges & Tags</h3>
+                <div class="component-example">
+                    <div class="component-label">Activity Tag</div>
+                    <span class="badge-example">documentation</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spacing -->
+        <div class="section">
+            <h2 class="section-title">Spacing Scale</h2>
+            <p style="color: #666; margin-bottom: 24px;">Consistent spacing using 8px base unit</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;">
+                <div>
+                    <div class="spacing-example" style="width: 8px;"></div>
+                    <div class="spacing-label">8px - xs</div>
+                </div>
+                <div>
+                    <div class="spacing-example" style="width: 16px;"></div>
+                    <div class="spacing-label">16px - sm</div>
+                </div>
+                <div>
+                    <div class="spacing-example" style="width: 24px;"></div>
+                    <div class="spacing-label">24px - md</div>
+                </div>
+                <div>
+                    <div class="spacing-example" style="width: 32px;"></div>
+                    <div class="spacing-label">32px - lg</div>
+                </div>
+                <div>
+                    <div class="spacing-example" style="width: 48px;"></div>
+                    <div class="spacing-label">48px - xl</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layout Principles -->
+        <div class="section">
+            <h2 class="section-title">Layout Principles</h2>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">Grid & Containers</h3>
+                <div class="code-block">
+Max-width: 1200px (dashboard content)
+Padding: 24px (desktop), 16px (mobile)
+Grid gap: 24px (cards), 16px (mobile)
+Border radius: 8px (cards), 6px (buttons/inputs)</div>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Visual Hierarchy</h3>
+                <ol style="color: #666; line-height: 1.6;">
+                    <li>Page title + navigation</li>
+                    <li>Status indicators</li>
+                    <li>Key metrics/stats</li>
+                    <li>Activity feeds</li>
+                    <li>Secondary actions</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Do's and Don'ts -->
+        <div class="section">
+            <h2 class="section-title">Do's and Don'ts</h2>
+            
+            <div class="do-dont-grid">
+                <div class="do-example">
+                    <div class="example-label">✅ DO</div>
+                    <ul style="font-size: 14px; line-height: 1.5;">
+                        <li>Use system fonts</li>
+                        <li>Minimal colors (grays + one accent)</li>
+                        <li>Subtle hover states</li>
+                        <li>8px spacing increments</li>
+                        <li>Clear information hierarchy</li>
+                        <li>Developer-focused language</li>
+                    </ul>
+                </div>
+                <div class="dont-example">
+                    <div class="example-label">❌ DON'T</div>
+                    <ul style="font-size: 14px; line-height: 1.5;">
+                        <li>Bright gradients or neon colors</li>
+                        <li>Heavy rounded corners (>8px)</li>
+                        <li>Gaming/cartoon aesthetics</li>
+                        <li>Excessive animations</li>
+                        <li>Cluttered layouts</li>
+                        <li>Hype-driven copy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation -->
+        <div class="section">
+            <h2 class="section-title">CSS Implementation</h2>
+            
+            <div class="code-block">
+/* Core Variables */
+:root {
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #666;
+  --color-background: #fafafa;
+  --color-surface: #ffffff;
+  --color-border: #e1e1e1;
+  --color-accent: #10b981;
+  
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 48px;
+  
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Component Base */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+.btn-primary {
+  background: var(--color-text-primary);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
