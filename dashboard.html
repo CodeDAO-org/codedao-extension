@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CodeDAO Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -14,35 +14,47 @@
       <a href="dashboard.html" class="active">Dashboard</a>
       <a href="wallet-dashboard.html">Wallet</a>
       <a href="peer-review.html">Peer Review</a>
-      <a href="how-it-works.html">How It Works</a>
       <a href="get-started.html">Get Started</a>
     </nav>
   </header>
 
-  <main>
-    <section class="highlight-banner">
-      <p>🔥 AI Collaboration Tracker is LIVE — 99% Attribution Accuracy!</p>
+  <main class="dashboard">
+    <section class="banner success">
+      🔴 <strong>AI Collaboration Tracker is LIVE</strong> — 99% Attribution Accuracy!
     </section>
 
-    <section class="stats-grid">
-      <div class="stat-card"><h3>👥 Contributors</h3><p>Claude: 2</p></div>
-      <div class="stat-card"><h3>🧠 Commits Today</h3><p>6</p></div>
-      <div class="stat-card"><h3>💰 CODE Claimed</h3><p>84.2 CODE</p></div>
+    <section class="stats-row">
+      <div class="stat-box">👤 <strong>Contributors</strong><p>Claude: 2</p></div>
+      <div class="stat-box">🧠 <strong>Commits Today</strong><p>6</p></div>
+      <div class="stat-box">💰 <strong>CODE Claimed</strong><p>84.2 CODE</p></div>
+      <div class="stat-box">📊 <strong>Avg Quality Score</strong><p>1.3x</p></div>
     </section>
 
-    <section class="live-feed">
-      <h2>📡 Live Activity Feed</h2>
-      <ul id="activity-feed">
-        <li>✅ Claude committed <code>reward-scoring.js</code> (3 mins ago)</li>
-        <li>✅ You claimed 8.4 CODE (5 mins ago)</li>
-        <li>✅ Alice updated <code>wallet-claim.js</code> (12 mins ago)</li>
+    <section class="activity-feed">
+      <h2>🪶 Live Activity Feed</h2>
+      <ul>
+        <li>✅ Claude committed <code>reward-scoring.js</code> <em>(3 mins ago)</em></li>
+        <li>✅ You claimed <strong>8.4 CODE</strong> <em>(5 mins ago)</em></li>
+        <li>✅ Alice updated <code>wallet-claim.js</code> <em>(12 mins ago)</em></li>
       </ul>
     </section>
 
-    <section class="cta-panels">
-      <div class="panel"><h3>🎯 Top Earners</h3><p>Claude – 12.3 CODE</p><p>Alice – 9.7 CODE</p></div>
-      <div class="panel"><h3>💡 AI Agents</h3><p>GPT-4o, Claude</p></div>
-      <div class="panel"><h3>📈 Your Stats</h3><button onclick="window.location.href='wallet-dashboard.html'">Go to Wallet</button></div>
+    <section class="bottom-panels">
+      <div class="panel">
+        <h3>🎯 Top Earners</h3>
+        <p>Claude – <strong>12.3 CODE</strong></p>
+        <p>Alice – <strong>9.7 CODE</strong></p>
+      </div>
+
+      <div class="panel">
+        <h3>🤖 AI Agents</h3>
+        <p>GPT-4o, Claude</p>
+      </div>
+
+      <div class="panel">
+        <h3>📈 Your Stats</h3>
+        <a href="wallet-dashboard.html" class="button">Go to Wallet</a>
+      </div>
     </section>
   </main>
 
