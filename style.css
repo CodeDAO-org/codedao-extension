@@ -1,0 +1,85 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  background: #f9f9fb;
+  color: #222;
+}
+
+.navbar {
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 1em 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar nav a {
+  margin: 0 0.5em;
+  text-decoration: none;
+  color: #333;
+}
+
+.navbar nav a.active {
+  font-weight: bold;
+  color: #0070f3;
+}
+
+.highlight-banner {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: white;
+  padding: 1em;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 8px;
+  margin: 1em;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: space-around;
+  gap: 1em;
+  margin: 1em;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1em;
+  flex: 1;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.live-feed {
+  background: #fff;
+  padding: 1em;
+  border-radius: 8px;
+  margin: 1em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.live-feed ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.live-feed li {
+  padding: 0.5em 0;
+  border-bottom: 1px solid #eee;
+}
+
+.cta-panels {
+  display: flex;
+  gap: 1em;
+  margin: 1em;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  flex: 1;
+  padding: 1em;
+  text-align: center;
+}
