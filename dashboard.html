@@ -1,437 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - CodeDAO</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: #fafafa;
-            color: #1a1a1a;
-            line-height: 1.5;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        /* Header */
-        .header {
-            background: white;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            padding: 16px 24px;
-            margin-bottom: 32px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a1a;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 32px;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: #666;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            color: #1a1a1a;
-        }
-
-        /* Status Banner */
-        .status-banner {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 12px 20px;
-            margin-bottom: 32px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-        }
-
-        .status-text {
-            font-size: 14px;
-            color: #374151;
-            font-weight: 500;
-        }
-
-        /* Main Content */
-        .page-header {
-            margin-bottom: 32px;
-        }
-
-        .page-title {
-            font-size: 28px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
-
-        .page-subtitle {
-            font-size: 16px;
-            color: #666;
-            font-weight: 400;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px;
-            margin-bottom: 48px;
-        }
-
-        .stat-card {
-            background: white;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            padding: 24px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .stat-card:hover {
-            border-color: #d1d5db;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .stat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #666;
-            font-weight: 500;
-        }
-
-        .stat-icon {
-            width: 20px;
-            height: 20px;
-            color: #9ca3af;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 4px;
-        }
-
-        .stat-change {
-            font-size: 12px;
-            color: #10b981;
-            font-weight: 500;
-        }
-
-        /* Activity Section */
-        .activity-section {
-            background: white;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            margin-bottom: 32px;
-        }
-
-        .section-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #e1e1e1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-
-        .refresh-btn {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            color: #374151;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .refresh-btn:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-        }
-
-        .activity-list {
-            padding: 0;
-        }
-
-        .activity-item {
-            padding: 16px 24px;
-            border-bottom: 1px solid #f3f4f6;
-            transition: background-color 0.2s ease;
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-item:hover {
-            background: #f9fafb;
-        }
-
-        .activity-content {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .activity-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            background: #f3f4f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #6b7280;
-            flex-shrink: 0;
-        }
-
-        .activity-details {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .activity-message {
-            font-size: 14px;
-            color: #1a1a1a;
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-
-        .activity-meta {
-            font-size: 12px;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .activity-tag {
-            background: #f3f4f6;
-            color: #6b7280;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 500;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-        }
-
-        .action-card {
-            background: white;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            padding: 24px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .action-card:hover {
-            border-color: #d1d5db;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .action-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
-
-        .action-description {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .action-btn {
-            background: #1a1a1a;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: background-color 0.2s ease;
-        }
-
-        .action-btn:hover {
-            background: #374151;
-        }
-
-        .action-btn.secondary {
-            background: #f8fafc;
-            color: #374151;
-            border: 1px solid #e2e8f0;
-        }
-
-        .action-btn.secondary:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 16px;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 16px;
-                align-items: flex-start;
-            }
-            
-            .nav-menu {
-                gap: 20px;
-                flex-wrap: wrap;
-            }
-            
-            .page-title {
-                font-size: 24px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-        }
-
-        /* Loading states */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeDAO Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                    </svg>
-                    CodeDAO
-                </div>
-                <nav class="nav-menu">
-                    <a href="/" class="nav-link">Home</a>
-                    <a href="/dashboard.html" class="nav-link active">Dashboard</a>
-                    <a href="/wallet-dashboard.html" class="nav-link">Wallet</a>
-                    <a href="/peer-review.html" class="nav-link">Peer Review</a>
-                    <a href="/how-it-works.html" class="nav-link">How It Works</a>
-                    <a href="/get-started.html" class="nav-link">Get Started</a>
-                </nav>
-            </div>
-        </header>
+  <header class="navbar">
+    <h1>⚡ CodeDAO</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="wallet-dashboard.html">Wallet</a>
+      <a href="peer-review.html">Peer Review</a>
+      <a href="how-it-works.html">How It Works</a>
+      <a href="get-started.html">Get Started</a>
+    </nav>
+  </header>
 
-        <!-- Status Banner -->
-        <div class="status-banner">
-            <div class="status-indicator"></div>
-            <span class="status-text">AI collaboration tracking system is active</span>
-        </div>
+  <main>
+    <section class="highlight-banner">
+      <p>🔥 AI Collaboration Tracker is LIVE — 99% Attribution Accuracy!</p>
+    </section>
 
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">Dashboard</h1>
-            <p class="page-subtitle">Real-time monitoring of AI contributions and code quality metrics</p>
-        </div>
+    <section class="stats-grid">
+      <div class="stat-card"><h3>👥 Contributors</h3><p>Claude: 2</p></div>
+      <div class="stat-card"><h3>🧠 Commits Today</h3><p>6</p></div>
+      <div class="stat-card"><h3>💰 CODE Claimed</h3><p>84.2 CODE</p></div>
+    </section>
 
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Claude Actions</span>
-                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                </div>
-                <div class="stat-value" id="claudeActions">1</div>
-                <div class="stat-change">AI contributions tracked</div>
-            </div>
+    <section class="live-feed">
+      <h2>📡 Live Activity Feed</h2>
+      <ul id="activity-feed">
+        <li>✅ Claude committed <code>reward-scoring.js</code> (3 mins ago)</li>
+        <li>✅ You claimed 8.4 CODE (5 mins ago)</li>
+        <li>✅ Alice updated <code>wallet-claim.js</code> (12 mins ago)</li>
+      </ul>
+    </section>
 
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">ChatGPT Actions</span>
-                    <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                </div>
-                <div class="stat-value" id="chatgptActions">0</div>
-                <div class="stat-change">
+    <section class="cta-panels">
+      <div class="panel"><h3>🎯 Top Earners</h3><p>Claude – 12.3 CODE</p><p>Alice – 9.7 CODE</p></div>
+      <div class="panel"><h3>💡 AI Agents</h3><p>GPT-4o, Claude</p></div>
+      <div class="panel"><h3>📈 Your Stats</h3><button onclick="window.location.href='wallet-dashboard.html'">Go to Wallet</button></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 CodeDAO. All rights reserved.</p>
+  </footer>
+</body>
+</html>
