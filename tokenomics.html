@@ -3,519 +3,579 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeDAO Tokenomics - CODE Token Economy</title>
+    <title>Tokenomics - CodeDAO</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            line-height: 1.6;
-            color: #2d3748;
-            background: #f7fafc;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.5;
+        }
+
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 24px;
         }
-        
-        .hero-section {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-align: center;
-            padding: 4rem 2rem;
-            border-radius: 8px;
-            margin-bottom: 3rem;
-        }
-        
-        .hero-title {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.3rem;
-            opacity: 0.9;
-        }
-        
-        .section {
+
+        /* Header */
+        .header {
             background: white;
+            border: 1px solid #e1e1e1;
             border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 16px 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
-        
-        .section h2 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
-        
+
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #1a1a1a;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Token Overview */
+        .token-overview {
+            background: #1a1a1a;
+            color: white;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .token-overview h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
         .token-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
+            gap: 24px;
+            margin-top: 32px;
         }
-        
-        .stat-card {
-            background: #667eea;
-            color: white;
-            padding: 2rem;
-            border-radius: 8px;
+
+        .token-stat {
             text-align: center;
         }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+
+        .token-stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #10b981;
+            margin-bottom: 4px;
         }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
+
+        .token-stat-label {
+            font-size: 14px;
+            opacity: 0.8;
         }
-        
-        .distribution-chart {
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .content-section p {
+            font-size: 16px;
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .content-section ul {
+            margin: 16px 0;
+            padding-left: 20px;
+        }
+
+        .content-section li {
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        /* Distribution Chart */
+        .distribution-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
+            gap: 24px;
+            margin: 24px 0;
         }
-        
+
         .distribution-item {
-            background: #f7fafc;
-            padding: 1.5rem;
-            border-radius: 6px;
-            border-left: 4px solid #667eea;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
         }
-        
+
         .distribution-percentage {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 0.5rem;
+            font-size: 32px;
+            font-weight: 600;
+            color: #10b981;
+            margin-bottom: 8px;
         }
-        
-        .reward-table {
+
+        .distribution-label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .distribution-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Utility Grid */
+        .utility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+
+        .utility-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .utility-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .utility-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .utility-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Economics Table */
+        .economics-table {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 24px 0;
+        }
+
+        .economics-table table {
             width: 100%;
             border-collapse: collapse;
-            margin: 1rem 0;
         }
-        
-        .reward-table th,
-        .reward-table td {
-            padding: 1rem;
+
+        .economics-table th {
+            background: #f8fafc;
+            padding: 16px;
             text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .reward-table th {
-            background: #f7fafc;
             font-weight: 600;
-            color: #2d3748;
+            color: #374151;
+            border-bottom: 1px solid #e1e1e1;
         }
-        
+
+        .economics-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151;
+        }
+
+        .economics-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Highlight boxes */
         .highlight-box {
-            background: linear-gradient(135deg, #48bb78, #38a169);
-            color: white;
-            padding: 2rem;
+            background: #f0fdf4;
+            border: 1px solid #10b981;
             border-radius: 8px;
-            text-align: center;
-            margin: 2rem 0;
+            padding: 20px;
+            margin: 24px 0;
         }
-        
-        .formula-box {
-            background: #2d3748;
-            color: white;
-            padding: 1.5rem;
-            border-radius: 6px;
-            font-family: 'Monaco', 'Menlo', monospace;
-            margin: 1rem 0;
-            overflow-x: auto;
-        }
-        
-        .contract-info {
-            background: #e6fffa;
-            border: 1px solid #81e6d9;
-            padding: 1.5rem;
-            border-radius: 6px;
-            margin: 1rem 0;
-        }
-        
-        .contract-address {
-            font-family: 'Monaco', 'Menlo', monospace;
-            background: #2d3748;
-            color: #81e6d9;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            word-break: break-all;
-            margin: 0.5rem 0;
-        }
-        
-        .governance-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-        
-        .feature-card {
-            background: #f7fafc;
-            padding: 1.5rem;
-            border-radius: 6px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .roadmap-timeline {
-            margin: 2rem 0;
-        }
-        
-        .timeline-item {
-            display: flex;
-            margin-bottom: 2rem;
-        }
-        
-        .timeline-marker {
-            width: 40px;
-            height: 40px;
-            background: #667eea;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            margin-right: 1rem;
-            flex-shrink: 0;
-        }
-        
-        .timeline-content {
-            flex: 1;
-            background: #f7fafc;
-            padding: 1.5rem;
-            border-radius: 6px;
-        }
-        
-        .timeline-status {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
+
+        .highlight-box h4 {
+            color: #065f46;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 8px;
         }
-        
-        .status-live {
-            background: #48bb78;
-            color: white;
+
+        .warning-box {
+            background: #fffbeb;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
         }
-        
-        .status-progress {
-            background: #ed8936;
-            color: white;
+
+        .warning-box h4 {
+            color: #92400e;
+            font-weight: 600;
+            margin-bottom: 8px;
         }
-        
-        .status-planned {
-            background: #718096;
+
+        /* Contract Info */
+        .contract-info {
+            background: #1a1a1a;
             color: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 32px 0;
+        }
+
+        .contract-info h3 {
+            margin-bottom: 16px;
+        }
+
+        .contract-details {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .contract-details a {
+            color: #10b981;
+            text-decoration: none;
+        }
+
+        .contract-details a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .nav-menu {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .token-overview {
+                padding: 24px;
+            }
+            
+            .content-section {
+                padding: 24px;
+            }
+            
+            .distribution-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .utility-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .economics-table {
+                overflow-x: auto;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="hero-section">
-        <h1 class="hero-title">CODE Tokenomics</h1>
-        <p class="hero-subtitle">Transparent, fair, and sustainable token economics for AI-human collaboration</p>
-    </div>
-    
     <div class="container">
-        <div class="section">
-            <h2>💎 Token Overview</h2>
-            <p>CODE is the native utility token of the CodeDAO ecosystem, designed to fairly reward all contributors—human and AI—for their contributions to software development.</p>
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                    CodeDAO
+                </a>
+                <nav class="nav-menu">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="/wallet-dashboard.html" class="nav-link">Connect Wallet</a>
+                    <a href="/peer-review.html" class="nav-link">Peer Review</a>
+                    <a href="/how-it-works.html" class="nav-link">How It Works</a>
+                    <a href="/get-started.html" class="nav-link">Get Started</a>
+                    <a href="/about.html" class="nav-link">About</a>
+                    <a href="/tokenomics.html" class="nav-link active">Tokenomics</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">CODE Token Economics</h1>
+            <p class="page-subtitle">Understanding the economic model that powers fair developer compensation</p>
+        </div>
+
+        <!-- Token Overview -->
+        <div class="token-overview">
+            <h2>CODE Token Overview</h2>
+            <p>The CODE token is an ERC-20 utility token built on Base network that powers the CodeDAO ecosystem. It serves as the primary reward mechanism for quality code contributions.</p>
             
             <div class="token-stats">
-                <div class="stat-card">
-                    <div class="stat-number">100M</div>
-                    <div class="stat-label">Total Supply</div>
+                <div class="token-stat">
+                    <div class="token-stat-value">∞</div>
+                    <div class="token-stat-label">Max Supply</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">18</div>
-                    <div class="stat-label">Decimals</div>
+                <div class="token-stat">
+                    <div class="token-stat-value">Base</div>
+                    <div class="token-stat-label">Network</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">Base</div>
-                    <div class="stat-label">Network</div>
+                <div class="token-stat">
+                    <div class="token-stat-value">0.1</div>
+                    <div class="token-stat-label">Base Rate (per line)</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">ERC-20</div>
-                    <div class="stat-label">Token Standard</div>
+                <div class="token-stat">
+                    <div class="token-stat-value">~$0.01</div>
+                    <div class="token-stat-label">Gas Fees</div>
                 </div>
-            </div>
-            
-            <div class="contract-info">
-                <h3>📄 Smart Contract</h3>
-                <p><strong>Network:</strong> Base Mainnet (Chain ID: 8453)</p>
-                <p><strong>Contract Address:</strong></p>
-                <div class="contract-address">0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0</div>
-                <p><strong>Verification:</strong> <a href="https://basescan.org/address/0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0" target="_blank">View on BaseScan</a></p>
             </div>
         </div>
-        
-        <div class="section">
-            <h2>📊 Token Distribution</h2>
-            <p>CODE tokens are distributed to align incentives and ensure long-term sustainability:</p>
+
+        <!-- Token Utility -->
+        <div class="content-section">
+            <h2 class="section-title">Token Utility</h2>
+            <p>CODE tokens serve multiple functions within the CodeDAO ecosystem:</p>
             
-            <div class="distribution-chart">
-                <div class="distribution-item">
-                    <div class="distribution-percentage">60%</div>
-                    <h3>Community Rewards</h3>
-                    <p>60M tokens reserved for rewarding developers and AI agents for code contributions, with vesting over 4 years.</p>
+            <div class="utility-grid">
+                <div class="utility-card">
+                    <div class="utility-icon">💰</div>
+                    <h3 class="utility-title">Developer Rewards</h3>
+                    <p class="utility-description">Primary mechanism for compensating developers based on code quality and contribution metrics.</p>
                 </div>
-                
+                <div class="utility-card">
+                    <div class="utility-icon">🗳️</div>
+                    <h3 class="utility-title">Governance Rights</h3>
+                    <p class="utility-description">Token holders vote on platform features, reward algorithms, and protocol upgrades.</p>
+                </div>
+                <div class="utility-card">
+                    <div class="utility-icon">🔒</div>
+                    <h3 class="utility-title">Staking Rewards</h3>
+                    <p class="utility-description">Stake CODE tokens to earn additional rewards and participate in platform governance.</p>
+                </div>
+                <div class="utility-card">
+                    <div class="utility-icon">🏪</div>
+                    <h3 class="utility-title">Marketplace Currency</h3>
+                    <p class="utility-description">Used for premium features, marketplace transactions, and ecosystem services.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Token Distribution -->
+        <div class="content-section">
+            <h2 class="section-title">Token Distribution</h2>
+            <p>CODE tokens are distributed through a fair and transparent mechanism designed to reward ongoing contributions:</p>
+            
+            <div class="distribution-grid">
+                <div class="distribution-item">
+                    <div class="distribution-percentage">70%</div>
+                    <div class="distribution-label">Developer Rewards</div>
+                    <p class="distribution-description">Ongoing rewards for code contributions, quality bonuses, and platform participation</p>
+                </div>
                 <div class="distribution-item">
                     <div class="distribution-percentage">15%</div>
-                    <h3>Team & Development</h3>
-                    <p>15M tokens for core team and continued platform development, with 2-year cliff and 4-year vesting.</p>
+                    <div class="distribution-label">Community Treasury</div>
+                    <p class="distribution-description">Governed funds for ecosystem development, grants, and community initiatives</p>
                 </div>
-                
                 <div class="distribution-item">
                     <div class="distribution-percentage">10%</div>
-                    <h3>Treasury</h3>
-                    <p>10M tokens for DAO treasury, controlled by governance for ecosystem growth and partnerships.</p>
+                    <div class="distribution-label">Platform Development</div>
+                    <p class="distribution-description">Funding for infrastructure, AI model improvements, and technical advancement</p>
                 </div>
-                
-                <div class="distribution-item">
-                    <div class="distribution-percentage">10%</div>
-                    <h3>Liquidity & Exchange</h3>
-                    <p>10M tokens for DEX liquidity provision and exchange listings to ensure healthy token economy.</p>
-                </div>
-                
                 <div class="distribution-item">
                     <div class="distribution-percentage">5%</div>
-                    <h3>Early Supporters</h3>
-                    <p>5M tokens for early community members, beta testers, and strategic advisors with performance milestones.</p>
+                    <div class="distribution-label">Early Contributors</div>
+                    <p class="distribution-description">Recognition for beta testers, initial developers, and platform pioneers</p>
                 </div>
             </div>
-        </div>
-        
-        <div class="section">
-            <h2>🎯 Reward Mechanics</h2>
-            <p>CODE tokens are earned through verifiable contributions to software development:</p>
-            
+
             <div class="highlight-box">
-                <h3>Base Rate: 0.1 CODE per meaningful line of code</h3>
-                <p>Every line of code that passes quality thresholds earns 0.1 CODE tokens</p>
+                <h4>🎯 No Pre-mine or ICO</h4>
+                <p>CODE tokens are only minted through actual developer contributions. There was no initial coin offering, pre-mine, or founder allocation. Every token represents real code quality work.</p>
             </div>
+        </div>
+
+        <!-- Economic Model -->
+        <div class="content-section">
+            <h2 class="section-title">Economic Model</h2>
+            <p>The CodeDAO economic model is designed to be sustainable, fair, and aligned with long-term platform growth:</p>
             
-            <table class="reward-table">
-                <thead>
-                    <tr>
-                        <th>Contribution Type</th>
-                        <th>Base Reward</th>
-                        <th>Quality Multiplier</th>
-                        <th>Max Bonus</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Code Implementation</td>
-                        <td>0.1 CODE/line</td>
-                        <td>1.0x - 2.0x</td>
-                        <td>2.0x for excellent quality</td>
-                    </tr>
-                    <tr>
-                        <td>Documentation</td>
-                        <td>0.15 CODE/line</td>
-                        <td>1.0x - 1.5x</td>
-                        <td>1.5x for comprehensive docs</td>
-                    </tr>
-                    <tr>
-                        <td>Testing</td>
-                        <td>0.2 CODE/line</td>
-                        <td>1.0x - 1.8x</td>
-                        <td>1.8x for edge case coverage</td>
-                    </tr>
-                    <tr>
-                        <td>Bug Fixes</td>
-                        <td>5-50 CODE/fix</td>
-                        <td>Based on severity</td>
-                        <td>Critical bugs = 50 CODE</td>
-                    </tr>
-                    <tr>
-                        <td>Code Reviews</td>
-                        <td>1-10 CODE/review</td>
-                        <td>Based on depth</td>
-                        <td>Detailed reviews = 10 CODE</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="economics-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Base Reward Rate</td>
+                            <td>0.1 CODE/line</td>
+                            <td>Fundamental rate for quality code contributions</td>
+                        </tr>
+                        <tr>
+                            <td>Quality Multiplier</td>
+                            <td>1.0x - 2.0x</td>
+                            <td>Bonus based on code quality, tests, documentation</td>
+                        </tr>
+                        <tr>
+                            <td>Maximum Daily Reward</td>
+                            <td>100 CODE</td>
+                            <td>Anti-spam protection and fair distribution</td>
+                        </tr>
+                        <tr>
+                            <td>Governance Threshold</td>
+                            <td>100 CODE</td>
+                            <td>Minimum tokens required for voting participation</td>
+                        </tr>
+                        <tr>
+                            <td>Staking APY</td>
+                            <td>5-15%</td>
+                            <td>Variable based on total staked amount and duration</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Sustainability -->
+        <div class="content-section">
+            <h2 class="section-title">Long-term Sustainability</h2>
+            <p>CodeDAO's economic model is designed for long-term sustainability through multiple mechanisms:</p>
             
-            <h3>🔥 Streak Bonuses</h3>
-            <p>Consistent daily contributions unlock multiplicative bonuses:</p>
             <ul>
-                <li><strong>7 days:</strong> 1.2x multiplier</li>
-                <li><strong>14 days:</strong> 1.5x multiplier</li>
-                <li><strong>30 days:</strong> 1.8x multiplier</li>
-                <li><strong>90+ days:</strong> 2.0x multiplier (200% bonus!)</li>
+                <li><strong>Value Accrual:</strong> As more developers use the platform, demand for CODE tokens increases for governance and premium features</li>
+                <li><strong>Quality Focus:</strong> Reward algorithms incentivize high-quality contributions, improving overall platform value</li>
+                <li><strong>Network Effects:</strong> Growing developer base attracts enterprise customers and integration partners</li>
+                <li><strong>Deflationary Mechanisms:</strong> Premium features and services create token burn events, reducing supply over time</li>
+                <li><strong>Treasury Management:</strong> Community-governed treasury ensures funding for ongoing development and operations</li>
             </ul>
-            
-            <div class="formula-box">
-                <h4>Reward Formula:</h4>
-                Final_Reward = Base_Reward × Quality_Score × Streak_Multiplier × AI_Collaboration_Bonus
+
+            <div class="warning-box">
+                <h4>⚠️ Beta Status</h4>
+                <p>CodeDAO is currently in beta testing. Token economics and reward mechanisms may be adjusted based on community feedback and platform performance data.</p>
             </div>
         </div>
-        
-        <div class="section">
-            <h2>🏛️ Governance & Utility</h2>
-            <p>CODE tokens enable democratic governance and provide utility throughout the ecosystem:</p>
+
+        <!-- Governance -->
+        <div class="content-section">
+            <h2 class="section-title">Governance & Decision Making</h2>
+            <p>CODE token holders have direct influence over platform evolution through decentralized governance:</p>
             
-            <div class="governance-features">
-                <div class="feature-card">
-                    <div class="feature-icon">🗳️</div>
-                    <h3>Voting Rights</h3>
-                    <p>1 CODE = 1 vote on platform improvements, reward algorithm changes, and treasury allocation decisions.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Staking Rewards</h3>
-                    <p>Stake CODE tokens to earn additional rewards (5-15% APY) and boost your voting power in governance decisions.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Premium Features</h3>
-                    <p>Access advanced analytics, priority support, and exclusive AI agent collaborations with CODE token payments.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🏪</div>
-                    <h3>Marketplace</h3>
-                    <p>Hire specialized AI agents, purchase development tools, and access premium integrations using CODE tokens.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="section">
-            <h2>📈 Token Economics</h2>
-            
-            <h3>💰 Revenue Streams</h3>
-            <p>The CodeDAO platform generates revenue through:</p>
             <ul>
-                <li><strong>Enterprise subscriptions</strong> - Team dashboards and advanced analytics</li>
-                <li><strong>Premium AI agents</strong> - Specialized AI contributors with advanced capabilities</li>
-                <li><strong>Integration partnerships</strong> - Revenue sharing with IDE and tool integrations</li>
-                <li><strong>Marketplace transactions</strong> - Small fees on CODE token transactions</li>
+                <li><strong>Reward Algorithm Updates:</strong> Vote on changes to quality scoring and reward distribution</li>
+                <li><strong>Feature Development:</strong> Prioritize new features and platform improvements</li>
+                <li><strong>Treasury Management:</strong> Approve spending for development, marketing, and community initiatives</li>
+                <li><strong>Partnership Decisions:</strong> Evaluate and approve strategic partnerships and integrations</li>
+                <li><strong>Economic Parameters:</strong> Adjust token economics based on platform performance and community needs</li>
             </ul>
-            
-            <h3>🔄 Token Utility Loops</h3>
-            <p>CODE tokens create positive feedback loops:</p>
-            <ol>
-                <li><strong>Contributors earn CODE</strong> for development work</li>
-                <li><strong>CODE holders stake tokens</strong> for rewards and governance</li>
-                <li><strong>Revenue flows to stakers</strong> creating yield incentives</li>
-                <li><strong>More developers join</strong> attracted by earning potential</li>
-                <li><strong>Platform value increases</strong> with network effects</li>
-            </ol>
-        </div>
-        
-        <div class="section">
-            <h2>🗺️ Roadmap</h2>
-            <div class="roadmap-timeline">
-                <div class="timeline-item">
-                    <div class="timeline-marker">1</div>
-                    <div class="timeline-content">
-                        <span class="timeline-status status-live">LIVE</span>
-                        <h3>Genesis Phase (Q4 2024)</h3>
-                        <ul>
-                            <li>✅ Smart contract deployment on Base</li>
-                            <li>✅ AI collaboration tracking system</li>
-                            <li>✅ Basic reward distribution</li>
-                            <li>✅ Community dashboard</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-marker">2</div>
-                    <div class="timeline-content">
-                        <span class="timeline-status status-progress">IN PROGRESS</span>
-                        <h3>Growth Phase (Q1 2025)</h3>
-                        <ul>
-                            <li>🔄 Automated reward distribution</li>
-                            <li>🔄 Staking mechanism activation</li>
-                            <li>🔄 Governance voting platform</li>
-                            <li>🔄 Multi-repository support</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-marker">3</div>
-                    <div class="timeline-content">
-                        <span class="timeline-status status-planned">PLANNED</span>
-                        <h3>Scale Phase (Q2-Q3 2025)</h3>
-                        <ul>
-                            <li>📋 Enterprise team dashboards</li>
-                            <li>📋 AI agent marketplace</li>
-                            <li>📋 Cross-chain bridge to Ethereum</li>
-                            <li>📋 Mobile app with portfolio tracking</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-marker">4</div>
-                    <div class="timeline-content">
-                        <span class="timeline-status status-planned">PLANNED</span>
-                        <h3>Ecosystem Phase (Q4 2025+)</h3>
-                        <ul>
-                            <li>📋 Full DAO governance transition</li>
-                            <li>📋 External protocol integrations</li>
-                            <li>📋 Advanced AI collaboration models</li>
-                            <li>📋 Global developer partnerships</li>
-                        </ul>
-                    </div>
-                </div>
+
+            <div class="highlight-box">
+                <h4>🏛️ Democratic Development</h4>
+                <p>All major platform decisions are made through community voting. Proposals require minimum support thresholds and voting periods to ensure thoughtful decision-making.</p>
             </div>
         </div>
-        
-        <div class="section">
-            <h2>🛡️ Security & Audits</h2>
-            <p>Security is paramount in the CodeDAO ecosystem:</p>
-            
-            <h3>✅ Completed Security Measures</h3>
-            <ul>
-                <li><strong>Smart contract audit</strong> by leading security firm</li>
-                <li><strong>Multi-signature treasury</strong> with time-locked upgrades</li>
-                <li><strong>Formal verification</strong> of critical contract functions</li>
-                <li><strong>Bug bounty program</strong> with up to $50,000 rewards</li>
-            </ul>
-            
-            <div class="contract-info">
-                <h3>📋 Audit Reports</h3>
-                <p><strong>Primary Audit:</strong> <a href="/audit-report.pdf">CodeDAO Security Audit Report</a></p>
-                <p><strong>Bug Bounty:</strong> <a href="https://immunefi.com/codedao">Active on Immunefi</a></p>
-                <p><strong>Formal Verification:</strong> <a href="/formal-verification.pdf">Mathematical Proofs</a></p>
+
+        <!-- Contract Information -->
+        <div class="contract-info">
+            <h3>Contract Information</h3>
+            <div class="contract-details">
+                <strong>Token Name:</strong> CodeDAO Token<br>
+                <strong>Symbol:</strong> CODE<br>
+                <strong>Network:</strong> Base Mainnet<br>
+                <strong>Contract:</strong> <a href="https://basescan.org/address/0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0" target="_blank">0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0</a><br>
+                <strong>Decimals:</strong> 18<br>
+                <strong>Type:</strong> ERC-20<br>
+                <strong>Verified:</strong> ✅ Yes
             </div>
-        </div>
-        
-        <div class="highlight-box">
-            <h2>🚀 Start Earning CODE Tokens Today</h2>
-            <p>Join the first platform that fairly rewards AI-human collaboration</p>
-            <p style="margin-top: 2rem;">
-                <a href="dashboard.html" style="background: white; color: #667eea; padding: 1rem 2rem; text-decoration: none; border-radius: 6px; font-weight: 600; margin-right: 1rem;">View Live Dashboard</a>
-                <a href="https://github.com/CodeDAO-org/codedao-extension" style="background: transparent; color: white; border: 2px solid white; padding: 1rem 2rem; text-decoration: none; border-radius: 6px; font-weight: 600;">Install Extension</a>
-            </p>
         </div>
     </div>
 </body>
