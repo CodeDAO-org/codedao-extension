@@ -3,955 +3,633 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeDAO - First AI Collaboration Transparency Platform</title>
+    <title>CodeDAO - Earn Crypto by Coding</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            line-height: 1.6;
-            color: #2d3748;
-            background: #f7fafc;
-            min-height: 100vh;
-            padding-top: 80px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.5;
         }
-        
-        /* Navigation Styles */
-        nav {
-            background: white;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 1rem 0;
-            position: fixed;
-            left: 0;
-            right: 0;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .nav-container {
+
+        .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 16px 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 2rem;
+            flex-wrap: wrap;
+            gap: 20px;
         }
-        
-        .nav-logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
-            text-decoration: none;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-        
-        .nav-links a {
-            color: #4a5568;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        
-        .nav-links a:hover {
-            color: #667eea;
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .social-icon {
-            width: 32px;
-            height: 32px;
+
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: #f7fafc;
-            border-radius: 50%;
-            color: #718096;
+            gap: 8px;
             text-decoration: none;
-            transition: all 0.3s ease;
         }
-        
-        .social-icon:hover {
-            background: #667eea;
+
+        .nav-menu {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #1a1a1a;
+        }
+
+        /* Status Banner */
+        .status-banner {
+            background: #1a1a1a;
             color: white;
-            transform: translateY(-2px);
-        }
-        
-        .hero-section {
-            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-            color: #2d3748;
-            padding: 2rem 1rem;
             text-align: center;
-            position: relative;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 48px;
+            font-weight: 500;
         }
-        
-        .live-banner {
-            background: linear-gradient(90deg, #a78bfa, #8b5cf6);
-            color: white;
-            padding: 1rem;
-            margin: -2rem -1rem 2rem -1rem;
-            font-weight: 600;
-            font-size: 1rem;
-            animation: pulse 2s infinite;
-            opacity: 0.95;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-        
-        /* Hero CTA Styles */
-        .hero-cta-container {
-            max-width: 800px;
-            margin: 0 auto 3rem auto;
+
+        /* Hero Section */
+        .hero {
             text-align: center;
+            margin-bottom: 80px;
         }
 
         .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: #1a202c;
-            margin-bottom: 1.5rem;
+            font-size: 48px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 20px;
             line-height: 1.1;
         }
 
         .hero-subtitle {
-            font-size: 1.4rem;
-            color: #4a5568;
-            margin-bottom: 3rem;
-            line-height: 1.5;
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 16px;
+            font-weight: 400;
         }
 
-        .live-earnings-preview {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin: 2rem auto;
-            border: 2px solid #e2e8f0;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        .hero-description {
+            font-size: 16px;
+            color: #666;
             max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
         }
 
-        .earnings-demo {
-            text-align: center;
-        }
-
-        .demo-calculation {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .code-lines { color: #667eea; }
-        .multiplier { color: #4a5568; }
-        .quality-bonus { color: #10b981; }
-        .equals { color: #4a5568; font-size: 1.5rem; }
-        .total-earned { 
-            color: #ed8936; 
-            font-size: 1.4rem; 
-            font-weight: 700;
-        }
-
-        .demo-subtitle {
-            color: #718096;
-            font-size: 0.9rem;
-        }
-
-        .getting-started-steps {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            margin: 3rem 0;
-            flex-wrap: wrap;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+        /* Reward Calculator */
+        .reward-calculator {
             background: white;
-            padding: 1rem 1.5rem;
+            border: 1px solid #e1e1e1;
             border-radius: 12px;
-            border: 2px solid #e2e8f0;
-            min-width: 150px;
+            padding: 32px;
+            margin: 40px auto;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .calculator-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #374151;
+        }
+
+        .calculation-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .calculation-formula {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 12px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+        }
+
+        .calculation-result {
+            font-size: 24px;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .calculation-note {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        /* CTA Buttons */
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        .cta-primary {
+            background: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s ease;
+        }
+
+        .cta-primary:hover {
+            background: #374151;
+        }
+
+        .cta-secondary {
+            background: #f8fafc;
+            color: #374151;
+            border: 1px solid #e2e8f0;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+
+        .cta-secondary:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        /* Quick Start Steps */
+        .quick-start {
+            margin-bottom: 80px;
+        }
+
+        .quick-start-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #1a1a1a;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .step-card {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .step-card:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
         .step-number {
-            width: 32px;
-            height: 32px;
-            background: #667eea;
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            flex-shrink: 0;
+            font-weight: 600;
+            margin: 0 auto 16px;
         }
 
         .step-title {
+            font-size: 18px;
             font-weight: 600;
-            color: #2d3748;
+            margin-bottom: 8px;
+            color: #1a1a1a;
         }
 
-        .step-desc {
-            font-size: 0.8rem;
-            color: #718096;
+        .step-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
         }
 
-        .step-arrow {
-            font-size: 1.5rem;
-            color: #667eea;
-            font-weight: 700;
+        .step-time {
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 500;
+            margin-top: 8px;
         }
 
-        .hero-cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin: 3rem 0;
-            flex-wrap: wrap;
+        /* Features Grid */
+        .features {
+            margin-bottom: 80px;
         }
 
-        .btn-hero {
-            padding: 1.2rem 2.5rem;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-hero.btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-        }
-
-        .btn-hero.btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-hero.btn-secondary {
-            background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-
-        .btn-hero.btn-secondary:hover {
-            background: #667eea;
-            color: white;
-        }
-        
-        .live-metrics {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 800px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        
-        .metrics-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            color: #2d3748;
-        }
-        
-        .live-indicator {
-            width: 12px;
-            height: 12px;
-            background: #48bb78;
-            border-radius: 50%;
-            animation: blink 1s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
-        }
-        
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .metric-card {
-            background: #f7fafc;
-            padding: 1.5rem;
-            border-radius: 8px;
+        .features-title {
             text-align: center;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .metric-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .metric-label {
-            font-size: 0.9rem;
-            color: #718096;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-        
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 6px;
-            text-decoration: none;
+            font-size: 24px;
             font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
+            margin-bottom: 40px;
+            color: #1a1a1a;
         }
-        
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #5a67d8;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-        
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-        }
-        
-        .content-section {
-            background: white;
-            padding: 4rem 2rem;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
+
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
         }
-        
+
         .feature-card {
-            padding: 2rem;
-            border-radius: 8px;
             background: white;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 24px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
-        
+
+        .feature-card:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
         .feature-title {
-            font-size: 1.3rem;
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: 1rem;
-            color: #2d3748;
+            margin-bottom: 8px;
+            color: #1a1a1a;
         }
-        
-        .sdk-section {
-            background: #2d3748;
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
+
+        .feature-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
         }
-        
-        .code-block {
-            background: #1a202c;
-            padding: 1.5rem;
-            border-radius: 6px;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 1.1rem;
-            margin: 2rem auto;
-            max-width: 500px;
-            border: 1px solid #4a5568;
-        }
-        
-        .highlight {
-            color: #81e6d9;
-        }
-        
-        /* Dashboard Preview Styles */
-        .dashboard-preview {
-            max-width: 600px;
-            margin: 3rem auto 0;
-            text-align: center;
-        }
-        
-        .preview-container {
-            position: relative;
+
+        /* Stats Section */
+        .stats-section {
+            background: white;
+            border: 1px solid #e1e1e1;
             border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s ease;
-        }
-        
-        .preview-container:hover {
-            transform: translateY(-2px);
-        }
-        
-        .preview-image {
-            background: white;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .mock-dashboard {
-            padding: 1rem;
-            font-size: 0.8rem;
-        }
-        
-        .mock-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .mock-logo {
-            font-weight: 600;
-            color: #2d3748;
-        }
-        
-        .mock-status {
-            color: #48bb78;
-            font-size: 0.7rem;
-        }
-        
-        .mock-banner {
-            background: linear-gradient(90deg, #a78bfa, #8b5cf6);
-            color: white;
-            padding: 0.5rem;
-            margin: 0.5rem -1rem;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        
-        .mock-metrics-row {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin: 1rem 0;
-        }
-        
-        .mock-metric {
+            padding: 40px 24px;
+            margin-bottom: 80px;
             text-align: center;
-            padding: 0.5rem;
-            background: #f7fafc;
-            border-radius: 4px;
-            min-width: 60px;
         }
-        
-        .mock-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-        
-        .mock-label {
-            font-size: 0.6rem;
-            color: #718096;
-            margin-top: 0.2rem;
-        }
-        
-        .mock-feed {
-            margin-top: 1rem;
-            text-align: left;
-        }
-        
-        .mock-feed-title {
+
+        .stats-title {
+            font-size: 24px;
             font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 0.5rem;
-            font-size: 0.8rem;
+            margin-bottom: 32px;
+            color: #1a1a1a;
         }
-        
-        .mock-commit {
-            display: flex;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            background: #f7fafc;
-            border-radius: 4px;
-            border-left: 3px solid #667eea;
-        }
-        
-        .mock-avatar {
-            width: 24px;
-            height: 24px;
-            background: #667eea;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-        
-        .mock-commit-text {
-            flex: 1;
-            font-size: 0.7rem;
-        }
-        
-        .mock-commit-text strong {
-            color: #2d3748;
-        }
-        
-        .mock-commit-text small {
-            color: #718096;
-        }
-        
-        .preview-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(102, 126, 234, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .preview-container:hover .preview-overlay {
-            opacity: 1;
-        }
-        
-        .preview-btn {
-            background: white;
-            color: #667eea;
-            padding: 1rem 1.5rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            text-align: center;
-            transition: transform 0.2s ease;
-        }
-        
-        .preview-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        .preview-btn span {
-            display: block;
-            font-size: 1rem;
-            margin-bottom: 0.3rem;
-        }
-        
-        .preview-btn small {
-            display: block;
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-        
-        /* Footer Styles */
-        footer {
-            background: #2d3748;
-            color: white;
-            padding: 3rem 2rem 2rem;
-            margin-top: 4rem;
-        }
-        
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 32px;
+            max-width: 600px;
+            margin: 0 auto;
         }
-        
-        .footer-section h3 {
-            margin-bottom: 1rem;
-            color: #667eea;
-        }
-        
-        .footer-section a {
-            color: #a0aec0;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-section a:hover {
-            color: white;
-        }
-        
-        .footer-bottom {
+
+        .stat-item {
             text-align: center;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid #4a5568;
-            color: #a0aec0;
         }
-        
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 600;
+            color: #10b981;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            background: #1a1a1a;
+            color: white;
+            border-radius: 12px;
+            padding: 48px 32px;
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .final-cta h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .final-cta p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .final-cta .cta-primary {
+            background: #10b981;
+        }
+
+        .final-cta .cta-primary:hover {
+            background: #059669;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px 0;
+            border-top: 1px solid #e1e1e1;
+            color: #666;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: #1a1a1a;
+        }
+
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+            .container {
+                padding: 16px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .nav-menu {
+                gap: 20px;
+                flex-wrap: wrap;
             }
             
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 32px;
             }
             
-            .metrics-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .hero-subtitle {
+                font-size: 18px;
             }
             
-            .getting-started-steps {
-                flex-direction: column;
+            .steps-container {
+                grid-template-columns: 1fr;
             }
             
-            .step-arrow {
-                transform: rotate(90deg);
+            .features-grid {
+                grid-template-columns: 1fr;
             }
             
-            .demo-calculation {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .hero-cta-buttons {
+            .hero-cta {
                 flex-direction: column;
                 align-items: center;
             }
             
-            .btn-hero {
-                width: 100%;
-                max-width: 300px;
-                justify-content: center;
+            .footer-links {
+                flex-direction: column;
+                gap: 16px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <a href="/" class="nav-logo">🤖 CodeDAO</a>
-            
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="wallet-dashboard.html">Connect Wallet</a></li>
-                <li><a href="peer-review.html">Peer Review</a></li>
-                <li><a href="how-it-works.html">How It Works</a></li>
-                <li><a href="getting-started.html">Get Started</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="tokenomics.html">Tokenomics</a></li>
-                <li><a href="https://github.com/CodeDAO-org" target="_blank">GitHub</a></li>
-            </ul>
-            
-            <div class="social-links">
-                <a href="https://twitter.com/CodeDAO_org" class="social-icon" target="_blank">𝕏</a>
-                <a href="https://discord.gg/codedao" class="social-icon" target="_blank">💬</a>
-                <a href="https://linkedin.com/company/codedao" class="social-icon" target="_blank">in</a>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                    CodeDAO
+                </a>
+                <nav class="nav-menu">
+                    <a href="/" class="nav-link active">Home</a>
+                    <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="/wallet-dashboard.html" class="nav-link">Connect Wallet</a>
+                    <a href="/peer-review.html" class="nav-link">Peer Review</a>
+                    <a href="/how-it-works.html" class="nav-link">How It Works</a>
+                    <a href="/get-started.html" class="nav-link">Get Started</a>
+                    <a href="/about.html" class="nav-link">About</a>
+                    <a href="/tokenomics.html" class="nav-link">Tokenomics</a>
+                    <a href="https://github.com/CodeDAO-org" target="_blank" class="nav-link">GitHub</a>
+                </nav>
             </div>
-        </div>
-    </nav>
-    
-    <div class="hero-section">
-        <div class="live-banner">
+        </header>
+
+        <!-- Status Banner -->
+        <div class="status-banner">
             🔥 LIVE: AI Collaboration Tracking System Now Active - Watch Real AI Agents Coding! 🔥
         </div>
-        
-        <!-- Hero CTA Section -->
-        <div class="hero-cta-container">
+
+        <!-- Hero Section -->
+        <section class="hero">
             <h1 class="hero-title">Write Better Code.<br>Earn Real Tokens.</h1>
-            <p class="hero-subtitle">
-                First AI Collaboration Transparency Platform<br>
-                Get paid in cryptocurrency for every line of quality code you write
+            <p class="hero-subtitle">First AI Collaboration Transparency Platform</p>
+            <p class="hero-description">
+                Get paid in cryptocurrency for every line of quality code you write. 
+                Our AI-powered system tracks contributions and rewards developers fairly.
             </p>
-            
-            <!-- Live Earnings Counter -->
-            <div class="live-earnings-preview">
-                <div class="earnings-demo">
-                    <div class="demo-calculation">
-                        <span class="code-lines">47 lines</span>
-                        <span class="multiplier">× 0.1 CODE</span>
-                        <span class="quality-bonus">× 1.8 quality</span>
-                        <span class="equals">=</span>
-                        <span class="total-earned">8.46 CODE earned</span>
-                    </div>
-                    <div class="demo-subtitle">Real-time reward calculation</div>
+
+            <!-- Reward Calculator -->
+            <div class="reward-calculator">
+                <div class="calculator-title">Real-time reward calculation</div>
+                <div class="calculation-display">
+                    <div class="calculation-formula">47 lines × 0.1 CODE × 1.8 quality</div>
+                    <div class="calculation-result">8.46 CODE earned</div>
                 </div>
+                <div class="calculation-note">Live example from actual commit</div>
             </div>
 
-            <!-- Getting Started Steps -->
-            <div class="getting-started-steps">
-                <div class="step">
+            <div class="hero-cta">
+                <a href="/get-started.html" class="cta-primary">Start Earning Now</a>
+                <a href="/simulation.html" class="cta-secondary">Try Demo</a>
+            </div>
+        </section>
+
+        <!-- Quick Start Steps -->
+        <section class="quick-start">
+            <h2 class="quick-start-title">Get Started in 3 Simple Steps</h2>
+            <div class="steps-container">
+                <div class="step-card">
                     <div class="step-number">1</div>
-                    <div class="step-content">
-                        <div class="step-title">Connect Wallet</div>
-                        <div class="step-desc">30 seconds</div>
-                    </div>
+                    <h3 class="step-title">Connect Wallet</h3>
+                    <p class="step-description">Link your MetaMask or Coinbase wallet to claim CODE tokens on Base network</p>
+                    <div class="step-time">30 seconds</div>
                 </div>
-                <div class="step-arrow">→</div>
-                <div class="step">
+                <div class="step-card">
                     <div class="step-number">2</div>
-                    <div class="step-content">
-                        <div class="step-title">Install Extension</div>
-                        <div class="step-desc">1 minute</div>
-                    </div>
+                    <h3 class="step-title">Install Extension</h3>
+                    <p class="step-description">Get our VS Code extension that automatically tracks your coding activity</p>
+                    <div class="step-time">1 minute</div>
                 </div>
-                <div class="step-arrow">→</div>
-                <div class="step">
+                <div class="step-card">
                     <div class="step-number">3</div>
-                    <div class="step-content">
-                        <div class="step-title">Start Earning</div>
-                        <div class="step-desc">Every commit</div>
-                    </div>
+                    <h3 class="step-title">Start Earning</h3>
+                    <p class="step-description">Write quality code and see instant rewards with every commit you make</p>
+                    <div class="step-time">Every commit</div>
                 </div>
             </div>
+        </section>
 
-            <!-- Hero CTA Buttons -->
-            <div class="hero-cta-buttons">
-                <a href="wallet-dashboard.html" class="btn-hero btn-primary">
-                    🚀 Connect Wallet & Start Earning
-                </a>
-                <a href="how-it-works.html" class="btn-hero btn-secondary">
-                    📖 How It Works
-                </a>
-            </div>
-        </div>
-        
-        <div class="live-metrics">
-            <h2 class="metrics-title">
-                <span class="live-indicator"></span>
-                Live AI Collaboration Metrics
-            </h2>
-            
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-value" style="color: #667eea;">1</div>
-                    <div class="metric-label">Claude Actions</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" style="color: #4299e1;">1</div>
-                    <div class="metric-label">Live Commits</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" style="color: #48bb78;">99%</div>
-                    <div class="metric-label">Success Rate</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" style="color: #ed8936;">ACTIVE</div>
-                    <div class="metric-label">System Status</div>
-                </div>
-            </div>
-            
-            <div class="cta-buttons">
-                <a href="dashboard.html" class="btn btn-primary">View Full Dashboard</a>
-                <a href="#sdk" class="btn btn-secondary">Try the SDK</a>
-            </div>
-        </div>
-        
-        <!-- Dashboard Preview Section -->
-        <div class="dashboard-preview">
-            <h3 style="margin-bottom: 1.5rem; color: #2d3748; font-size: 1.2rem;">Live Dashboard Preview</h3>
-            <div class="preview-container">
-                <div class="preview-image">
-                    <!-- Mock dashboard preview -->
-                    <div class="mock-dashboard">
-                        <div class="mock-header">
-                            <div class="mock-logo">🤖 CodeDAO Dashboard</div>
-                            <div class="mock-status">● LIVE</div>
-                        </div>
-                        <div class="mock-banner">🔗 LIVE: Watch Claude + ChatGPT Collaborate</div>
-                        <div class="mock-metrics-row">
-                            <div class="mock-metric">
-                                <div class="mock-value" style="color: #667eea;">1</div>
-                                <div class="mock-label">Claude Actions</div>
-                            </div>
-                            <div class="mock-metric">
-                                <div class="mock-value" style="color: #48bb78;">99%</div>
-                                <div class="mock-label">Success Rate</div>
-                            </div>
-                        </div>
-                        <div class="mock-feed">
-                            <div class="mock-feed-title">🤖 Live AI Collaboration Feed</div>
-                            <div class="mock-commit">
-                                <div class="mock-avatar">C</div>
-                                <div class="mock-commit-text">
-                                    <strong>Claude</strong> Add AI collaboration system tracking...<br>
-                                    <small>5m ago • by adminpipelabs</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="preview-overlay">
-                    <a href="dashboard.html" class="preview-btn">
-                        <span>🚀 Open Live Dashboard</span>
-                        <small>See real-time AI collaboration</small>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="content-section" id="how-it-works">
-        <div class="container">
-            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem;">How It Works</h2>
-            
+        <!-- Features -->
+        <section class="features">
+            <h2 class="features-title">Why Choose CodeDAO?</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <h3 class="feature-title">🤖 Real-Time AI Tracking</h3>
-                    <p>Monitor live AI contributions from Claude, ChatGPT, and other AI agents. Every commit, every line of code, transparently attributed and tracked.</p>
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">AI-Powered Quality Scoring</h3>
+                    <p class="feature-description">
+                        Advanced algorithms analyze code quality, not just quantity. Get rewarded for writing maintainable, well-tested code.
+                    </p>
                 </div>
-                
                 <div class="feature-card">
-                    <h3 class="feature-title">💎 CODE Rewards</h3>
-                    <p>Earn real CODE cryptocurrency on Base network. 0.1 CODE per line + bonuses for quality, testing, and collaboration streaks up to 200%.</p>
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Instant Rewards</h3>
+                    <p class="feature-description">
+                        See your earnings immediately after each commit. No waiting periods or manual submissions required.
+                    </p>
                 </div>
-                
                 <div class="feature-card">
-                    <h3 class="feature-title">📊 Live Dashboard</h3>
-                    <p>Real-time collaboration metrics, success rates, and activity feeds. See exactly how AI agents contribute to your projects.</p>
+                    <div class="feature-icon">💰</div>
+                    <h3 class="feature-title">Real Cryptocurrency</h3>
+                    <p class="feature-description">
+                        CODE tokens are legitimate ERC-20 tokens on Base network that you can trade, stake, or hold.
+                    </p>
                 </div>
-                
                 <div class="feature-card">
-                    <h3 class="feature-title">🔧 VS Code Integration</h3>
-                    <p>Seamless integration with your development workflow. Install extension → Code as usual → Earn CODE tokens automatically.</p>
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">Transparent Scoring</h3>
+                    <p class="feature-description">
+                        See exactly how rewards are calculated. Every bonus and quality metric is clearly explained.
+                    </p>
                 </div>
-                
                 <div class="feature-card">
-                    <h3 class="feature-title">🏛️ Governance & Staking</h3>
-                    <p>CODE holders participate in platform decisions, stake for rewards, and help shape the future of AI-human collaboration.</p>
+                    <div class="feature-icon">🌐</div>
+                    <h3 class="feature-title">Built on Base</h3>
+                    <p class="feature-description">
+                        Ultra-low gas fees (~$0.01) and fast transactions. No expensive Ethereum mainnet fees.
+                    </p>
                 </div>
-                
                 <div class="feature-card">
-                    <h3 class="feature-title">🌐 Open Source</h3>
-                    <p>Fully transparent, community-driven development. Audit the code, contribute improvements, and help build the future.</p>
+                    <div class="feature-icon">🏛️</div>
+                    <h3 class="feature-title">Governance Rights</h3>
+                    <p class="feature-description">
+                        CODE holders vote on platform features, reward algorithms, and future development direction.
+                    </p>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Live Stats -->
+        <section class="stats-section">
+            <h2 class="stats-title">Platform Activity</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">1.2K</div>
+                    <div class="stat-label">Commits Tracked</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">847</div>
+                    <div class="stat-label">CODE Distributed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">99%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">AI Monitoring</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="final-cta">
+            <h2>Ready to Earn While You Code?</h2>
+            <p>Join the future of developer compensation. Start earning CODE tokens for your contributions today.</p>
+            <a href="/get-started.html" class="cta-primary">Get Started Now</a>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="/how-it-works.html" class="footer-link">How It Works</a>
+                <a href="/tokenomics.html" class="footer-link">Tokenomics</a>
+                <a href="/about.html" class="footer-link">About</a>
+                <a href="https://github.com/CodeDAO-org" target="_blank" class="footer-link">GitHub</a>
+                <a href="https://basescan.org/address/0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0" target="_blank" class="footer-link">Contract</a>
+            </div>
+            <p>© 2025 CodeDAO. Built by devs, for devs.</p>
+        </footer>
     </div>
-    
-    <div class="sdk-section" id="sdk">
-        <div class="container">
-            <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Try Our SDK</h2>
-            <p style="font-size: 1.2rem; margin-bottom: 2rem;">Add AI collaboration transparency to your projects in minutes</p>
-            
-            <div class="code-block">
-                <span class="highlight">npm install</span> codedao-dashboard-sdk
-            </div>
-            
-            <div class="cta-buttons">
-                <a href="https://github.com/CodeDAO-org/codedao-extension" class="btn btn-primary">View Repository</a>
-                <a href="dashboard.html" class="btn btn-secondary">Live Dashboard</a>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>Platform</h3>
-                <a href="dashboard.html">Live Dashboard</a>
-                <a href="wallet-dashboard.html">Wallet Dashboard</a>
-                <a href="peer-review.html">Peer Review</a>
-                <a href="how-it-works.html">How It Works</a>
-                <a href="getting-started.html">Get Started</a>
-                <a href="https://github.com/CodeDAO-org/codedao-extension">VS Code Extension</a>
-                <a href="#sdk">SDK Documentation</a>
-                <a href="https://basescan.org/address/0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0">Smart Contract</a>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Community</h3>
-                <a href="about.html">About CodeDAO</a>
-                <a href="https://twitter.com/CodeDAO_org">Twitter/X</a>
-                <a href="https://discord.gg/codedao">Discord</a>
-                <a href="https://github.com/CodeDAO-org">GitHub</a>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Resources</h3>
-                <a href="tokenomics.html">Tokenomics</a>
-                <a href="whitepaper.pdf">Whitepaper</a>
-                <a href="audit-report.pdf">Security Audit</a>
-                <a href="api-docs.html">API Documentation</a>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Legal</h3>
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="terms.html">Terms of Service</a>
-                <a href="security.html">Security</a>
-                <a href="contact.html">Contact</a>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2025 CodeDAO. Built entirely by AI agents. The future of collaborative development.</p>
-        </div>
-    </footer>
-    
-    <script>
-        // Optional: Fetch live metrics from dashboard API
-        // This could be enhanced to pull real-time data
-        function updateMetrics() {
-            // Placeholder for future API integration
-            console.log('Metrics updated');
-        }
-        
-        // Update metrics every 30 seconds
-        setInterval(updateMetrics, 30000);
-    </script>
 </body>
 </html>
