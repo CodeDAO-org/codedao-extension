@@ -2,68 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Get Started with CodeDAO</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <section class="get-started">
-    <h1>🚀 Welcome to CodeDAO</h1>
-    <p>Earn real CODE tokens every time you write quality code. Here's how to get started:</p>
+  <header class="navbar">
+    <h1>🚀 Get Started with CodeDAO</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="wallet-dashboard.html">Wallet</a>
+      <a href="peer-review.html">Peer Review</a>
+      <a href="get-started.html" class="active">Get Started</a>
+    </nav>
+  </header>
 
-    <div class="steps">
-      <div class="step active">1. Connect Wallet</div>
-      <div class="step">2. Install Extension</div>
-      <div class="step">3. Write Code</div>
-      <div class="step">4. Claim Rewards</div>
-    </div>
+  <main class="dashboard">
+    <section class="intro">
+      <h2>👋 Welcome to CodeDAO</h2>
+      <p>Earn real CODE tokens every time you write quality code. Here's how to get started:</p>
+      <div class="step-grid">
+        <div class="step">① Connect Wallet</div>
+        <div class="step">② Install Extension</div>
+        <div class="step">③ Write Code</div>
+        <div class="step">④ Claim Rewards</div>
+      </div>
+    </section>
 
-    <hr />
+    <section class="step-box">
+      <h3>🔗 Step 1: Connect Your Wallet</h3>
+      <p>Go to the <a href="wallet-dashboard.html">Wallet Dashboard</a> and click <strong>"Connect Wallet."</strong></p>
+      <ul>
+        <li>Supports MetaMask, Coinbase, WalletConnect</li>
+        <li>Ensure you're on the <strong>Base network</strong> (Chain ID: 8453)</li>
+        <li>New to MetaMask? <a href="https://metamask.io" target="_blank">Download it here</a></li>
+      </ul>
+    </section>
 
-    <h2>🔗 Step 1: Connect Your Wallet</h2>
-    <p>Go to the <a href="wallet-dashboard.html">Wallet Dashboard</a> and click "Connect Wallet."</p>
-    <ul>
-      <li>Supports MetaMask, Coinbase, WalletConnect</li>
-      <li>Ensure you're on the <strong>Base network</strong> (Chain ID: <code>8453</code>)</li>
-      <li>New to MetaMask? <a href="https://metamask.io/download.html" target="_blank">Download MetaMask</a></li>
-    </ul>
-    <a href="wallet-dashboard.html" class="btn-primary">🔗 Test Wallet Connection</a>
-
-    <hr />
-
-    <h2>🧩 Step 2: Install the VS Code Extension</h2>
-    <p>Use our extension to track your commits and earn CODE rewards.</p>
-    <div class="alert-warning">
-      ⚠️ <strong>Beta Notice:</strong> Extension is under development. Use development mode to test it.
-    </div>
-
-    <pre style="background:#1e1e1e; color:#f8f8f2; padding:1em; border-radius:8px; overflow-x:auto;">
-git clone https://github.com/CodeDAO-org/codedao-extension.git
-cd codedao-extension && npm install
-code . # Press F5 to launch Extension Dev Host
-    </pre>
-
-    <p>You'll see popups like: ✅ <strong>4.03 CODE earned!</strong></p>
-
-    <a href="#" class="btn-disabled">🛠 VS Code Marketplace (Coming Soon)</a>
-
-    <hr />
-
-    <h2>💻 Step 3: Write & Commit Quality Code</h2>
-    <ul>
-      <li>Work on any code project</li>
-      <li>Make commits — include tests/docs for bonus rewards</li>
-      <li>Your code quality is automatically scored</li>
-    </ul>
-
-    <hr />
-
-    <h2>🎁 Step 4: Claim Your CODE</h2>
-    <p>Return to the <a href="wallet-dashboard.html">Wallet Dashboard</a> and click “Claim Rewards.”</p>
-    <ul>
-      <li>Check your reward history and quality bonuses</li>
-      <li>Claim and receive CODE instantly</li>
-    </ul>
-  </section>
-</body>
-</html>
+    <section class="step-box">
+      <h3>🧩 Step 2: Install the VS Code Extension</h3>
+      <p>Use our extension to track your commits and earn CODE rewards.</p>
+      <p class="warning">⚠️ Beta Notice: Extension is under development. Use dev mode to
