@@ -2,12 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CodeDAO Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #222;
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid #eee;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav a {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: #555;
+      font-weight: 500;
+    }
+
+    nav a.active {
+      color: #007aff;
+    }
+
+    .banner {
+      background: linear-gradient(to right, #5b1df7, #4f92ff);
+      color: white;
+      text-align: center;
+      padding: 0.75rem;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #eee;
+      padding: 1.25rem;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    .card .value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      margin: 2rem 0 1rem;
+      font-weight: bold;
+    }
+
+    .feed-item {
+      background: #f0fff4;
+      border-left: 4px solid #10b981;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #aaa;
+      padding: 2rem 0;
+    }
+  </style>
 </head>
 <body>
-  <header class="navbar">
+  <header>
     <h1>⚡ CodeDAO</h1>
     <nav>
       <a href="index.html">Home</a>
@@ -18,57 +109,50 @@
     </nav>
   </header>
 
-  <main class="dashboard">
-    <section class="banner">
-      <p>🔥 <strong>AI Collaboration Tracker is LIVE — 99% Attribution Accuracy!</strong></p>
-    </section>
+  <div class="banner">🔥 AI Collaboration Tracker is LIVE — 99% Attribution Accuracy!</div>
 
-    <section class="stats-grid">
-      <div class="stat-box">
+  <main class="container">
+    <section class="grid">
+      <div class="card">
         <h3>👥 Contributors</h3>
-        <p>Claude: 2</p>
+        <div class="value">Claude: 2</div>
       </div>
-      <div class="stat-box">
+      <div class="card">
         <h3>🧠 Commits Today</h3>
-        <p>6</p>
+        <div class="value">6</div>
       </div>
-      <div class="stat-box">
+      <div class="card">
         <h3>💰 CODE Claimed</h3>
-        <p>84.2 CODE</p>
+        <div class="value">84.2 CODE</div>
       </div>
-      <div class="stat-box">
+      <div class="card">
         <h3>📊 Avg Quality Score</h3>
-        <p>3.3x</p>
+        <div class="value">1.3x</div>
       </div>
     </section>
 
-    <section class="activity-feed">
-      <h2>📝 Live Activity Feed</h2>
-      <ul>
-        <li>✅ Claude committed <code>reward-scoring.js</code> <em>(3 mins ago)</em></li>
-        <li>✅ You claimed <strong>8.4 CODE</strong> <em>(5 mins ago)</em></li>
-        <li>✅ Alice updated <code>wallet-claim.js</code> <em>(12 mins ago)</em></li>
-      </ul>
+    <section>
+      <div class="section-title">🪶 Live Activity Feed</div>
+      <div class="feed-item">✅ Claude committed <code>reward-scoring.js</code> <em>(3 mins ago)</em></div>
+      <div class="feed-item">✅ You claimed <strong>8.4 CODE</strong> <em>(5 mins ago)</em></div>
+      <div class="feed-item">✅ Alice updated <code>wallet-claim.js</code> <em>(12 mins ago)</em></div>
     </section>
 
-    <section class="bottom-row">
-      <div class="stat-box">
-        <h3>🎯 Top Earners</h3>
-        <p>Claude – <strong>12.3 CODE</strong><br/>Alice – <strong>9.7 CODE</strong></p>
-      </div>
-      <div class="stat-box">
-        <h3>💡 AI Agents</h3>
-        <p>GPT-4o, Claude</p>
-      </div>
-      <div class="stat-box">
-        <h3>📈 Your Stats</h3>
-        <a href="wallet-dashboard.html" class="button">Go to Wallet</a>
+    <section>
+      <div class="section-title">🎯 Top Earners</div>
+      <div class="grid">
+        <div class="card">
+          <h3>Claude</h3>
+          <div class="value">12.3 CODE</div>
+        </div>
+        <div class="card">
+          <h3>Alice</h3>
+          <div class="value">9.7 CODE</div>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>© 2025 CodeDAO. All rights reserved.</p>
-  </footer>
+  <footer class="footer">© 2025 CodeDAO. All rights reserved.</footer>
 </body>
 </html>
