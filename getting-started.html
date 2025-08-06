@@ -1,537 +1,431 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Getting Started - CodeDAO</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Get Started - CodeDAO</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: #fafafa;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
 
-        .header {
-            background: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px;
+    }
 
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    /* Header */
+    .navbar {
+      background: white;
+      border: 1px solid #e1e1e1;
+      border-radius: 8px;
+      padding: 16px 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-        }
+    .navbar h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
+    .navbar nav {
+      display: flex;
+      gap: 24px;
+    }
 
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
+    .navbar a {
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
 
-        .nav-links a:hover {
-            color: #667eea;
-        }
+    .navbar a:hover,
+    .navbar a.active {
+      color: #1a1a1a;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
+    /* Main Content */
+    .onboarding {
+      background: white;
+      border: 1px solid #e1e1e1;
+      border-radius: 8px;
+      padding: 40px;
+      margin-bottom: 32px;
+    }
 
-        .hero {
-            background: white;
-            border-radius: 16px;
-            padding: 3rem;
-            text-align: center;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
+    .onboarding section {
+      margin-bottom: 40px;
+    }
 
-        .hero h1 {
-            font-size: 2.5rem;
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
+    .onboarding section:last-child {
+      margin-bottom: 0;
+    }
 
-        .hero p {
-            font-size: 1.1rem;
-            color: #666;
-        }
+    .onboarding h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #1a1a1a;
+    }
 
-        .steps-container {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
+    .onboarding h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #1a1a1a;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f3f4f6;
+    }
 
-        .step {
-            margin-bottom: 3rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
+    .onboarding p {
+      font-size: 16px;
+      color: #374151;
+      margin-bottom: 16px;
+    }
 
-        .step:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
+    .onboarding ul {
+      margin: 16px 0;
+      padding-left: 20px;
+    }
 
-        .step-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
+    .onboarding li {
+      margin-bottom: 8px;
+      color: #374151;
+    }
 
-        .step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-weight: bold;
-            margin-right: 1rem;
-        }
+    .onboarding a {
+      color: #1a1a1a;
+      font-weight: 500;
+      text-decoration: underline;
+      text-decoration-color: #e1e1e1;
+      transition: text-decoration-color 0.2s ease;
+    }
 
-        .step-title {
-            font-size: 1.5rem;
-            color: #333;
-        }
+    .onboarding a:hover {
+      text-decoration-color: #1a1a1a;
+    }
 
-        .step-content {
-            margin-left: 3rem;
-        }
+    /* Code blocks */
+    pre {
+      background: #1a1a1a;
+      color: #e5e7eb;
+      padding: 16px;
+      border-radius: 6px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-size: 14px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
 
-        .step-description {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
+    code {
+      background: #f3f4f6;
+      color: #374151;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-size: 13px;
+    }
 
-        .code-block {
-            background: #1e293b;
-            color: #e2e8f0;
-            padding: 1.5rem;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            margin: 1rem 0;
-            overflow-x: auto;
-            border-left: 4px solid #667eea;
-        }
+    /* Action buttons */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
 
-        .code-comment {
-            color: #94a3b8;
-        }
+    .btn {
+      background: #1a1a1a;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.2s ease;
+      cursor: pointer;
+    }
 
-        .warning-box {
-            background: #fef3c7;
-            border: 1px solid #f59e0b;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
+    .btn:hover {
+      background: #374151;
+    }
 
-        .warning-box .warning-title {
-            font-weight: bold;
-            color: #92400e;
-            margin-bottom: 0.5rem;
-        }
+    .btn.secondary {
+      background: #f8fafc;
+      color: #374151;
+      border: 1px solid #e2e8f0;
+    }
 
-        .success-box {
-            background: #dcfce7;
-            border: 1px solid #10b981;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
+    .btn.secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
 
-        .success-box .success-title {
-            font-weight: bold;
-            color: #065f46;
-            margin-bottom: 0.5rem;
-        }
+    /* Status indicators */
+    .status-box {
+      background: #f0fdf4;
+      border: 1px solid #10b981;
+      border-radius: 6px;
+      padding: 16px;
+      margin: 16px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
 
-        .tips-section {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
+    .status-box.warning {
+      background: #fffbeb;
+      border-color: #f59e0b;
+    }
 
-        .tip-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: #f8fafc;
-            border-radius: 8px;
-        }
+    .status-box.info {
+      background: #eff6ff;
+      border-color: #3b82f6;
+    }
 
-        .tip-icon {
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            margin-top: 0.2rem;
-        }
+    .status-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
 
-        .tip-content {
-            flex: 1;
-        }
+    /* Progress indicator */
+    .progress-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
 
-        .tip-title {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
+    .progress-step {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
 
-        .tip-description {
-            color: #666;
-            line-height: 1.5;
-        }
+    .progress-step.completed {
+      background: #f0fdf4;
+      border-color: #10b981;
+    }
 
-        .next-steps {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
-        }
+    .progress-step.active {
+      background: #eff6ff;
+      border-color: #3b82f6;
+    }
 
-        .next-steps h2 {
-            margin-bottom: 1rem;
-        }
+    .step-number {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background: #e5e7eb;
+      color: #6b7280;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 24px;
+      margin-bottom: 8px;
+    }
 
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
+    .progress-step.completed .step-number {
+      background: #10b981;
+      color: white;
+    }
 
-        .button {
-            display: inline-block;
-            background: white;
-            color: #10b981;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
+    .progress-step.active .step-number {
+      background: #3b82f6;
+      color: white;
+    }
 
-        .button:hover {
-            transform: translateY(-2px);
-        }
+    .step-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #6b7280;
+    }
 
-        .button.secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
+    .progress-step.completed .step-label,
+    .progress-step.active .step-label {
+      color: #374151;
+    }
 
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            
-            .step-content {
-                margin-left: 0;
-            }
-            
-            .step-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .step-number {
-                margin-right: 0;
-                margin-bottom: 0.5rem;
-            }
-        }
-    </style>
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 16px;
+      }
+
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .navbar nav {
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .onboarding {
+        padding: 24px;
+      }
+
+      .onboarding h2 {
+        font-size: 24px;
+      }
+
+      .onboarding h3 {
+        font-size: 18px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .progress-steps {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Header Navigation -->
-    <header class="header">
-        <nav class="nav">
-            <div class="logo">🤖 CodeDAO</div>
-            <ul class="nav-links">
-                <li><a href="https://codedao-org.github.io/">Home</a></li>
-                <li><a href="https://codedao-org.github.io/dashboard.html">Dashboard</a></li>
-                <li><a href="https://codedao-org.github.io/wallet-dashboard.html">Wallet</a></li>
-                <li><a href="https://codedao-org.github.io/peer-review.html">Peer Review</a></li>
-                <li><a href="how-it-works.html">How It Works</a></li>
-                <li><a href="#" style="color: #667eea;">Get Started</a></li>
-            </ul>
-        </nav>
+  <div class="container">
+    <header class="navbar">
+      <h1>👩‍💻 Get Started with CodeDAO</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="wallet-dashboard.html">Wallet</a>
+        <a href="peer-review.html">Peer Review</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="get-started.html" class="active">Get Started</a>
+      </nav>
     </header>
 
-    <div class="container">
-        <!-- Hero Section -->
-        <div class="hero">
-            <h1>🚀 Get Started with CodeDAO</h1>
-            <p>Follow this step-by-step guide to start earning CODE tokens for your code contributions in under 10 minutes.</p>
+    <main class="onboarding">
+      <section>
+        <h2>🚀 Welcome to CodeDAO</h2>
+        <p>Earn real CODE tokens every time you write quality code. Here's how to get started:</p>
+        
+        <div class="progress-steps">
+          <div class="progress-step active">
+            <div class="step-number">1</div>
+            <div class="step-label">Connect Wallet</div>
+          </div>
+          <div class="progress-step">
+            <div class="step-number">2</div>
+            <div class="step-label">Install Extension</div>
+          </div>
+          <div class="progress-step">
+            <div class="step-number">3</div>
+            <div class="step-label">Write Code</div>
+          </div>
+          <div class="progress-step">
+            <div class="step-number">4</div>
+            <div class="step-label">Claim Rewards</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3>🔗 Step 1: Connect Your Wallet</h3>
+        <p>Visit the <a href="wallet-dashboard.html">Wallet Dashboard</a> and click "Connect Wallet."</p>
+        <ul>
+          <li>Supports MetaMask, Coinbase, WalletConnect</li>
+          <li>Make sure you're on the <strong>Base network</strong> (Chain ID: 8453)</li>
+          <li>New to MetaMask? <a href="https://metamask.io" target="_blank">Download it here</a></li>
+        </ul>
+        
+        <div class="action-buttons">
+          <a href="wallet-dashboard.html" class="btn">Connect Wallet Now</a>
+          <a href="https://metamask.io" target="_blank" class="btn secondary">Download MetaMask</a>
         </div>
 
-        <!-- Installation Steps -->
-        <div class="steps-container">
-            <div class="step">
-                <div class="step-header">
-                    <div class="step-number">1</div>
-                    <h2 class="step-title">Install VS Code Extension</h2>
-                </div>
-                <div class="step-content">
-                    <p class="step-description">
-                        Clone and run the CodeDAO VS Code extension. This extension monitors your coding activity and calculates rewards automatically.
-                    </p>
-                    
-                    <div class="code-block">
-<span class="code-comment"># Clone the CodeDAO extension repository</span>
-git clone https://github.com/CodeDAO-org/codedao-extension.git
+        <div class="status-box info">
+          <svg class="status-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+          </svg>
+          <div>
+            <strong>New to crypto wallets?</strong> Don't worry! MetaMask is free, secure, and takes 2 minutes to set up. It's like a digital wallet for your CODE tokens.
+          </div>
+        </div>
+      </section>
 
-<span class="code-comment"># Navigate to the directory and install dependencies</span>
-cd codedao-extension
-npm install
-
-<span class="code-comment"># Open in VS Code</span>
-code .
-
-<span class="code-comment"># Press F5 to launch Extension Development Host</span>
-                    </div>
-
-                    <div class="success-box">
-                        <div class="success-title">✅ Success!</div>
-                        You should see a new VS Code window open with "Extension Development Host" in the title. The CodeDAO extension is now running and monitoring your activity.
-                    </div>
-                </div>
-            </div>
-
-            <div class="step">
-                <div class="step-header">
-                    <div class="step-number">2</div>
-                    <h2 class="step-title">Connect Your Wallet</h2>
-                </div>
-                <div class="step-content">
-                    <p class="step-description">
-                        Connect a Web3 wallet to the Base network where your CODE token rewards will be sent.
-                    </p>
-                    
-                    <ol style="margin-left: 1rem; color: #666; line-height: 1.6;">
-                        <li>Install <strong>MetaMask</strong>, <strong>Coinbase Wallet</strong>, or another Web3 wallet</li>
-                        <li>Add the Base network to your wallet</li>
-                        <li>Visit the <a href="https://codedao-org.github.io/wallet-dashboard.html" style="color: #667eea;">Wallet Dashboard</a></li>
-                        <li>Click "Connect Wallet" and select your wallet</li>
-                    </ol>
-
-                    <div class="warning-box">
-                        <div class="warning-title">⚠️ Base Network Setup</div>
-                        If you haven't added Base network to MetaMask, you can add it automatically at <a href="https://bridge.base.org/" target="_blank" style="color: #667eea;">bridge.base.org</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="step">
-                <div class="step-header">
-                    <div class="step-number">3</div>
-                    <h2 class="step-title">Start Coding & Earning</h2>
-                </div>
-                <div class="step-content">
-                    <p class="step-description">
-                        Now you're ready to start earning! Write code in any Git repository and commit your changes.
-                    </p>
-                    
-                    <div class="code-block">
-<span class="code-comment"># Create a test project (or use an existing one)</span>
-mkdir my-codedao-project
-cd my-codedao-project
-git init
-
-<span class="code-comment"># Create a simple JavaScript file with quality bonuses</span>
-cat > app.js << 'EOF'
-/**
- * A simple calculator with comprehensive documentation
- * This demonstrates good coding practices for CodeDAO rewards
- */
-class Calculator {
-    /**
-     * Add two numbers together
-     * @param {number} a - First number
-     * @param {number} b - Second number
-     * @returns {number} Sum of a and b
-     */
-    add(a, b) {
-        return a + b;
-    }
-    
-    /**
-     * Subtract b from a
-     * @param {number} a - First number
-     * @param {number} b - Second number to subtract
-     * @returns {number} Difference of a and b
-     */
-    subtract(a, b) {
-        return a - b;
-    }
-}
-
-module.exports = Calculator;
-EOF
-
-<span class="code-comment"># Create test file for bonus points</span>
-cat > app.test.js << 'EOF'
-const Calculator = require('./app');
-
-describe('Calculator', () => {
-    let calc;
-    
-    beforeEach(() => {
-        calc = new Calculator();
-    });
-    
-    test('should add two numbers correctly', () => {
-        expect(calc.add(2, 3)).toBe(5);
-        expect(calc.add(-1, 1)).toBe(0);
-    });
-    
-    test('should subtract two numbers correctly', () => {
-        expect(calc.subtract(5, 3)).toBe(2);
-        expect(calc.subtract(1, 1)).toBe(0);
-    });
-});
-EOF
-
-<span class="code-comment"># Commit your changes to trigger reward calculation</span>
-git add .
-git commit -m "Add Calculator class with comprehensive tests and documentation
-
-- Implements basic arithmetic operations
-- Includes JSDoc documentation for all methods
-- Comprehensive test coverage
-- Follows best practices for maintainability"
-                    </div>
-
-                    <div class="success-box">
-                        <div class="success-title">🎉 Expected Result</div>
-                        You should see a notification popup in VS Code showing something like: "✅ 45 lines × 0.1 × 1.4 = 6.3 CODE earned! 🎉 Tests (+20%), Documentation (+10%), Multi-file (+10%)"
-                    </div>
-                </div>
-            </div>
-
-            <div class="step">
-                <div class="step-header">
-                    <div class="step-number">4</div>
-                    <h2 class="step-title">Claim Your Rewards</h2>
-                </div>
-                <div class="step-content">
-                    <p class="step-description">
-                        Visit the Wallet Dashboard to see your accumulated rewards and claim them to your wallet.
-                    </p>
-                    
-                    <ol style="margin-left: 1rem; color: #666; line-height: 1.6;">
-                        <li>Go to the <a href="https://codedao-org.github.io/wallet-dashboard.html" style="color: #667eea;">Wallet Dashboard</a></li>
-                        <li>Check your "Pending Rewards" section</li>
-                        <li>Click the "💎 Claim Rewards" button</li>
-                        <li>Enjoy the confetti celebration! 🎊</li>
-                        <li>Add CODE token to MetaMask for easy tracking</li>
-                    </ol>
-
-                    <div class="success-box">
-                        <div class="success-title">🎊 Congratulations!</div>
-                        You've successfully earned and claimed your first CODE tokens! The tokens are now in your wallet on the Base network.
-                    </div>
-                </div>
-            </div>
+      <section>
+        <h3>🧩 Step 2: Install the VS Code Extension</h3>
+        <p>Use our custom extension to track your commits and calculate CODE rewards automatically.</p>
+        
+        <div class="status-box warning">
+          <svg class="status-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+          <div>
+            <strong>Beta Notice:</strong> Extension is currently in development. For now, clone the repository and run in development mode.
+          </div>
         </div>
 
-        <!-- Tips Section -->
-        <div class="tips-section">
-            <h2 style="margin-bottom: 1.5rem;">💡 Pro Tips for Maximum Earnings</h2>
-            
-            <div class="tip-item">
-                <div class="tip-icon">✅</div>
-                <div class="tip-content">
-                    <div class="tip-title">Always Include Tests</div>
-                    <div class="tip-description">Test files give you a 20% bonus! Create .test.js, .spec.js files or use __tests__ directories.</div>
-                </div>
-            </div>
-            
-            <div class="tip-item">
-                <div class="tip-icon">📝</div>
-                <div class="tip-content">
-                    <div class="tip-title">Document Your Code</div>
-                    <div class="tip-description">Comments that make up >15% of your code earn a 10% bonus. Use JSDoc, inline comments, and README files.</div>
-                </div>
-            </div>
-            
-            <div class="tip-item">
-                <div class="tip-icon">🔄</div>
-                <div class="tip-content">
-                    <div class="tip-title">Commit Regularly</div>
-                    <div class="tip-description">Multiple commits per day earn you an "active contributor" bonus. Break large changes into logical commits.</div>
-                </div>
-            </div>
-            
-            <div class="tip-item">
-                <div class="tip-icon">📁</div>
-                <div class="tip-content">
-                    <div class="tip-title">Multi-file Changes</div>
-                    <div class="tip-description">Modifying 3+ files in a single commit shows you're making substantial contributions worth a 10% bonus.</div>
-                </div>
-            </div>
-        </div>
+        <pre>git clone https://github.com/CodeDAO-org/codedao-extension.git
+cd codedao-extension && npm install
+code . # Then press F5 to launch Extension Dev Host</pre>
+        
+        <p>You'll see popup rewards like: <code>✅ 4.03 CODE earned!</code></p>
 
-        <!-- Next Steps -->
-        <div class="next-steps">
-            <h2>🎯 What's Next?</h2>
-            <p>You're now earning CODE tokens! Here are some ways to maximize your rewards and get involved:</p>
-            
-            <div class="button-group">
-                <a href="https://codedao-org.github.io/wallet-dashboard.html" class="button">
-                    💳 View Wallet Dashboard
-                </a>
-                <a href="how-it-works.html" class="button secondary">
-                    📚 Learn More
-                </a>
-                <a href="https://codedao-org.github.io/peer-review.html" class="button secondary">
-                    👥 Join Peer Review
-                </a>
-                <a href="https://discord.gg/codedao" class="button secondary" target="_blank">
-                    💬 Join Community
-                </a>
-            </div>
+        <div class="action-buttons">
+          <a href="https://github.com/CodeDAO-org/codedao-extension" target="_blank" class="btn">View Extension Repo</a>
+          <a href="#" class="btn secondary">VS Code Marketplace (Coming Soon)</a>
         </div>
-    </div>
-</body>
-</html>
+      </section>
+
+      <section>
+        <h3>💻 Step 3: Write & Commit Quality Code</h3>
+        <ul>
+          <li>Make real commits in your project</li>
+          <li>Include tests and documentation for higher quality scores</li>
+          <li>The extension tracks lines, comments, file changes & more</li>
+          <li>Focus on meaningful contributions, not just line count</li>
+        </ul>
+
+        <div class="status-box">
+          <svg class="status-icon" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          <div>
+            <strong>Quality Tip:</strong> Add tests (+20% bonus), documentation (+10% bonus), and organize multiple files (+10% bonus) to maximize your earnings!
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3>🎁 Step 4: Claim Your Rewards</h3>
+        <p>Visit the <a href="wallet-dashboard.html">Wallet Dashboard</a> after your commit.</p>
+        <ul>
+          <li>Your earned CODE balance will appear in "Pendi
