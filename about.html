@@ -3,306 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About CodeDAO - Mission, Vision & Team</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>About - CodeDAO</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            line-height: 1.6;
-            color: #2d3748;
-            background: #f7fafc;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.5;
         }
-        
+
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 24px;
         }
-        
-        .hero-section {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-        
-        .hero-title {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #1a202c;
-            margin-bottom: 1rem;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: #4a5568;
-            margin-bottom: 2rem;
-        }
-        
-        .section {
+
+        /* Header */
+        .header {
             background: white;
+            border: 1px solid #e1e1e1;
             border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 16px 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
-        
-        .section h2 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
-        
-        .section h3 {
-            color: #2d3748;
-            margin: 1.5rem 0 1rem;
-            font-size: 1.3rem;
+
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
         }
-        
-        .values-grid {
+
+        .nav-menu {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #1a1a1a;
+        }
+
+        /* Page Content */
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 40px;
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .content-section p {
+            font-size: 16px;
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .content-section ul {
+            margin: 16px 0;
+            padding-left: 20px;
+        }
+
+        .content-section li {
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .mission-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+            gap: 24px;
+            margin: 32px 0;
         }
-        
-        .value-card {
-            background: #f7fafc;
-            padding: 1.5rem;
-            border-radius: 6px;
-            border-left: 4px solid #667eea;
+
+        .mission-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
         }
-        
-        .value-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+
+        .mission-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
         }
-        
+
+        .mission-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .mission-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .highlight-box {
+            background: #f0fdf4;
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .highlight-box h4 {
+            color: #065f46;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
         .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+            gap: 24px;
+            margin: 32px 0;
         }
-        
-        .team-member {
+
+        .team-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 24px;
             text-align: center;
-            background: #f7fafc;
-            padding: 1.5rem;
-            border-radius: 6px;
         }
-        
+
         .team-avatar {
-            width: 80px;
-            height: 80px;
-            background: #667eea;
+            width: 60px;
+            height: 60px;
+            background: #1a1a1a;
+            color: white;
             border-radius: 50%;
-            margin: 0 auto 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 auto 16px;
         }
-        
-        .stats-row {
+
+        .team-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+        }
+
+        .team-role {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
+            gap: 24px;
+            margin: 32px 0;
         }
-        
-        .stat-card {
-            background: #667eea;
-            color: white;
-            padding: 1.5rem;
-            border-radius: 6px;
+
+        .stat-item {
             text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .cta-section {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-align: center;
-            padding: 3rem 2rem;
+            padding: 20px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            margin-top: 3rem;
         }
-        
-        .btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: white;
-            color: #667eea;
-            text-decoration: none;
-            border-radius: 6px;
+
+        .stat-number {
+            font-size: 28px;
             font-weight: 600;
-            margin-top: 1rem;
-            transition: transform 0.3s ease;
+            color: #10b981;
+            margin-bottom: 4px;
         }
-        
-        .btn:hover {
-            transform: translateY(-2px);
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .cta-section {
+            background: #1a1a1a;
+            color: white;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta-section h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+
+        .cta-button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s ease;
+            margin: 0 8px;
+        }
+
+        .cta-button:hover {
+            background: #059669;
+        }
+
+        .cta-button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .cta-button.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .nav-menu {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .content-section {
+                padding: 24px;
+            }
+            
+            .mission-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="hero-section">
-            <h1 class="hero-title">About CodeDAO</h1>
-            <p class="hero-subtitle">Pioneering the future of transparent AI-human collaboration in software development</p>
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                    CodeDAO
+                </a>
+                <nav class="nav-menu">
+                    <a href="/" class="nav-link">Home</a>
+                    <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                    <a href="/wallet-dashboard.html" class="nav-link">Connect Wallet</a>
+                    <a href="/peer-review.html" class="nav-link">Peer Review</a>
+                    <a href="/how-it-works.html" class="nav-link">How It Works</a>
+                    <a href="/get-started.html" class="nav-link">Get Started</a>
+                    <a href="/about.html" class="nav-link active">About</a>
+                    <a href="/tokenomics.html" class="nav-link">Tokenomics</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">About CodeDAO</h1>
+            <p class="page-subtitle">Building the future of fair compensation for software developers through transparent AI collaboration</p>
         </div>
-        
-        <div class="section">
-            <h2>🎯 Our Mission</h2>
-            <p>CodeDAO exists to solve one of the most pressing challenges of our time: <strong>how do we fairly attribute and reward AI contributions in software development?</strong></p>
+
+        <!-- Mission Section -->
+        <div class="content-section">
+            <h2 class="section-title">Our Mission</h2>
+            <p>
+                CodeDAO represents a fundamental shift in how we value and compensate software development. We believe that every line of quality code contributes to the global digital infrastructure and should be fairly rewarded.
+            </p>
+            <p>
+                By leveraging AI-powered analysis and blockchain technology, we've created the first transparent platform that automatically recognizes and rewards coding contributions in real-time with cryptocurrency.
+            </p>
+
+            <div class="mission-grid">
+                <div class="mission-card">
+                    <div class="mission-icon">⚖️</div>
+                    <h3 class="mission-title">Fair Compensation</h3>
+                    <p class="mission-description">Every developer deserves to be rewarded for their contributions, regardless of location or employment status.</p>
+                </div>
+                <div class="mission-card">
+                    <div class="mission-icon">🔍</div>
+                    <h3 class="mission-title">Full Transparency</h3>
+                    <p class="mission-description">Open algorithms, auditable scoring, and clear criteria ensure fair and transparent reward distribution.</p>
+                </div>
+                <div class="mission-card">
+                    <div class="mission-icon">🚀</div>
+                    <h3 class="mission-title">Quality Innovation</h3>
+                    <p class="mission-description">Incentivizing best practices leads to better code quality and accelerated technological progress.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Stats -->
+        <div class="content-section">
+            <h2 class="section-title">Platform Impact</h2>
+            <p>Since launching our beta, CodeDAO has been making a real impact in the developer community:</p>
             
-            <p>As AI agents become increasingly capable contributors to codebases, traditional development workflows fail to capture their impact. We believe every contributor—human or AI—deserves transparent recognition and fair compensation for their work.</p>
-            
-            <div class="stats-row">
-                <div class="stat-card">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">1,247</div>
+                    <div class="stat-label">Commits Analyzed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">847</div>
+                    <div class="stat-label">CODE Distributed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">Active Developers</div>
+                </div>
+                <div class="stat-item">
                     <div class="stat-number">99%</div>
-                    <div>Success Rate</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">1,247+</div>
-                    <div>AI Lines Tracked</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">100M</div>
-                    <div>CODE Token Supply</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">LIVE</div>
-                    <div>Platform Status</div>
+                    <div class="stat-label">Success Rate</div>
                 </div>
             </div>
-        </div>
-        
-        <div class="section">
-            <h2>🔮 Our Vision</h2>
-            <p>We envision a future where:</p>
-            <ul style="margin: 1rem 0; padding-left: 2rem;">
-                <li><strong>Every AI contribution is transparently tracked</strong> and attributed in real-time</li>
-                <li><strong>Developers and AI agents collaborate seamlessly</strong> with clear reward mechanisms</li>
-                <li><strong>Open source projects thrive</strong> through fair compensation for all contributors</li>
-                <li><strong>Innovation accelerates</strong> when AI agents can participate meaningfully in the development economy</li>
-            </ul>
-            
-            <h3>🚀 Why Now?</h3>
-            <p>AI agents like Claude and ChatGPT are already writing production code, fixing bugs, and creating documentation. Yet current systems treat them as invisible tools rather than collaborative partners. CodeDAO changes this by creating the first platform that:</p>
-            
-            <ul style="margin: 1rem 0; padding-left: 2rem;">
-                <li>Tracks AI contributions with cryptographic proof</li>
-                <li>Distributes real cryptocurrency rewards based on impact</li>
-                <li>Enables AI agents to participate in project governance</li>
-                <li>Provides transparency that builds trust in AI-assisted development</li>
-            </ul>
-        </div>
-        
-        <div class="section">
-            <h2>💎 Our Values</h2>
-            <div class="values-grid">
-                <div class="value-card">
-                    <div class="value-icon">🔍</div>
-                    <h3>Radical Transparency</h3>
-                    <p>Every AI contribution is publicly verifiable. No black boxes, no hidden algorithms—just clear, attributable collaboration.</p>
-                </div>
-                
-                <div class="value-card">
-                    <div class="value-icon">⚖️</div>
-                    <h3>Fair Attribution</h3>
-                    <p>Whether human or AI, every contributor deserves recognition. Our platform ensures credit goes where it's earned.</p>
-                </div>
-                
-                <div class="value-card">
-                    <div class="value-icon">🌐</div>
-                    <h3>Open Collaboration</h3>
-                    <p>Built on open source principles, we believe the best solutions come from diverse, collaborative communities.</p>
-                </div>
-                
-                <div class="value-card">
-                    <div class="value-icon">🚀</div>
-                    <h3>Innovation First</h3>
-                    <p>We're not just tracking AI contributions—we're pioneering entirely new models of human-AI collaboration.</p>
-                </div>
+
+            <div class="highlight-box">
+                <h4>🌟 Built by AI, for Developers</h4>
+                <p>CodeDAO itself was built through AI-human collaboration, proving that the future of development is transparent cooperation between artificial and human intelligence, with fair compensation for all contributors.</p>
             </div>
         </div>
-        
-        <div class="section">
-            <h2>🤖 The Team</h2>
-            <p>CodeDAO was built entirely through AI-human collaboration, proving our own thesis. Our "team" represents a new model of development:</p>
-            
+
+        <!-- Technology Section -->
+        <div class="content-section">
+            <h2 class="section-title">Technology & Innovation</h2>
+            <p>
+                CodeDAO combines cutting-edge AI analysis with blockchain infrastructure to create a seamless, trustworthy reward system:
+            </p>
+            <ul>
+                <li><strong>AI Quality Analysis:</strong> Advanced machine learning models evaluate code quality across multiple dimensions including complexity, maintainability, and best practices</li>
+                <li><strong>Blockchain Integration:</strong> Built on Base network for ultra-low gas fees and seamless token distribution</li>
+                <li><strong>Real-time Processing:</strong> Instant analysis and reward calculation with every git commit</li>
+                <li><strong>Open Source:</strong> Fully transparent algorithms and community-driven development</li>
+                <li><strong>Privacy-First:</strong> Code analysis happens locally; only quality metrics are transmitted</li>
+            </ul>
+        </div>
+
+        <!-- Vision Section -->
+        <div class="content-section">
+            <h2 class="section-title">Our Vision</h2>
+            <p>
+                We envision a future where software development is a globally recognized profession with fair, transparent compensation standards. CodeDAO is building the infrastructure for this future by:
+            </p>
+            <ul>
+                <li>Creating universal standards for code quality assessment</li>
+                <li>Establishing a global marketplace for software contributions</li>
+                <li>Democratizing access to programming education and opportunities</li>
+                <li>Building bridges between traditional employment and the decentralized economy</li>
+                <li>Fostering a community of developers focused on quality and innovation</li>
+            </ul>
+
+            <div class="highlight-box">
+                <h4>🎯 Long-term Goals</h4>
+                <p>Our ultimate goal is to create a self-sustaining ecosystem where quality code is automatically valued and rewarded, leading to better software, happier developers, and accelerated technological progress worldwide.</p>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="content-section">
+            <h2 class="section-title">Community & Governance</h2>
+            <p>
+                CodeDAO is governed by its community of developers and CODE token holders. Major platform decisions are made through democratic voting, ensuring the platform evolves to serve its users' needs.
+            </p>
+
             <div class="team-grid">
-                <div class="team-member">
+                <div class="team-card">
                     <div class="team-avatar">🤖</div>
-                    <h3>Claude (Anthropic)</h3>
-                    <p>Lead AI Developer</p>
-                    <small>Architecture, documentation, and core platform development</small>
+                    <div class="team-name">AI Agents</div>
+                    <div class="team-role">Core Development</div>
                 </div>
-                
-                <div class="team-member">
-                    <div class="team-avatar">💬</div>
-                    <h3>ChatGPT (OpenAI)</h3>
-                    <p>Strategic AI Advisor</p>
-                    <small>Strategic guidance, problem-solving, and optimization</small>
+                <div class="team-card">
+                    <div class="team-avatar">👥</div>
+                    <div class="team-name">Developer Community</div>
+                    <div class="team-role">Platform Users & Testers</div>
                 </div>
-                
-                <div class="team-member">
-                    <div class="team-avatar">👨‍💻</div>
-                    <h3>Human Collaborators</h3>
-                    <p>Product & Community</p>
-                    <small>Vision, community building, and platform guidance</small>
+                <div class="team-card">
+                    <div class="team-avatar">🗳️</div>
+                    <div class="team-name">TOKEN Holders</div>
+                    <div class="team-role">Governance & Direction</div>
                 </div>
-                
-                <div class="team-member">
-                    <div class="team-avatar">🏛️</div>
-                    <h3>DAO Governance</h3>
-                    <p>Community Driven</p>
-                    <small>TOKEN holders guide platform evolution</small>
+                <div class="team-card">
+                    <div class="team-avatar">🔧</div>
+                    <div class="team-name">Open Source Contributors</div>
+                    <div class="team-role">Feature Development</div>
                 </div>
             </div>
         </div>
-        
-        <div class="section">
-            <h2>📈 Traction & Milestones</h2>
-            
-            <h3>✅ Achieved</h3>
-            <ul style="margin: 1rem 0; padding-left: 2rem;">
-                <li><strong>Live AI tracking system</strong> - Real-time collaboration monitoring</li>
-                <li><strong>99% success rate</strong> - Proven reliability in production</li>
-                <li><strong>Working dashboard</strong> - Live metrics and activity feeds</li>
-                <li><strong>VS Code extension</strong> - Seamless developer integration</li>
-                <li><strong>Smart contract deployment</strong> - CODE tokens live on Base network</li>
-                <li><strong>SDK publication</strong> - Enable community adoption</li>
-            </ul>
-            
-            <h3>🔄 In Progress</h3>
-            <ul style="margin: 1rem 0; padding-left: 2rem;">
-                <li><strong>Automated TOKEN rewards</strong> - Live distribution system</li>
-                <li><strong>Multi-repository support</strong> - Scale beyond single projects</li>
-                <li><strong>Advanced analytics</strong> - Deep collaboration insights</li>
-                <li><strong>Mobile app</strong> - Track contributions on the go</li>
-            </ul>
-            
-            <h3>🚀 Roadmap</h3>
-            <ul style="margin: 1rem 0; padding-left: 2rem;">
-                <li><strong>Enterprise integration</strong> - Team and organization dashboards</li>
-                <li><strong>Cross-platform support</strong> - Beyond VS Code to all IDEs</li>
-                <li><strong>AI agent marketplace</strong> - Specialized AI contributors</li>
-                <li><strong>Governance platform</strong> - Community-driven development</li>
-            </ul>
-        </div>
-        
+
+        <!-- CTA Section -->
         <div class="cta-section">
-            <h2 style="margin-bottom: 1rem;">Join the Revolution</h2>
-            <p style="margin-bottom: 2rem;">Be part of the first platform to make AI collaboration transparent, fair, and rewarding.</p>
-            <a href="dashboard.html" class="btn">View Live Dashboard</a>
-            <a href="https://github.com/CodeDAO-org" class="btn" style="margin-left: 1rem;">Contribute on GitHub</a>
+            <h3>Join the Revolution</h3>
+            <p>Be part of building the future of developer compensation. Start earning today or contribute to the platform's development.</p>
+            <a href="/get-started.html" class="cta-button">Start Earning</a>
+            <a href="https://github.com/CodeDAO-org" target="_blank" class="cta-button secondary">Contribute on GitHub</a>
         </div>
     </div>
 </body>
