@@ -1,59 +1,748 @@
-<!-- Updated Navigation for ALL your pages -->
-<!-- Copy this navigation section into: index.html, dashboard.html, wallet-dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO - Peer Review System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<header class="header">
-    <nav class="nav">
-        <div class="logo">🤖 CodeDAO</div>
-        <ul class="nav-links">
-            <li><a href="https://codedao-org.github.io/">Home</a></li>
-            <li><a href="https://codedao-org.github.io/dashboard.html">Dashboard</a></li>
-            <li><a href="https://codedao-org.github.io/wallet-dashboard.html">Wallet</a></li>
-            <li><a href="https://codedao-org.github.io/peer-review.html">Peer Review</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#tokenomics">Tokenomics</a></li>
-        </ul>
-    </nav>
-</header>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f7fafc;
+            min-height: 100vh;
+            color: #333;
+            padding: 2rem;
+            padding-top: 100px;
+        }
 
-<!-- Add this CSS if not already present -->
-<style>
-.header {
-    background: white;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-.nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+        .header {
+            text-align: center;
+            color: #333;
+            margin-bottom: 2rem;
+        }
 
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #667eea;
-}
+        .review-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
 
-.nav-links {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-}
+        .review-card:hover {
+            transform: translateY(-2px);
+        }
 
-.nav-links a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    transition: color 0.3s;
-}
+        .contribution-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
 
-.nav-links a:hover {
-    color: #667eea;
-}
-</style>
+        .commit-info h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .commit-meta {
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quality-metrics {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .quality-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .reward-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .bonus-tags {
+            margin-top: 0.5rem;
+        }
+
+        .bonus-tag {
+            background: #e0f2fe;
+            color: #0277bd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            display: inline-block;
+        }
+
+        .review-section {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .review-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .review-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .review-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .review-btn.upvote {
+            color: #059669;
+            border-color: #059669;
+        }
+
+        .review-btn.upvote:hover, .review-btn.upvote.active {
+            background: #059669;
+            color: white;
+        }
+
+        .review-btn.downvote {
+            color: #dc2626;
+            border-color: #dc2626;
+        }
+
+        .review-btn.downvote:hover, .review-btn.downvote.active {
+            background: #dc2626;
+            color: white;
+        }
+
+        .review-stats {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .review-count {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .review-score {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .peer-score-indicator {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .code-preview {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+
+        .code-preview .added {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .code-preview .removed {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .review-summary {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .contribution-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .review-actions {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 CodeDAO Peer Review</h1>
+            <p>Community-driven code quality validation</p>
+        </div>
+
+        <!-- Review Summary -->
+        <div class="review-summary">
+            <h2>Community Review Stats</h2>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="total-reviews">247</div>
+                    <div class="stat-label">Total Reviews</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avg-quality">87%</div>
+                    <div class="stat-label">Avg Quality</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="active-reviewers">42</div>
+                    <div class="stat-label">Active Reviewers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="consensus-rate">93%</div>
+                    <div class="stat-label">Consensus Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Cards -->
+        <div class="review-card">
+            <div class="contribution-header">
+                <div class="commit-info">
+                    <h3>Add AI collaboration system tracking and metrics</h3>
+                    <div class="commit-meta">
+                        <span>🤖 Claude</span>
+                        <span>6d0419f</span>
+                        <span>5 minutes ago</span>
+                        <span>📄 documentation</span>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="reward-badge">+4.03 CODE</div>
+                    <div class="peer-score-indicator" style="margin-top: 0.5rem;">
+                        Peer Score: 8.5/10
+                    </div>
+                </div>
+            </div>
+
+            <div class="quality-metrics">
+                <div class="quality-row">
+                    <span>Base Reward:</span>
+                    <span>31 lines × 0.1 = 3.1 CODE</span>
+                </div>
+                <div class="quality-row">
+                    <span>Quality Multiplier:</span>
+                    <span>1.3x (+30%)</span>
+                </div>
+                <div class="quality-row">
+                    <span><strong>Final Reward:</strong></span>
+                    <span><strong>4.03 CODE</strong></span>
+                </div>
+                
+                <div class="bonus-tags">
+                    <span class="bonus-tag">✅ Tests +20%</span>
+                    <span class="bonus-tag">📝 Documentation +10%</span>
+                </div>
+            </div>
+
+            <div class="code-preview">
+<span class="added">+ // Validate input data before processing</span>
+<span class="added">+ if (!data || typeof data !== 'object') {</span>
+<span class="added">+   throw new Error('Invalid data provided');</span>
+<span class="added">+ }</span>
+<span class="added">+ </span>
+<span class="added">+ // Process each item in the dataset</span>
+<span class="added">+ return data.items.map(item => {</span>
+<span class="added">+   return transformItem(item);</span>
+<span class="added">+ });</span>
+            </div>
+
+            <div class="review-section">
+                <div class="review-actions">
+                    <div class="review-buttons">
+                        <button class="review-btn upvote" onclick="vote(1, 'upvote', this)">
+                            👍 Approve
+                        </button>
+                        <button class="review-btn downvote" onclick="vote(1, 'downvote', this)">
+                            👎 Needs Work
+                        </button>
+                    </div>
+                    <div class="review-stats">
+                        <div class="review-count">
+                            <span>👍</span>
+                            <span class="review-score" id="upvotes-1">23</span>
+                        </div>
+                        <div class="review-count">
+                            <span>👎</span>
+                            <span class="review-score" id="downvotes-1">3</span>
+                        </div>
+                        <div>|</div>
+                        <div>26 reviews</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-card">
+            <div class="contribution-header">
+                <div class="commit-info">
+                    <h3>Implement wallet connection and token claiming</h3>
+                    <div class="commit-meta">
+                        <span>🤖 Claude</span>
+                        <span>a8b2c4e</span>
+                        <span>2 hours ago</span>
+                        <span>⚡ feature</span>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="reward-badge">+8.77 CODE</div>
+                    <div class="peer-score-indicator" style="margin-top: 0.5rem;">
+                        Peer Score: 9.2/10
+                    </div>
+                </div>
+            </div>
+
+            <div class="quality-metrics">
+                <div class="quality-row">
+                    <span>Base Reward:</span>
+                    <span>67 lines × 0.1 = 6.7 CODE</span>
+                </div>
+                <div class="quality-row">
+                    <span>Quality Multiplier:</span>
+                    <span>1.31x (+31%)</span>
+                </div>
+                <div class="quality-row">
+                    <span><strong>Final Reward:</strong></span>
+                    <span><strong>8.77 CODE</strong></span>
+                </div>
+                
+                <div class="bonus-tags">
+                    <span class="bonus-tag">✅ Tests +20%</span>
+                    <span class="bonus-tag">📁 Multi-file +10%</span>
+                    <span class="bonus-tag">🔄 Active +10%</span>
+                </div>
+            </div>
+
+            <div class="code-preview">
+<span class="added">+ async function connectWallet() {</span>
+<span class="added">+   if (typeof window.ethereum !== 'undefined') {</span>
+<span class="added">+     try {</span>
+<span class="added">+       const accounts = await window.ethereum.request({</span>
+<span class="added">+         method: 'eth_requestAccounts'</span>
+<span class="added">+       });</span>
+<span class="added">+       // Update UI and show success</span>
+<span class="added">+     } catch (error) {</span>
+<span class="added">+       console.error('Failed to connect:', error);</span>
+<span class="added">+     }</span>
+<span class="added">+   }</span>
+<span class="added">+ }</span>
+            </div>
+
+            <div class="review-section">
+                <div class="review-actions">
+                    <div class="review-buttons">
+                        <button class="review-btn upvote" onclick="vote(2, 'upvote', this)">
+                            👍 Approve
+                        </button>
+                        <button class="review-btn downvote" onclick="vote(2, 'downvote', this)">
+                            👎 Needs Work
+                        </button>
+                    </div>
+                    <div class="review-stats">
+                        <div class="review-count">
+                            <span>👍</span>
+                            <span class="review-score" id="upvotes-2">31</span>
+                        </div>
+                        <div class="review-count">
+                            <span>👎</span>
+                            <span class="review-score" id="downvotes-2">2</span>
+                        </div>
+                        <div>|</div>
+                        <div>33 reviews</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-card">
+            <div class="contribution-header">
+                <div class="commit-info">
+                    <h3>Fix navigation styling and responsive layout</h3>
+                    <div class="commit-meta">
+                        <span>🤖 Claude</span>
+                        <span>f3e5d7c</span>
+                        <span>1 day ago</span>
+                        <span>🎨 style</span>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="reward-badge">+1.98 CODE</div>
+                    <div class="peer-score-indicator" style="margin-top: 0.5rem;">
+                        Peer Score: 7.8/10
+                    </div>
+                </div>
+            </div>
+
+            <div class="quality-metrics">
+                <div class="quality-row">
+                    <span>Base Reward:</span>
+                    <span>18 lines × 0.1 = 1.8 CODE</span>
+                </div>
+                <div class="quality-row">
+                    <span>Quality Multiplier:</span>
+                    <span>1.1x (+10%)</span>
+                </div>
+                <div class="quality-row">
+                    <span><strong>Final Reward:</strong></span>
+                    <span><strong>1.98 CODE</strong></span>
+                </div>
+                
+                <div class="bonus-tags">
+                    <span class="bonus-tag">📝 Documentation +10%</span>
+                </div>
+            </div>
+
+            <div class="review-section">
+                <div class="review-actions">
+                    <div class="review-buttons">
+                        <button class="review-btn upvote" onclick="vote(3, 'upvote', this)">
+                            👍 Approve
+                        </button>
+                        <button class="review-btn downvote" onclick="vote(3, 'downvote', this)">
+                            👎 Needs Work
+                        </button>
+                    </div>
+                    <div class="review-stats">
+                        <div class="review-count">
+                            <span>👍</span>
+                            <span class="review-score" id="upvotes-3">18</span>
+                        </div>
+                        <div class="review-count">
+                            <span>👎</span>
+                            <span class="review-score" id="downvotes-3">5</span>
+                        </div>
+                        <div>|</div>
+                        <div>23 reviews</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = 'http://localhost:3000/api'; // Update for production
+        const CURRENT_USER_ID = 'user_' + Math.random().toString(36).substr(2, 9); // Mock user ID
+        
+        // Track user votes and contributions
+        let userVotes = {};
+        let contributions = [];
+
+        // Initialize page
+        async function initializePage() {
+            try {
+                await loadContributions();
+                await loadReviewStats();
+                console.log('Peer review system initialized');
+            } catch (error) {
+                console.error('Failed to initialize page:', error);
+                showNotification('Failed to load data. Using offline mode.', 'error');
+            }
+        }
+
+        // Load contributions from API
+        async function loadContributions() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/contributions?limit=10&sort=timestamp`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    contributions = data.data;
+                    renderContributions(contributions);
+                }
+            } catch (error) {
+                console.error('API call failed, using static data:', error);
+                // Fallback to static data when API unavailable
+            }
+        }
+
+        // Load review statistics
+        async function loadReviewStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reviews/stats`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        updateStatsDisplay(data.data);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        // Update statistics display
+        function updateStatsDisplay(stats) {
+            document.getElementById('total-reviews').textContent = stats.total_reviews || '247';
+            document.getElementById('avg-quality').textContent = `${stats.average_quality || 87}%`;
+            document.getElementById('active-reviewers').textContent = stats.active_reviewers || '42';
+            document.getElementById('consensus-rate').textContent = `${stats.consensus_rate || 93}%`;
+        }
+
+        // Render contributions dynamically
+        function renderContributions(contributions) {
+            // Dynamic rendering would go here
+            // For now, keeping static HTML for simplicity
+        }
+
+        // Vote function with API integration
+        async function vote(contributionId, voteType, button) {
+            // Check if user already voted on this contribution
+            if (userVotes[contributionId]) {
+                showNotification('You have already reviewed this contribution!', 'error');
+                return;
+            }
+
+            // Disable buttons immediately
+            button.classList.add('active');
+            button.disabled = true;
+            
+            const otherButton = button.parentElement.querySelector(
+                voteType === 'upvote' ? '.downvote' : '.upvote'
+            );
+            otherButton.disabled = true;
+            otherButton.style.opacity = '0.5';
+
+            try {
+                // Submit to API
+                const success = await submitReview(contributionId, voteType);
+                
+                if (success) {
+                    // Mark as voted
+                    userVotes[contributionId] = voteType;
+
+                    // Update local vote counts
+                    updateVoteCounts(contributionId, voteType);
+
+                    // Show success feedback
+                    showNotification(
+                        voteType === 'upvote' 
+                            ? '👍 Thank you for your review! Your feedback helps improve code quality.'
+                            : '👎 Feedback recorded. Consider leaving constructive comments for improvement.'
+                    );
+                } else {
+                    // Re-enable buttons on failure
+                    button.classList.remove('active');
+                    button.disabled = false;
+                    otherButton.disabled = false;
+                    otherButton.style.opacity = '1';
+                    
+                    showNotification('Failed to submit review. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Vote submission failed:', error);
+                
+                // Re-enable buttons on error
+                button.classList.remove('active');
+                button.disabled = false;
+                otherButton.disabled = false;
+                otherButton.style.opacity = '1';
+                
+                showNotification('Network error. Please check your connection.', 'error');
+            }
+        }
+
+        // Submit review to API
+        async function submitReview(contributionId, voteType) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contribution_id: contributionId,
+                        vote: voteType,
+                        reviewer_id: CURRENT_USER_ID,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    console.log('Review submitted successfully:', data);
+                    return true;
+                } else {
+                    console.error('API returned error:', data);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Network error submitting review:', error);
+                return false;
+            }
+        }
+
+        // Update vote counts in UI
+        function updateVoteCounts(contributionId, voteType) {
+            const upvoteElement = document.getElementById(`upvotes-${contributionId}`);
+            const downvoteElement = document.getElementById(`downvotes-${contributionId}`);
+
+            if (voteType === 'upvote' && upvoteElement) {
+                upvoteElement.textContent = parseInt(upvoteElement.textContent) + 1;
+            } else if (voteType === 'downvote' && downvoteElement) {
+                downvoteElement.textContent = parseInt(downvoteElement.textContent) + 1;
+            }
+        }
+
+        // Refresh data
+        async function refreshData() {
+            showNotification('🔄 Refreshing data...');
+            try {
+                await loadContributions();
+                await loadReviewStats();
+                showNotification('✅ Data refreshed successfully!');
+            } catch (error) {
+                showNotification('Failed to refresh data', 'error');
+            }
+        }
+
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10b981;
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                z-index: 1000;
+                transform: translateX(400px);
+                transition: transform 0.3s;
+            `;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            // Show notification
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Hide notification
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 4000);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+        });
+
+        // Add refresh button functionality
+        function addRefreshButton() {
+            const refreshButtons = document.querySelectorAll('.refresh-btn');
+            refreshButtons.forEach(btn => {
+                btn.addEventListener('click', refreshData);
+            });
+        }
+
+        // Call this after DOM is loaded
+        setTimeout(addRefreshButton, 100);
+    </script>
+</body>
+</html>
