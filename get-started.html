@@ -18,29 +18,47 @@
     </nav>
   </header>
 
-  <main class="dashboard">
-    <section class="intro">
+  <main class="container">
+    <section class="onboarding">
       <h2>👋 Welcome to CodeDAO</h2>
-      <p>Earn real CODE tokens every time you write quality code. Here's how to get started:</p>
-      <div class="step-grid">
-        <div class="step">① Connect Wallet</div>
-        <div class="step">② Install Extension</div>
-        <div class="step">③ Write Code</div>
-        <div class="step">④ Claim Rewards</div>
+      <p>Earn real CODE tokens every time you write quality code. Here’s how to start:</p>
+
+      <div class="step-card">
+        <h3>🔗 Step 1: Connect Your Wallet</h3>
+        <p>Go to the <a href="wallet-dashboard.html">Wallet Dashboard</a> and click <strong>"Connect Wallet"</strong>.</p>
+        <ul>
+          <li>✅ MetaMask, Coinbase, WalletConnect supported</li>
+          <li>✅ Make sure you're on the <strong>Base network</strong> (Chain ID: 8453)</li>
+          <li>🆕 New to MetaMask? <a href="https://metamask.io" target="_blank">Download it here</a></li>
+        </ul>
+      </div>
+
+      <div class="step-card">
+        <h3>🧩 Step 2: Install the VS Code Extension</h3>
+        <p>Track your commits and earn rewards automatically:</p>
+        <pre><code>git clone https://github.com/CodeDAO-org/codedao-extension.git
+cd codedao-extension && npm install
+code . # Press F5 to launch Extension Dev Host
+</code></pre>
+        <p><em>⚠️ Note: Extension is still in dev mode. Marketplace launch coming soon.</em></p>
+      </div>
+
+      <div class="step-card">
+        <h3>💻 Step 3: Write & Commit Quality Code</h3>
+        <p>Make regular commits to your own repo — we’ll track line count and score quality.</p>
+        <p>You’ll see popups like: <strong>✅ 4.03 CODE earned!</strong></p>
+      </div>
+
+      <div class="step-card">
+        <h3>🎁 Step 4: Claim Your CODE Tokens</h3>
+        <p>Visit your <a href="wallet-dashboard.html">Wallet Dashboard</a> and click <strong>"Claim"</strong> to receive CODE.</p>
+        <p>💸 Your tokens will be sent to your connected wallet.</p>
       </div>
     </section>
+  </main>
 
-    <section class="step-box">
-      <h3>🔗 Step 1: Connect Your Wallet</h3>
-      <p>Go to the <a href="wallet-dashboard.html">Wallet Dashboard</a> and click <strong>"Connect Wallet."</strong></p>
-      <ul>
-        <li>Supports MetaMask, Coinbase, WalletConnect</li>
-        <li>Ensure you're on the <strong>Base network</strong> (Chain ID: 8453)</li>
-        <li>New to MetaMask? <a href="https://metamask.io" target="_blank">Download it here</a></li>
-      </ul>
-    </section>
-
-    <section class="step-box">
-      <h3>🧩 Step 2: Install the VS Code Extension</h3>
-      <p>Use our extension to track your commits and earn CODE rewards.</p>
-      <p class="warning">⚠️ Beta Notice: Extension is under development. Use dev mode to
+  <footer>
+    <p>© 2025 CodeDAO. All rights reserved.</p>
+  </footer>
+</body>
+</html>
