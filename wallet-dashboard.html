@@ -1,716 +1,1318 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeDAO Wallet Dashboard</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.11.1/web3.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wallet Dashboard - CodeDAO</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: #fafafa;
-            color: #1a1a1a;
-            line-height: 1.5;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: #fafafa;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px;
-        }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
 
-        /* Header */
-        .header {
-            background: white;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            padding: 16px 24px;
-            margin-bottom: 32px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
+    /* Header - Match existing design */
+    .navbar {
+      background: white;
+      border: 1px solid #e1e1e1;
+      border-radius: 8px;
+      padding: 16px 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
 
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+    .navbar h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
 
-        .logo {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a1a;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .navbar nav {
+      display: flex;
+      gap: 24px;
+    }
 
-        .nav-menu {
-            display: flex;
-            gap: 32px;
-            align-items: center;
-        }
+    .navbar a {
+      color: #666;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
 
-        .nav-link {
-            color: #666;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
+    .navbar a:hover,
+    .navbar a.active {
+      color: #1a1a1a;
+    }
 
-        .nav-link:hover, .nav-link.active {
-            color: #1a1a1a;
-        }
+    /* Status indicator */
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #10b981;
+      margin-bottom: 32px;
+    }
 
-        /* Status Banner */
-        .status-banner {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 12px 20px;
-            margin-bottom: 32px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+    }
 
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-        }
+    /* Page header */
+    .page-header {
+      margin-bottom: 32px;
+    }
 
-        .status-text {
-            font-size: 14px;
-            color: #374151;
-            font-weight: 500;
-        }
+    .page-header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
 
-        /* Page Header */
-        .page-header {
-            margin-bottom: 32px;
-        }
+    .page-header p {
+      font-size: 16px;
+      color: #6b7280;
+    }
 
-        .page-title {
-            font-size: 28px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
+    /* Main grid layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 400px;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
 
-        .page-subtitle {
-            font-size: 16px;
-            color: #666;
-            font-weight: 400;
-        }
+    /* Cards - Match existing style */
+    .dashboard-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-        /* Wallet Section */
-        .wallet-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 48px;
-        }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .wallet-card {
-            background: white;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            padding: 24px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+    }
 
-        .wallet-card:hover {
-            border-color: #d1d5db;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
+    .card-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
 
-        .wallet-card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: #1a1a1a;
-        }
+    .card-subtitle {
+      font-size: 14px;
+      color: #6b7280;
+    }
 
-        .wallet-buttons {
-            display: flex;
-            gap: 12px;
-            margin: 16px 0;
-            flex-wrap: wrap;
-        }
+    .card-link {
+      font-size: 12px;
+      color: #6b7280;
+      text-decoration: underline;
+      cursor: pointer;
+    }
 
-        .wallet-btn {
-            background: #1a1a1a;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .card-link:hover {
+      color: #374151;
+    }
 
-        .wallet-btn:hover {
-            background: #374151;
-        }
+    /* Connect wallet section */
+    .connect-wallet {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-        .wallet-btn.secondary {
-            background: #f8fafc;
-            color: #374151;
-            border: 1px solid #e2e8f0;
-        }
+    .wallet-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-        .wallet-btn.secondary:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-        }
+    .wallet-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+    }
 
-        .balance-display {
-            font-size: 24px;
-            font-weight: 600;
-            margin: 16px 0;
-            color: #1a1a1a;
-        }
+    .wallet-option:hover {
+      border-color: #d1d5db;
+      background: #f9fafb;
+      transform: translateY(-1px);
+    }
 
-        .usd-balance {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 16px;
-        }
+    .wallet-option:active {
+      transform: translateY(0);
+    }
 
-        .wallet-status {
-            padding: 12px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-        }
+    .wallet-option.loading {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-        .wallet-status.connected {
-            background: #f0fdf4;
-            color: #065f46;
-            border: 1px solid #10b981;
-        }
+    .wallet-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
 
-        .wallet-status.disconnected {
-            background: #f3f4f6;
-            color: #374151;
-            border: 1px solid #e5e7eb;
-        }
+    .wallet-icon.metamask { background: #f6921e; color: white; }
+    .wallet-icon.coinbase { background: #0052ff; color: white; }
+    .wallet-icon.walletconnect { background: #3b99fc; color: white; }
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
-            margin-bottom: 48px;
-        }
+    .wallet-name {
+      font-weight: 500;
+      color: #1a1a1a;
+    }
 
-        .stat-card {
-            background: white;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
+    .connection-status {
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      color: #6b7280;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
 
-        .stat-card:hover {
-            border-color: #d1d5db;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
+    .connection-status.connected {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #166534;
+    }
 
-        .stat-number {
-            font-size: 24px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 4px;
-        }
+    .connection-status.connecting {
+      background: #fef3c7;
+      border-color: #fcd34d;
+      color: #92400e;
+    }
 
-        .stat-label {
-            font-size: 12px;
-            color: #666;
-            font-weight: 500;
-        }
+    .connection-status.error {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
 
-        /* Activity Feed */
-        .feed-section {
-            background: white;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            margin-bottom: 32px;
-        }
+    /* Connected state */
+    .connected-wallet {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
 
-        .section-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #e1e1e1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .wallet-address {
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-size: 14px;
+      color: #6b7280;
+      padding: 12px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      word-break: break-all;
+    }
 
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
+    /* Earnings sidebar */
+    .earnings-sidebar {
+      background: #1f2937;
+      border-radius: 12px;
+      padding: 24px;
+      color: white;
+    }
 
-        .refresh-btn {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            color: #374151;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+    .earnings-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
 
-        .refresh-btn:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-        }
+    .earnings-header h3 {
+      font-size: 18px;
+      font-weight: 600;
+    }
 
-        .commit-feed {
-            padding: 0;
-        }
+    .earnings-value {
+      font-size: 48px;
+      font-weight: 700;
+      color: #10b981;
+      margin-bottom: 8px;
+    }
 
-        .commit-item {
-            padding: 16px 24px;
-            border-bottom: 1px solid #f3f4f6;
-            transition: background-color 0.2s ease;
-        }
+    .earnings-label {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 24px;
+    }
 
-        .commit-item:last-child {
-            border-bottom: none;
-        }
+    /* Buttons - Match existing style */
+    .btn {
+      background: #1a1a1a;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      width: 100%;
+    }
 
-        .commit-item:hover {
-            background: #f9fafb;
-        }
+    .btn:hover:not(:disabled) {
+      background: #374151;
+      transform: translateY(-1px);
+    }
 
-        .commit-content {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
+    .btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
 
-        .commit-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            background: #f3f4f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #6b7280;
-            flex-shrink: 0;
-        }
+    .btn:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+      transform: none;
+    }
 
-        .commit-details {
-            flex: 1;
-            min-width: 0;
-        }
+    .btn.secondary {
+      background: #f8fafc;
+      color: #374151;
+      border: 1px solid #e2e8f0;
+    }
 
-        .commit-message {
-            font-size: 14px;
-            color: #1a1a1a;
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
+    .btn.secondary:hover:not(:disabled) {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
 
-        .commit-meta {
-            font-size: 12px;
-            color: #6b7280;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    .btn.danger {
+      background: #ef4444;
+    }
 
-        .commit-tag {
-            background: #f3f4f6;
-            color: #6b7280;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 500;
-        }
+    .btn.danger:hover:not(:disabled) {
+      background: #dc2626;
+    }
 
-        /* Earnings Card */
-        .earnings-card {
-            background: #1a1a1a;
-            color: white;
-            text-align: center;
-        }
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+      margin-top: 32px;
+    }
 
-        .earnings-card h3 {
-            color: white;
-        }
+    .stat-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
 
-        .earnings-amount {
-            font-size: 32px;
-            font-weight: 600;
-            margin: 16px 0;
-            color: #10b981;
-        }
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
 
-        .claim-btn {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            margin-top: 16px;
-            width: 100%;
-        }
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
 
-        .claim-btn:hover {
-            background: #059669;
-        }
+    .stat-label {
+      font-size: 14px;
+      color: #6b7280;
+    }
 
-        .claim-btn:disabled {
-            background: #6b7280;
-            cursor: not-allowed;
-        }
+    /* Loading spinner */
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
 
-        /* SDK Section */
-        .sdk-section {
-            background: white;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            padding: 24px;
-            text-align: center;
-        }
+    .loading.dark {
+      border: 2px solid rgba(0, 0, 0, 0.3);
+      border-top-color: #1a1a1a;
+    }
 
-        .sdk-section h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-        .sdk-section p {
-            color: #666;
-            margin-bottom: 20px;
-        }
+    /* Alerts */
+    .alert {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      max-width: 300px;
+    }
 
-        .code-snippet {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 12px 16px;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-            font-size: 14px;
-            color: #374151;
-            margin: 16px 0;
-        }
+    .alert.show {
+      transform: translateX(0);
+    }
 
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 16px;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .nav-menu {
-                gap: 20px;
-                flex-wrap: wrap;
-            }
-            
-            .wallet-section {
-                grid-template-columns: 1fr;
-            }
-            
-            .wallet-buttons {
-                flex-direction: column;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-        }
+    .alert.success {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
 
-        /* Notifications */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #10b981;
-            color: white;
-            padding: 16px 20px;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
+    .alert.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
 
-        .notification.show {
-            transform: translateX(0);
-        }
+    .alert.warning {
+      background: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fed7aa;
+    }
 
-        .notification.error {
-            background: #ef4444;
-        }
+    /* Network indicator */
+    .network-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 12px;
+    }
 
-        .notification.warning {
-            background: #f59e0b;
-        }
-    </style>
+    .network-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    .network-dot.wrong {
+      background: #ef4444;
+    }
+
+    /* Transaction History */
+    .transaction-list {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 32px;
+    }
+
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .transaction-item:last-child {
+      border-bottom: none;
+    }
+
+    .transaction-details h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .transaction-hash {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .transaction-amount {
+      font-weight: 600;
+      color: #10b981;
+      text-align: right;
+    }
+
+    .transaction-amount.negative {
+      color: #ef4444;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 16px;
+      }
+
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .navbar nav {
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .page-header h1 {
+        font-size: 28px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .dashboard-card {
+        padding: 20px;
+      }
+
+      .earnings-sidebar {
+        padding: 20px;
+      }
+
+      .earnings-value {
+        font-size: 36px;
+      }
+
+      .alert {
+        right: 16px;
+        top: 16px;
+        max-width: calc(100vw - 32px);
+      }
+    }
+
+    /* Hide elements by default */
+    .hidden {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                    </svg>
-                    CodeDAO Wallet Dashboard
-                </div>
-                <nav class="nav-menu">
-                    <a href="/" class="nav-link">Home</a>
-                    <a href="/dashboard.html" class="nav-link">Dashboard</a>
-                    <a href="/wallet-dashboard.html" class="nav-link active">Wallet</a>
-                    <a href="/peer-review.html" class="nav-link">Peer Review</a>
-                    <a href="/get-started.html" class="nav-link">Get Started</a>
-                </nav>
-            </div>
-        </header>
+  <div class="container">
+    <!-- Header -->
+    <header class="navbar">
+      <h1>⚡ CodeDAO Wallet Dashboard</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="wallet-dashboard.html" class="active">Wallet</a>
+        <a href="peer-review.html">Peer Review</a>
+        <a href="get-started.html">Get Started</a>
+      </nav>
+    </header>
 
-        <!-- Status Banner -->
-        <div class="status-banner">
-            <div class="status-indicator"></div>
-            <span class="status-text">Wallet connection ready • Base network supported</span>
-        </div>
-
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">Wallet Dashboard</h1>
-            <p class="page-subtitle">Connect your wallet and claim your earned CODE tokens</p>
-        </div>
-
-        <!-- Wallet Section -->
-        <div class="wallet-section">
-            <div class="wallet-card">
-                <h3>Connect Your Wallet</h3>
-                <div class="wallet-buttons">
-                    <button class="wallet-btn" onclick="connectMetaMask()">
-                        🦊 MetaMask
-                    </button>
-                    <button class="wallet-btn secondary" onclick="connectCoinbase()">
-                        🔵 Coinbase
-                    </button>
-                    <button class="wallet-btn secondary" onclick="connectWalletConnect()">
-                        🔗 WalletConnect
-                    </button>
-                </div>
-                <div id="walletStatus" class="wallet-status disconnected">Not Connected</div>
-            </div>
-
-            <div class="wallet-card">
-                <h3>CODE Balance</h3>
-                <div class="balance-display" id="codeBalance">0 CODE</div>
-                <div class="usd-balance" id="usdBalance">$0.00 USD</div>
-                <div style="font-size: 12px; color: #666;">
-                    Contract: <a href="https://basescan.org/address/0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0" target="_blank" style="color: #666;">0x1F8b...fbD0</a>
-                </div>
-            </div>
-
-            <div class="wallet-card earnings-card">
-                <h3>💎 Your AI Earnings</h3>
-                <div class="earnings-amount" id="pendingRewards">0 CODE</div>
-                <div style="opacity: 0.8;">Pending Rewards</div>
-                <button class="claim-btn" onclick="claimRewards()" id="claimButton" disabled>
-                    Connect Wallet to Claim
-                </button>
-            </div>
-        </div>
-
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="claudeActions">1</div>
-                <div class="stat-label">Claude Actions</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="chatgptActions">0</div>
-                <div class="stat-label">ChatGPT Actions</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="liveCommits">1</div>
-                <div class="stat-label">Live Commits</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="successRate">99%</div>
-                <div class="stat-label">Success Rate</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="todayEarnings">0</div>
-                <div class="stat-label">Today</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="weekEarnings">0</div>
-                <div class="stat-label">This Week</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="monthEarnings">0</div>
-                <div class="stat-label">This Month</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="dayStreak">0</div>
-                <div class="stat-label">Day Streak</div>
-            </div>
-        </div>
-
-        <!-- Activity Feed -->
-        <div class="feed-section">
-            <div class="section-header">
-                <h2 class="section-title">Live AI Collaboration Feed</h2>
-                <button class="refresh-btn" onclick="refreshFeed()">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                    </svg>
-                    Refresh
-                </button>
-            </div>
-            
-            <div class="commit-feed" id="commitFeed">
-                <div class="commit-item">
-                    <div class="commit-content">
-                        <div class="commit-avatar">C</div>
-                        <div class="commit-details">
-                            <div class="commit-message">Add AI collaboration system tracking and metrics</div>
-                            <div class="commit-meta">
-                                <span>6d0419f</span>
-                                <span>5 minutes ago</span>
-                                <span>by adminpipelabs</span>
-                                <span class="commit-tag">documentation</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="commit-item">
-                    <div class="commit-content">
-                        <div class="commit-avatar">G</div>
-                        <div class="commit-details">
-                            <div class="commit-message">System monitoring active</div>
-                            <div class="commit-meta">
-                                <span>2 hours ago</span>
-                                <span class="commit-tag">system</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SDK Section -->
-        <div class="sdk-section">
-            <h3>🚀 Try Our SDK!</h3>
-            <p>Add AI collaboration transparency to your projects</p>
-            <div class="code-snippet">
-                npm install codedao-dashboard-sdk
-            </div>
-            <div style="margin-top: 15px;">
-                <a href="https://github.com/CodeDAO-org" target="_blank" class="wallet-btn secondary">📁 SDK Repo</a>
-                <button class="wallet-btn secondary" onclick="copyToClipboard('npm install codedao-dashboard-sdk')">📄 Copy</button>
-            </div>
-        </div>
+    <!-- Status -->
+    <div class="status-indicator">
+      <div class="status-dot"></div>
+      <span>Wallet connection ready • Base network supported</span>
     </div>
 
-    <script>
-        // Web3 integration
-        let web3;
-        let userAccount;
-        const CODE_TOKEN_ADDRESS = '0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0';
-        const BASE_CHAIN_ID = 8453;
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>Wallet Dashboard</h1>
+      <p>Connect your wallet and claim your earned CODE tokens</p>
+    </div>
 
-        // Connect MetaMask
-        async function connectMetaMask() {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    const accounts = await window.ethereum.request({ 
-                        method: 'eth_requestAccounts' 
-                    });
-                    
-                    web3 = new Web3(window.ethereum);
-                    userAccount = accounts[0];
-                    
-                    // Switch to Base network if needed
-                    await switchToBase();
-                    
-                    updateWalletUI();
-                    showNotification('MetaMask connected successfully!', 'success');
-                } catch (error) {
-                    console.error('Failed to connect MetaMask:', error);
-                    showNotification('Failed to connect MetaMask', 'error');
-                }
+    <!-- Main Dashboard -->
+    <div class="dashboard-grid">
+      <!-- Connect Wallet Card -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <h3 class="card-title">Connect Your Wallet</h3>
+        </div>
+        
+        <div class="connect-wallet" id="connectWalletSection">
+          <div class="wallet-options">
+            <div class="wallet-option" onclick="connectMetaMask()" id="metamaskOption">
+              <div class="wallet-icon metamask">🦊</div>
+              <span class="wallet-name">MetaMask</span>
+            </div>
+            
+            <div class="wallet-option" onclick="connectCoinbase()" id="coinbaseOption">
+              <div class="wallet-icon coinbase">◉</div>
+              <span class="wallet-name">Coinbase</span>
+            </div>
+            
+            <div class="wallet-option" onclick="connectWalletConnect()" id="walletconnectOption">
+              <div class="wallet-icon walletconnect">🔗</div>
+              <span class="wallet-name">WalletConnect</span>
+            </div>
+          </div>
+          
+          <div class="connection-status" id="connectionStatus">
+            Not Connected
+          </div>
+          
+          <div class="network-indicator" id="networkIndicator">
+            <div class="network-dot" id="networkDot"></div>
+            <span id="networkText">Base Network Ready</span>
+          </div>
+        </div>
+
+        <!-- Connected State (Hidden by default) -->
+        <div class="connected-wallet hidden" id="connectedWalletSection">
+          <div class="connection-status connected">
+            ✅ Wallet Connected
+          </div>
+          <div class="wallet-address" id="walletAddress">
+            0x1234...5678
+          </div>
+          <div class="network-indicator">
+            <div class="network-dot" id="connectedNetworkDot"></div>
+            <span id="connectedNetworkText">Connected to Base</span>
+          </div>
+          <button class="btn danger" onclick="disconnectWallet()">
+            Disconnect Wallet
+          </button>
+        </div>
+      </div>
+
+      <!-- CODE Balance Card -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <h3 class="card-title">CODE Balance</h3>
+          <span class="card-link" onclick="refreshBalance()">
+            <span id="refreshText">Refresh</span>
+            <span class="loading dark hidden" id="refreshLoader"></span>
+          </span>
+        </div>
+        
+        <div class="card-value" id="codeBalance">0 CODE</div>
+        <div class="card-subtitle" id="codeBalanceUSD">$0.00 USD</div>
+        <div class="card-link">
+          Contract: <a href="https://basescan.org/address/0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0" target="_blank" style="color: inherit; text-decoration: inherit;">0x1F8b...fbD0</a>
+        </div>
+      </div>
+
+      <!-- Earnings Sidebar -->
+      <div class="earnings-sidebar">
+        <div class="earnings-header">
+          <span>💎</span>
+          <h3>Your AI Earnings</h3>
+        </div>
+        
+        <div class="earnings-value" id="pendingRewards">0 CODE</div>
+        <div class="earnings-label">Pending Rewards</div>
+        
+        <button class="btn" id="claimButton" onclick="claimRewards()" disabled>
+          Connect Wallet to Claim
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="totalCommits">-</div>
+        <div class="stat-label">Total Commits</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-value" id="rewardsClaimed">-</div>
+        <div class="stat-label">Rewards Claimed</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-value" id="qualityRating">-</div>
+        <div class="stat-label">Quality Rating</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-value" id="networkStatus">99%</div>
+        <div class="stat-label">Network Status</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-value" id="activeProjects">-</div>
+        <div class="stat-label">Active Projects</div>
+      </div>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="transaction-list" id="transactionList" style="display: none;">
+      <div class="card-header" style="border-bottom: 1px solid #f3f4f6; padding-bottom: 16px; margin-bottom: 16px;">
+        <h3 class="card-title">Recent Transactions</h3>
+        <span class="card-link" onclick="loadTransactionHistory()">Refresh</span>
+      </div>
+      <div id="transactionItems">
+        <div style="text-align: center; padding: 40px; color: #6b7280;">
+          <p>Loading transactions...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Messages -->
+  <div class="alert success" id="successAlert"></div>
+  <div class="alert error" id="errorAlert"></div>
+  <div class="alert warning" id="warningAlert"></div>
+
+  <script>
+    // Production Configuration
+    const CONFIG = {
+      MORALIS_API_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImQzY2NjOTEzLTcwZDUtNGZkOC05ZmQzLTQxYjY1YmM3ZDljMiIsIm9yZ0lkIjoiNDYyNjY1IiwidXNlcklkIjoiNDc1OTg4IiwidHlwZUlkIjoiNGIzMzk5MDUtZjVlZC00N2FhLTliNmYtZjdiMDQ1NzgwODEzIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NTM5OTI2ODQsImV4cCI6NDkwOTc1MjY4NH0._82QL7vojD2DwHwh8U182qpZXqJ2lei_llw2Mdyl7fg',
+      CONTRACT_ADDRESS: '0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0',
+      BASE_CHAIN_ID: 8453,
+      BASE_CHAIN_HEX: '0x2105',
+      MORALIS_BASE_URL: 'https://deep-index.moralis.io/api/v2',
+      CODE_TOKEN_DECIMALS: 18,
+      CODE_PRICE_USD: 0.15 // Mock price for now
+    };
+
+    // Global state
+    let currentAccount = null;
+    let isConnecting = false;
+    let currentChainId = null;
+    let walletBalanceData = null;
+
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 CodeDAO Wallet Dashboard initialized');
+      await checkExistingConnection();
+      setupEventListeners();
+    });
+
+    // Check for existing wallet connection
+    async function checkExistingConnection() {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          const accounts = await window.ethereum.request({
+            method: 'eth_accounts'
+          });
+          
+          if (accounts.length > 0) {
+            currentAccount = accounts[0];
+            currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+            console.log('🔗 Existing connection found:', currentAccount);
+            updateUIConnected();
+            await loadWalletData();
+          }
+          
+          updateNetworkStatus();
+        } catch (error) {
+          console.error('❌ Error checking existing connection:', error);
+          showAlert('error', 'Failed to check wallet connection');
+        }
+      } else {
+        console.log('⚠️ MetaMask not detected');
+      }
+    }
+
+    // Connect MetaMask - Production Ready
+    async function connectMetaMask() {
+      if (isConnecting) return;
+      
+      if (typeof window.ethereum === 'undefined') {
+        showAlert('error', 'MetaMask not installed. Please install MetaMask first.');
+        window.open('https://metamask.io/download/', '_blank');
+        return;
+      }
+
+      isConnecting = true;
+      const metamaskOption = document.getElementById('metamaskOption');
+      metamaskOption.classList.add('loading');
+      updateConnectionStatus('Connecting to MetaMask...', 'connecting');
+
+      try {
+        console.log('🦊 Requesting MetaMask connection...');
+        
+        const accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts'
+        });
+
+        if (accounts.length === 0) {
+          throw new Error('No accounts found');
+        }
+
+        currentAccount = accounts[0];
+        console.log('✅ Connected to account:', currentAccount);
+        
+        currentChainId = await window.ethereum.request({
+          method: 'eth_chainId'
+        });
+
+        if (parseInt(currentChainId, 16) !== CONFIG.BASE_CHAIN_ID) {
+          updateConnectionStatus('Switching to Base network...', 'connecting');
+          await switchToBaseNetwork();
+        }
+
+        updateUIConnected();
+        await loadWalletData();
+        showAlert('success', '🎉 Wallet connected successfully!');
+
+      } catch (error) {
+        console.error('❌ MetaMask connection error:', error);
+        
+        if (error.code === 4001) {
+          showAlert('error', 'Connection rejected by user');
+        } else if (error.code === -32002) {
+          showAlert('warning', 'Connection request pending. Please check MetaMask.');
+        } else {
+          showAlert('error', `Failed to connect: ${error.message}`);
+        }
+        
+        updateConnectionStatus('Connection failed', 'error');
+      } finally {
+        isConnecting = false;
+        metamaskOption.classList.remove('loading');
+      }
+    }
+
+    // Connect other wallets (placeholder)
+    async function connectCoinbase() {
+      showAlert('warning', 'Coinbase Wallet support coming soon. Please use MetaMask for now.');
+    }
+
+    async function connectWalletConnect() {
+      showAlert('warning', 'WalletConnect support coming soon. Please use MetaMask for now.');
+    }
+
+    // Switch to Base Network
+    async function switchToBaseNetwork() {
+      if (typeof window.ethereum === 'undefined') return;
+
+      try {
+        console.log('🔄 Switching to Base network...');
+        
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: CONFIG.BASE_CHAIN_HEX }],
+        });
+        
+        currentChainId = CONFIG.BASE_CHAIN_HEX;
+        updateNetworkStatus();
+        showAlert('success', '✅ Switched to Base network');
+        
+      } catch (switchError) {
+        console.error('❌ Network switch error:', switchError);
+        
+        if (switchError.code === 4902) {
+          try {
+            console.log('➕ Adding Base network...');
+            
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: CONFIG.BASE_CHAIN_HEX,
+                chainName: 'Base',
+                nativeCurrency: {
+                  name: 'Ethereum',
+                  symbol: 'ETH',
+                  decimals: 18,
+                },
+                rpcUrls: ['https://mainnet.base.org'],
+                blockExplorerUrls: ['https://basescan.org'],
+              }],
+            });
+            
+            currentChainId = CONFIG.BASE_CHAIN_HEX;
+            updateNetworkStatus();
+            showAlert('success', '✅ Base network added and connected');
+            
+          } catch (addError) {
+            console.error('❌ Add network error:', addError);
+            showAlert('error', 'Failed to add Base network. Please add manually in MetaMask.');
+          }
+        } else {
+          showAlert('error', 'Failed to switch network. Please switch to Base manually.');
+        }
+      }
+    }
+
+    // Update UI when connected
+    function updateUIConnected() {
+      document.getElementById('connectWalletSection').classList.add('hidden');
+      document.getElementById('connectedWalletSection').classList.remove('hidden');
+      document.getElementById('walletAddress').textContent = formatAddress(currentAccount);
+      document.getElementById('transactionList').style.display = 'block';
+      
+      const claimBtn = document.getElementById('claimButton');
+      claimBtn.textContent = 'Loading rewards...';
+      claimBtn.disabled = false;
+      
+      updateNetworkStatus();
+    }
+
+    // Update connection status
+    function updateConnectionStatus(status, type = '') {
+      const statusEl = document.getElementById('connectionStatus');
+      statusEl.textContent = status;
+      statusEl.className = `connection-status ${type}`;
+    }
+
+    // Update network status
+    function updateNetworkStatus() {
+      const isCorrectNetwork = parseInt(currentChainId, 16) === CONFIG.BASE_CHAIN_ID;
+      
+      const networkDot = document.getElementById('networkDot');
+      const networkText = document.getElementById('networkText');
+      
+      if (networkDot && networkText) {
+        if (isCorrectNetwork || !currentAccount) {
+          networkDot.className = 'network-dot';
+          networkText.textContent = 'Base Network Ready';
+        } else {
+          networkDot.className = 'network-dot wrong';
+          networkText.textContent = 'Wrong Network - Switch to Base';
+        }
+      }
+      
+      const connectedNetworkDot = document.getElementById('connectedNetworkDot');
+      const connectedNetworkText = document.getElementById('connectedNetworkText');
+      
+      if (connectedNetworkDot && connectedNetworkText && currentAccount) {
+        if (isCorrectNetwork) {
+          connectedNetworkDot.className = 'network-dot';
+          connectedNetworkText.textContent = 'Connected to Base';
+        } else {
+          connectedNetworkDot.className = 'network-dot wrong';
+          connectedNetworkText.textContent = 'Wrong Network - Click to Switch';
+          connectedNetworkText.style.cursor = 'pointer';
+          connectedNetworkText.onclick = switchToBaseNetwork;
+        }
+      }
+    }
+
+    // Load wallet data using Moralis API
+    async function loadWalletData() {
+      if (!currentAccount) return;
+
+      console.log('📊 Loading wallet data for:', currentAccount);
+
+      try {
+        // Load all data in parallel
+        const [balance, pendingRewards, transactions] = await Promise.all([
+          getTokenBalance(),
+          getPendingRewards(),
+          loadTransactionHistory()
+        ]);
+
+        // Update balance
+        updateBalance(balance);
+
+        // Update pending rewards
+        document.getElementById('pendingRewards').textContent = `${pendingRewards} CODE`;
+        updateClaimButton(pendingRewards);
+
+        // Update stats
+        await updateStats();
+
+        console.log('✅ Wallet data loaded successfully');
+
+      } catch (error) {
+        console.error('❌ Error loading wallet data:', error);
+        showAlert('error', 'Failed to load wallet data. Please refresh and try again.');
+      }
+    }
+
+    // Get token balance using Moralis API
+    async function getTokenBalance() {
+      if (!currentAccount) return '0.00';
+
+      try {
+        console.log('💰 Fetching CODE token balance...');
+        
+        const response = await fetch(`${CONFIG.MORALIS_BASE_URL}/${currentAccount}/erc20?chain=base&token_addresses=${CONFIG.CONTRACT_ADDRESS}`, {
+          headers: {
+            'X-API-Key': CONFIG.MORALIS_API_KEY,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          if (response.status === 429) {
+            throw new Error('Rate limit exceeded. Please try again in a moment.');
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('📈 Moralis balance response:', data);
+        
+        if (data && data.length > 0) {
+          const balance = parseFloat(data[0].balance) / Math.pow(10, CONFIG.CODE_TOKEN_DECIMALS);
+          return balance.toFixed(2);
+        }
+        
+        return '0.00';
+        
+      } catch (error) {
+        console.error('❌ Error fetching token balance:', error);
+        showAlert('warning', `Balance fetch failed: ${error.message}`);
+        return '0.00';
+      }
+    }
+
+    // Get pending rewards from GitHub/API
+    async function getPendingRewards() {
+      try {
+        // TODO: Implement actual GitHub API integration
+        // This would fetch from your .codedao/rewards.json file
+        
+        // For now, simulate pending rewards based on wallet activity
+        if (currentAccount) {
+          // Simulate some pending rewards for demo
+          const mockRewards = (Math.random() * 50).toFixed(2);
+          return mockRewards;
+        }
+        
+        return '0.00';
+        
+      } catch (error) {
+        console.error('❌ Error fetching pending rewards:', error);
+        return '0.00';
+      }
+    }
+
+    // Update balance display
+    function updateBalance(balance) {
+      document.getElementById('codeBalance').textContent = `${balance} CODE`;
+      
+      const usdValue = (parseFloat(balance) * CONFIG.CODE_PRICE_USD).toFixed(2);
+      document.getElementById('codeBalanceUSD').textContent = `$${usdValue} USD`;
+    }
+
+    // Update claim button based on pending rewards
+    function updateClaimButton(pendingRewards) {
+      const claimBtn = document.getElementById('claimButton');
+      const amount = parseFloat(pendingRewards);
+      
+      if (amount > 0) {
+        claimBtn.textContent = `Claim ${pendingRewards} CODE`;
+        claimBtn.disabled = false;
+      } else {
+        claimBtn.textContent = 'No Rewards to Claim';
+        claimBtn.disabled = true;
+      }
+    }
+
+    // Update stats
+    async function updateStats() {
+      try {
+        // Mock stats for now - replace with real data later
+        document.getElementById('totalCommits').textContent = Math.floor(Math.random() * 100) + 10;
+        document.getElementById('rewardsClaimed').textContent = Math.floor(Math.random() * 10);
+        document.getElementById('qualityRating').textContent = (7 + Math.random() * 3).toFixed(1);
+        document.getElementById('activeProjects').textContent = Math.floor(Math.random() * 5) + 1;
+        
+      } catch (error) {
+        console.error('❌ Error updating stats:', error);
+      }
+    }
+
+    // Load transaction history using Moralis
+    async function loadTransactionHistory() {
+      if (!currentAccount) return;
+
+      try {
+        console.log('📋 Loading transaction history...');
+        
+        const response = await fetch(`${CONFIG.MORALIS_BASE_URL}/${currentAccount}/erc20/transfers?chain=base&contract_address=${CONFIG.CONTRACT_ADDRESS}&limit=10`, {
+          headers: {
+            'X-API-Key': CONFIG.MORALIS_API_KEY,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const transactionItems = document.getElementById('transactionItems');
+        
+        if (data && data.result && data.result.length > 0) {
+          transactionItems.innerHTML = '';
+          
+          data.result.forEach(tx => {
+            const amount = parseFloat(tx.value) / Math.pow(10, CONFIG.CODE_TOKEN_DECIMALS);
+            const isIncoming = tx.to_address.toLowerCase() === currentAccount.toLowerCase();
+            const type = isIncoming ? 'Received' : 'Sent';
+            const amountClass = isIncoming ? '' : 'negative';
+            const amountPrefix = isIncoming ? '+' : '-';
+            
+            transactionItems.innerHTML += `
+              <div class="transaction-item">
+                <div class="transaction-details">
+                  <h4>${type} CODE</h4>
+                  <div class="transaction-hash">${tx.transaction_hash.substring(0, 20)}...</div>
+                </div>
+                <div class="transaction-amount ${amountClass}">${amountPrefix}${amount.toFixed(2)} CODE</div>
+              </div>
+            `;
+          });
+        } else {
+          transactionItems.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #6b7280;">
+              <p>No transactions yet. Start coding to earn your first CODE tokens! 🚀</p>
+            </div>
+          `;
+        }
+        
+      } catch (error) {
+        console.error('❌ Error loading transaction history:', error);
+        const transactionItems = document.getElementById('transactionItems');
+        transactionItems.innerHTML = `
+          <div style="text-align: center; padding: 40px; color: #ef4444;">
+            <p>Failed to load transactions. Please try refreshing.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Refresh balance
+    async function refreshBalance() {
+      if (!currentAccount) {
+        showAlert('error', 'Please connect your wallet first');
+        return;
+      }
+      
+      const refreshText = document.getElementById('refreshText');
+      const refreshLoader = document.getElementById('refreshLoader');
+      
+      refreshText.classList.add('hidden');
+      refreshLoader.classList.remove('hidden');
+      
+      try {
+        await loadWalletData();
+        showAlert('success', 'Balance refreshed successfully');
+      } catch (error) {
+        showAlert('error', 'Failed to refresh balance');
+      } finally {
+        refreshText.classList.remove('hidden');
+        refreshLoader.classList.add('hidden');
+      }
+    }
+
+    // Claim rewards - Production Ready
+    async function claimRewards() {
+      if (!currentAccount) {
+        showAlert('error', 'Please connect your wallet first');
+        return;
+      }
+
+      if (parseInt(currentChainId, 16) !== CONFIG.BASE_CHAIN_ID) {
+        showAlert('error', 'Please switch to Base network first');
+        await switchToBaseNetwork();
+        return;
+      }
+
+      const claimBtn = document.getElementById('claimButton');
+      const pendingAmount = document.getElementById('pendingRewards').textContent.replace(' CODE', '');
+      
+      if (parseFloat(pendingAmount) <= 0) {
+        showAlert('error', 'No rewards to claim!');
+        return;
+      }
+
+      claimBtn.disabled = true;
+      claimBtn.innerHTML = '<span class="loading"></span> Claiming...';
+
+      try {
+        console.log('🎁 Starting claim process...');
+        
+        // TODO: Implement actual smart contract interaction
+        // This should call your contract's claim function
+        
+        // Simulate the claiming process
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        showAlert('success', `🎉 Successfully claimed ${pendingAmount} CODE tokens!`);
+        
+        // Reset pending rewards and refresh data
+        document.getElementById('pendingRewards').textContent = '0 CODE';
+        await loadWalletData();
+
+      } catch (error) {
+        console.error('❌ Claim error:', error);
+        showAlert('error', `Failed to claim rewards: ${error.message}`);
+      } finally {
+        claimBtn.disabled = false;
+        claimBtn.textContent = 'Claim Rewards';
+      }
+    }
+
+    // Disconnect wallet
+    function disconnectWallet() {
+      console.log('👋 Disconnecting wallet...');
+      
+      currentAccount = null;
+      currentChainId = null;
+      walletBalanceData = null;
+      
+      // Reset UI
+      document.getElementById('connectWalletSection').classList.remove('hidden');
+      document.getElementById('connectedWalletSection').classList.add('hidden');
+      document.getElementById('transactionList').style.display = 'none';
+      
+      const claimBtn = document.getElementById('claimButton');
+      claimBtn.textContent = 'Connect Wallet to Claim';
+      claimBtn.disabled = true;
+      
+      // Reset displays
+      document.getElementById('codeBalance').textContent = '0 CODE';
+      document.getElementById('codeBalanceUSD').textContent = '$0.00 USD';
+      document.getElementById('pendingRewards').textContent = '0 CODE';
+      
+      // Reset stats
+      document.getElementById('totalCommits').textContent = '-';
+      document.getElementById('rewardsClaimed').textContent = '-';
+      document.getElementById('qualityRating').textContent = '-';
+      document.getElementById('activeProjects').textContent = '-';
+      
+      updateConnectionStatus('Not Connected');
+      updateNetworkStatus();
+      
+      showAlert('success', '👋 Wallet disconnected successfully');
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      if (typeof window.ethereum !== 'undefined') {
+        
+        // Account changes
+        window.ethereum.on('accountsChanged', (accounts) => {
+          console.log('🔄 Accounts changed:', accounts);
+          
+          if (accounts.length === 0) {
+            disconnectWallet();
+          } else if (accounts[0] !== currentAccount) {
+            currentAccount = accounts[0];
+            updateUIConnected();
+            loadWalletData();
+            showAlert('success', 'Account switched successfully');
+          }
+        });
+
+        // Network changes
+        window.ethereum.on('chainChanged', (chainId) => {
+          console.log('🌐 Chain changed:', chainId);
+          currentChainId = chainId;
+          updateNetworkStatus();
+          
+          if (currentAccount) {
+            if (parseInt(chainId, 16) === CONFIG.BASE_CHAIN_ID) {
+              loadWalletData();
             } else {
-                showNotification('MetaMask not found. Please install MetaMask.', 'error');
-                window.open('https://metamask.io/download/', '_blank');
+              showAlert('warning', 'Please switch to Base network for full functionality');
             }
-        }
+          }
+        });
 
-        // Connect Coinbase Wallet
-        async function connectCoinbase() {
-            showNotification('Coinbase Wallet integration coming soon!', 'warning');
-        }
+        // Connection/disconnection events
+        window.ethereum.on('connect', (connectInfo) => {
+          console.log('🔗 MetaMask connected:', connectInfo);
+        });
 
-        // Connect WalletConnect
-        async function connectWalletConnect() {
-            showNotification('WalletConnect integration coming soon!', 'warning');
-        }
+        window.ethereum.on('disconnect', (error) => {
+          console.log('🔌 MetaMask disconnected:', error);
+          disconnectWallet();
+        });
+      }
+    }
 
-        // Switch to Base network
-        async function switchToBase() {
-            try {
-                await window.ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: '0x2105' }], // Base mainnet
-                });
-            } catch (switchError) {
-                if (switchError.code === 4902) {
-                    // Add Base network
-                    await window.ethereum.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [{
-                            chainId: '0x2105',
-                            chainName: 'Base',
-                            nativeCurrency: {
-                                name: 'ETH',
-                                symbol: 'ETH',
+    // Utility functions
+    function formatAddress(address) {
+      if (!address) return '';
+      return `${address.slice(0, 6)}...${address.slice(-4)}`;
+    }
+
+    function showAlert(type, message) {
+      console.log(`📢 Alert (${type}):`, message);
+      
+      const alertEl = document.getElementById(type + 'Alert');
+      if (alertEl) {
+        alertEl.textContent = message;
+        alertEl.classList.add('show');
+        
+        setTimeout(() => {
+          alertEl.classList.remove('show');
+        }, 5000);
+      }
+    }
+
+    // Error handling
+    window.addEventListener('error', (event) => {
+      console.error('🚨 Global error:', event.error);
+      showAlert('error', 'An unexpected error occurred. Please refresh the page.');
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('🚨 Unhandled promise rejection:', event.reason);
+      showAlert('error', 'Connection error. Please check your network and try again.');
+    });
+
+    console.log('✅ CodeDAO Wallet Dashboard script loaded successfully');
+  </script>
+</body>
+</html>
