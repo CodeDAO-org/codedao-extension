@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO Dashboard - AI Agent Control Center</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ai-agent.css">
+    <link rel="stylesheet" href="agent-control.css">
+    <script src="https://unpkg.com/moralis-v1/dist/moralis.js"></script>
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+</head>
+<body>
+    <!-- Professional Header matching CodeDAO main site -->
+    <header class="main-header">
+        <nav class="header-nav">
+            <div class="nav-brand">
+                <span class="brand-icon">⚡</span>
+                <span class="brand-text">CodeDAO</span>
+            </div>
+            <div class="nav-links">
+                <a href="https://codedao-org.github.io/" class="nav-link">Home</a>
+                <a href="#" class="nav-link active">Dashboard</a>
+                <a href="#" class="nav-link">Connect Wallet</a>
+                <a href="#" class="nav-link">Peer Review</a>
+                <a href="#" class="nav-link">How It Works</a>
+                <a href="#" class="nav-link">Get Started</a>
+                <a href="#" class="nav-link">About</a>
+                <a href="#" class="nav-link">Tokenomics</a>
+                <a href="https://github.com/CodeDAO-org/codedao-extension" class="nav-link">GitHub</a>
+            </div>
+        </nav>
+        
+        <!-- Live AI Collaboration Banner -->
+        <div class="live-banner">
+            🔥 LIVE: AI Agent Control System Active - Submit Tasks to Real AI Agents! 🔥
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Control AI Agents.<br>
+                    Execute Real Tasks.
+                </h1>
+                <p class="hero-subtitle">
+                    First AI Agent Control System for Autonomous Development
+                </p>
+                <p class="hero-description">
+                    Submit tasks directly to AI agents and watch them execute real development work. 
+                    From code reviews to smart contract deployments - AI agents that actually DO.
+                </p>
+                
+                <!-- Quick Action -->
+                <div class="quick-action">
+                    <button id="connectWallet" class="primary-btn">Connect Wallet & Start</button>
+                    <button class="secondary-btn" onclick="document.getElementById('ai-agent-panel').scrollIntoView()">
+                        Try AI Agents
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Cards -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <div class="stat-label">CODE Balance</div>
+                        <div class="stat-value" id="tokenBalance">0.00 CODE</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🤖</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Active Agents</div>
+                        <div class="stat-value" id="activeAgents">0</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Tasks Completed</div>
+                        <div class="stat-value" id="tasksCompleted">0</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Wallet Status</div>
+                        <div class="stat-value" id="walletStatus">Not Connected</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-time Calculation Example (like main site) -->
+        <section class="calculation-section">
+            <div class="calculation-card">
+                <h3>Real-time AI agent task calculation</h3>
+                <div class="calculation-formula">
+                    <span class="formula-part">3 tasks</span>
+                    <span class="formula-operator">×</span>
+                    <span class="formula-part">2.5 CODE</span>
+                    <span class="formula-operator">×</span>
+                    <span class="formula-part">1.8 quality</span>
+                </div>
+                <div class="calculation-result">
+                    <span class="result-value">13.5 CODE earned</span>
+                </div>
+                <div class="calculation-note">Live example from actual AI agent tasks</div>
+            </div>
+        </section>
+    </div>
+
+    <script src="wallet.js"></script>
+    <script src="ai-agent.js"></script>
+    <script src="agent-control.js"></script>
+</body>
+</html>
