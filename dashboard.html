@@ -267,6 +267,138 @@
             display: none;
         }
 
+        /* Smart Suggestions Panel */
+        .smart-suggestions {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 350px;
+            max-height: 80vh;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .smart-suggestions:hover {
+            transform: translateY(-50%) translateX(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .suggestions-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .suggestion-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .suggestion-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .suggestion-desc {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .help-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .help-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .agent-status {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .agent-status h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+        }
+
+        .status-offline {
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-loading {
+            color: #f59e0b;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-online {
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -283,6 +415,10 @@
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
+            }
+
+            .smart-suggestions {
+                display: none;
             }
         }
     </style>
@@ -371,6 +507,48 @@
             </div>
         </section>
     </main>
+
+    <!-- Smart Suggestions Panel -->
+    <div class="smart-suggestions">
+        <div class="suggestions-header">
+            <span>💡</span>
+            <span>Smart Suggestions:</span>
+        </div>
+
+        <div class="suggestion-card">
+            <div class="suggestion-title">Connect Wallet</div>
+            <div class="suggestion-desc">I notice your wallet isn't connected. Would you like help with wallet integration?</div>
+            <button class="help-btn" onclick="connectWallet()">Help Me</button>
+        </div>
+
+        <div class="suggestion-card">
+            <div class="suggestion-title">Earn CODE Tokens</div>
+            <div class="suggestion-desc">Let me help you set up the VS Code extension to start earning CODE tokens for coding!</div>
+            <button class="help-btn" onclick="showTokenGuide()">Help Me</button>
+        </div>
+
+        <div class="suggestion-card">
+            <div class="suggestion-title">Dashboard Optimization</div>
+            <div class="suggestion-desc">I can analyze your dashboard and suggest performance improvements.</div>
+            <button class="help-btn" onclick="optimizeDashboard()">Help Me</button>
+        </div>
+
+        <div class="agent-status">
+            <h4>🤖 Agent Control Center</h4>
+            <div class="status-item">
+                <span>Gateway:</span>
+                <span class="status-offline"><span class="status-dot"></span>Offline</span>
+            </div>
+            <div class="status-item">
+                <span>Connected Agents:</span>
+                <span class="status-loading"><span class="status-dot"></span>Loading agents...</span>
+            </div>
+            <div class="status-item">
+                <span>Status:</span>
+                <span id="connectionStatus">Not Connected</span>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Configuration
@@ -489,6 +667,29 @@
                     });
             }
         }
+
+        // Smart Suggestions Functions
+        function showTokenGuide() {
+            alert('🎯 To start earning CODE tokens:\n\n1. Install the CodeDAO VS Code extension\n2. Connect your wallet\n3. Start coding - you earn CODE for every line!\n\nCheck the GitHub repository for the extension.');
+        }
+
+        function optimizeDashboard() {
+            alert('⚡ Dashboard optimization suggestions:\n\n1. Enable wallet connection for real-time balance\n2. Connect to AI agents for task automation\n3. Set up notifications for completed tasks\n\nWould you like help with any of these?');
+        }
+
+        // Update connection status based on wallet
+        function updateConnectionStatus() {
+            const walletStatus = document.getElementById('walletStatus').textContent;
+            const connectionStatus = document.getElementById('connectionStatus');
+            if (walletStatus === 'Connected') {
+                connectionStatus.innerHTML = '<span class="status-online"><span class="status-dot"></span>Connected</span>';
+            } else {
+                connectionStatus.innerHTML = 'Not Connected';
+            }
+        }
+
+        // Update status every few seconds
+        setInterval(updateConnectionStatus, 2000);
     </script>
 </body>
 </html>
