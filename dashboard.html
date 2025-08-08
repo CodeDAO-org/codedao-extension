@@ -26,7 +26,6 @@
   </style>
 </head>
 <body class="bg-gray-50">
-  <!-- Header -->
   <header class="bg-white shadow-sm border-b sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center py-4">
@@ -43,7 +42,6 @@
         </div>
 
         <div class="flex items-center space-x-4">
-          <!-- AI Agent Dropdown -->
           <div class="ai-agent-dropdown-container relative">
             <button id="ai-agent-dropdown-toggle" class="ai-dropdown-btn bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all flex items-center gap-2">
               <i class="fas fa-robot"></i><span>AI Agents</span>
@@ -132,7 +130,6 @@
             </div>
           </div>
 
-          <!-- Persistent header Connect button -->
           <button id="connectWalletHeaderBtn" onclick="connectWallet()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Connect Wallet</button>
 
           <div class="github-connected">
@@ -147,7 +144,6 @@
     </div>
   </header>
 
-  <!-- Live Banner -->
   <div class="bg-gradient-to-r from-purple-600 to-green-600 text-white py-4">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between">
@@ -163,7 +159,6 @@
     </div>
   </div>
 
-  <!-- Real-Time Stats -->
   <div class="bg-white border-b">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
@@ -191,10 +186,8 @@
     </div>
   </div>
 
-  <!-- Main Dashboard -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Live Activity Feed -->
       <div class="lg:col-span-2">
         <div class="bg-white rounded-lg shadow-lg border">
           <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-green-50">
@@ -222,9 +215,7 @@
         </div>
       </div>
 
-      <!-- Sidebar -->
       <div class="space-y-6">
-        <!-- Try the SDK -->
         <div class="bg-gradient-to-br from-purple-50 to-green-50 rounded-lg border-2 border-purple-200 p-6">
           <div class="flex items-center mb-4">
             <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-green-500 rounded-lg flex items-center justify-center mr-3">
@@ -243,7 +234,6 @@
           </div>
         </div>
 
-        <!-- AI Agent Status -->
         <div class="bg-white rounded-lg shadow-sm border p-6">
           <h3 class="text-lg font-semibold text-gray-900 mb-4">🤖 AI Agents Status</h3>
           <div class="space-y-4">
@@ -266,7 +256,6 @@
           </div>
         </div>
 
-        <!-- Install Extension -->
         <div class="bg-white rounded-lg shadow-sm border p-6">
           <h3 class="text-lg font-semibold text-gray-900 mb-4">💾 Install Extension</h3>
           <p class="text-gray-600 text-sm mb-4">Get the AI-maintained VS Code extension:</p>
@@ -276,7 +265,6 @@
           <button onclick="copyInstallCommand()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"><i class="fas fa-copy mr-2"></i>Copy Install Command</button>
         </div>
 
-        <!-- Quick Stats -->
         <div class="bg-white rounded-lg shadow-sm border p-6">
           <h3 class="text-lg font-semibold text-gray-900 mb-4">📊 Live Stats</h3>
           <div class="space-y-3">
@@ -290,7 +278,6 @@
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="bg-gray-900 text-white py-8 mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <div class="mb-4">
@@ -307,7 +294,7 @@
   </footer>
 
   <script>
-    // ===== GitHub live feed (unchanged core) =====
+    // ===== GitHub live feed =====
     const GITHUB_CONFIG={repo:'CodeDAO-org/codedao-extension',apiBase:'https://api.github.com/repos/CodeDAO-org/codedao-extension',pollInterval:30000};
     let lastFetchTime=new Date();let totalCommitsProcessed=0;
     document.addEventListener('DOMContentLoaded',function(){console.log('🚀 CodeDAO Dashboard initializing...');initializeDashboard();startLiveUpdates();setupEventListeners();});
@@ -365,7 +352,6 @@
     async function fetchWalletData(){
       if(!currentAccount) return;
       try{
-        // Approvals (v2 SDK or REST fallback)
         let approvalsData=null;
         try{
           if(Moralis?.EvmApi?.token?.getWalletApprovals){
@@ -486,7 +472,6 @@
     setTimeout(()=>{location.reload()},600000);
   </script>
 
-  <!-- AI Agent Control Panel (unchanged styles/JS for dropdown widget) -->
   <div id="ai-agent-panel" class="ai-agent-panel ai-panel-hidden">
     <div class="ai-panel-overlay" id="ai-panel-overlay"></div>
     <div class="ai-panel-container">
@@ -594,7 +579,6 @@
   </style>
 
   <script>
-    // AI Agent Dropdown (compact)
     class AIAgentDropdown {
       constructor(){this.isOpen=false;this.connectedAgents=[];this.activeTasks=[];this.connectionStatus='offline';this.init()}
       init(){this.setupEventListeners();this.connectToGateway()}
@@ -623,7 +607,7 @@
       async connectToGateway(){const el=document.getElementById('connection-status');if(!el)return;try{el.innerHTML=`<span class="status-dot w-1.5 h-1.5 bg-red-500 rounded-full"></span><span class="status-text">Connecting...</span>`;await new Promise(r=>setTimeout(r,2000));el.innerHTML=`<span class="status-dot w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span><span class="status-text">Gateway Online</span>`;this.connectionStatus='online'}catch{el.innerHTML=`<span class="status-dot w-1.5 h-1.5 bg-red-500 rounded-full"></span><span class="status-text">Connection Failed</span>`}}
       openFullPanel(){this.showNotification('Full panel feature coming soon!');this.closeDropdown()}
       openSettings(){this.showNotification('Agent settings coming soon!');this.closeDropdown()}
-      showNotification(m){const n=document.createElement('div');n.textContent=m;n.style.cssText="position:fixed;top:20px;right:20px;background:rgba(0,0,0,.9);color:#fff;padding:12px 16px;border-radius:8px;z-index:1001;font-size:12px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3)";document.body.appendChild(n);setTimeout(()=>{n.parentNode&&n.parentNode.removeChild(n)},3000)}
+      showNotification(m){const n=document.createElement('div');n.textContent=m;n.style.cssText="position:fixed;top:20px;right:20px;background:rgba(0, 0, 0, 0.9);color:white;padding:12px 16px;border-radius:8px;z-index:1001;font-size:12px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.3)";document.body.appendChild(n);setTimeout(()=>{n.parentNode&&n.parentNode.removeChild(n)},3000)}
     }
     document.addEventListener('DOMContentLoaded',()=>{new AIAgentDropdown()});
   </script>
