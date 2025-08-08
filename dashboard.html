@@ -156,6 +156,11 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Persistent header Connect button -->
+                    <button id="connectWalletHeaderBtn" onclick="connectWallet()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Connect Wallet
+                    </button>
                     
                     <div class="github-connected">
                         <i class="fab fa-github mr-2"></i>
@@ -491,7 +496,7 @@
                 return 'Claude'; // Default AI
             }
             
-            if (name.includes('Multi-AI') || name.includes('AI Agent')) {
+            if (name.includes('Multi-AI') or name.includes('AI Agent')) {
                 return message.includes('chatgpt') ? 'ChatGPT' : 'Claude';
             }
             
@@ -962,18 +967,21 @@
             showNotification("🔌 Wallet disconnected");
         }
 
-        // Update wallet display
+        // Update wallet display (header + overlay)
         function updateWalletDisplay() {
-            const connectButton = document.getElementById('connectWalletBtn');
-            if (connectButton) {
+            const headerBtn = document.getElementById('connectWalletHeaderBtn');
+            const overlayBtn = document.getElementById('connectWalletOverlayBtn');
+
+            [headerBtn, overlayBtn].forEach((btn) => {
+                if (!btn) return;
                 if (isConnected && currentAccount) {
-                    connectButton.textContent = `Connected: ${formatAddress(currentAccount)}`;
-                    connectButton.disabled = true;
+                    btn.textContent = `Connected: ${formatAddress(currentAccount)}`;
+                    btn.disabled = true;
                 } else {
-                    connectButton.textContent = 'Connect Wallet & Start';
-                    connectButton.disabled = false;
+                    btn.textContent = btn.id === 'connectWalletHeaderBtn' ? 'Connect Wallet' : 'Connect Wallet & Start';
+                    btn.disabled = false;
                 }
-            }
+            });
         }
 
         // Update token balance display
@@ -1021,16 +1029,13 @@
 
         // Handle AI Agent Control System routing
         function initializeAgentDashboard() {
-            // Check if we're on the #agents route
             if (window.location.hash === '#agents') {
-                // Show AI Agent Control System
                 showAgentControlSystem();
             }
         }
 
         // Show AI Agent Control System (when #agents is in URL)
         function showAgentControlSystem() {
-            // Create AI Agent interface dynamically
             const agentInterface = document.createElement('div');
             agentInterface.id = 'agent-control-system';
             agentInterface.innerHTML = `
@@ -1057,12 +1062,12 @@
                         <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.8;">
                             First AI Agent Control System for Autonomous Development
                         </p>
-                        <p style="margin-bottom: 3rem; opacity: 0.7;">
+                        <p style="margin-bottom: 3rem; opacity: 0.7%;">
                             Submit tasks directly to AI agents and watch them execute real development work.
                             From code reviews to smart contract deployments - AI agents that actually DO.
                         </p>
                         <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                            <button id="connectWalletBtn" onclick="connectWallet()" style="
+                            <button id="connectWalletOverlayBtn" onclick="connectWallet()" style="
                                 background: #6366f1;
                                 color: white;
                                 padding: 1rem 2rem;
@@ -1140,16 +1145,10 @@ Connect your wallet first to enable full features.`);
 
         // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', async function() {
-            // Initialize Moralis
             const moralisReady = await initMoralis();
-            
             if (moralisReady) {
                 console.log("🚀 CodeDAO Dashboard ready with Moralis!");
-                
-                // Initialize agent dashboard if needed
                 initializeAgentDashboard();
-                
-                // Check for existing wallet connection
                 if (typeof window.ethereum !== 'undefined') {
                     try {
                         const accounts = await window.ethereum.request({ method: 'eth_accounts' });
@@ -1166,10 +1165,8 @@ Connect your wallet first to enable full features.`);
             }
         });
 
-        // Handle hash changes (for routing)
         window.addEventListener('hashchange', initializeAgentDashboard);
 
-        // Auto-refresh page every 10 minutes to ensure fresh content
         setTimeout(() => {
             location.reload();
         }, 600000);
@@ -1195,7 +1192,7 @@ Connect your wallet first to enable full features.`);
             </div>
 
             <div class="ai-panel-content">
-                <!-- Agent Status -->
+                <!-- sections unchanged -->
                 <div class="ai-status-section">
                     <div class="ai-status-header">
                         <h4>🔗 Connection Status</h4>
@@ -1205,8 +1202,6 @@ Connect your wallet first to enable full features.`);
                         </div>
                     </div>
                 </div>
-
-                <!-- Available Services -->
                 <div class="ai-services-section">
                     <h4>🤖 Available Assistance:</h4>
                     <div class="ai-services-grid">
@@ -1242,8 +1237,6 @@ Connect your wallet first to enable full features.`);
                         </div>
                     </div>
                 </div>
-
-                <!-- Agent Control Center -->
                 <div class="ai-control-section">
                     <h4>🎛️ Agent Control Center</h4>
                     <div class="ai-task-form">
@@ -1257,9 +1250,7 @@ Connect your wallet first to enable full features.`);
                             <option value="testing">🧪 Generate Tests</option>
                             <option value="optimization">⚡ Code Optimization</option>
                         </select>
-                        
                         <textarea id="ai-task-description" placeholder="Describe your task in detail..." rows="3"></textarea>
-                        
                         <div class="ai-task-actions">
                             <select id="ai-task-priority" class="ai-select-small">
                                 <option value="normal">Normal Priority</option>
@@ -1273,16 +1264,12 @@ Connect your wallet first to enable full features.`);
                         </div>
                     </div>
                 </div>
-
-                <!-- Connected Agents -->
                 <div class="ai-agents-section">
                     <h4>🤖 Connected Agents</h4>
                     <div class="ai-agents-list" id="ai-agents-list">
                         <div class="ai-no-agents">No agents connected</div>
                     </div>
                 </div>
-
-                <!-- Active Tasks -->
                 <div class="ai-tasks-section">
                     <h4>📋 Active Tasks</h4>
                     <div class="ai-tasks-list" id="ai-tasks-list">
@@ -1294,274 +1281,46 @@ Connect your wallet first to enable full features.`);
     </div>
 
     <style>
-        /* AI Agent Panel Styles */
-        .ai-agent-panel {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 450px;
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .ai-agent-panel.ai-panel-visible {
-            transform: translateX(0);
-        }
-
-        .ai-agent-panel.ai-panel-minimized {
-            transform: translateX(calc(100% - 60px));
-        }
-
-        .ai-panel-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .ai-agent-panel.ai-panel-visible .ai-panel-overlay {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .ai-panel-container {
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            color: white;
-        }
-
-        .ai-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .ai-panel-title {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .ai-panel-controls {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .ai-panel-btn {
-            width: 32px;
-            height: 32px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .ai-panel-btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .ai-panel-btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-
-        .ai-panel-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-        }
-
-        .ai-status-section, .ai-services-section, .ai-control-section, 
-        .ai-agents-section, .ai-tasks-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .ai-status-section h4, .ai-services-section h4, .ai-control-section h4,
-        .ai-agents-section h4, .ai-tasks-section h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .ai-status-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .ai-connection-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ef4444;
-        }
-
-        .status-dot.status-online {
-            background: #10b981;
-            animation: pulse-green 2s infinite;
-        }
-
-        .status-dot.status-offline {
-            background: #ef4444;
-        }
-
-        @keyframes pulse-green {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-
-        .ai-services-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-        }
-
-        .ai-service-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .ai-service-card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-            border-color: rgba(147, 51, 234, 0.5);
-        }
-
-        .service-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .service-name {
-            font-weight: 600;
-            font-size: 0.8rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .service-desc {
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .ai-task-form {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .ai-select, .ai-select-small {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: white;
-            padding: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .ai-select-small {
-            flex: 1;
-        }
-
-        .ai-task-form textarea {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: white;
-            padding: 0.5rem;
-            font-size: 0.8rem;
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        .ai-task-form textarea::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .ai-task-actions {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .ai-submit-btn {
-            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .ai-submit-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-        }
-
-        .ai-submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .ai-agents-list, .ai-tasks-list {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 0.75rem;
-            min-height: 60px;
-        }
-
-        .ai-no-agents, .ai-no-tasks {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.8rem;
-            text-align: center;
-            padding: 1rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .ai-agent-panel {
-                width: 100%;
-            }
-        }
+        /* styles unchanged from your version */
+        .ai-agent-panel { position: fixed; top: 0; right: 0; bottom: 0; width: 450px; z-index: 1000; transform: translateX(100%); transition: transform 0.3s ease-in-out; }
+        .ai-agent-panel.ai-panel-visible { transform: translateX(0); }
+        .ai-agent-panel.ai-panel-minimized { transform: translateX(calc(100% - 60px)); }
+        .ai-panel-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .ai-agent-panel.ai-panel-visible .ai-panel-overlay { opacity: 1; visibility: visible; }
+        .ai-panel-container { height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); border-left: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; color: white; }
+        .ai-panel-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
+        .ai-panel-title { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 1.1rem; }
+        .ai-panel-controls { display: flex; gap: 0.5rem; }
+        .ai-panel-btn { width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+        .ai-panel-btn-secondary { background: rgba(255,255,255,0.1); color: white; }
+        .ai-panel-btn-secondary:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+        .ai-panel-content { flex: 1; overflow-y: auto; padding: 1rem; }
+        .ai-status-section, .ai-services-section, .ai-control-section, .ai-agents-section, .ai-tasks-section { margin-bottom: 1.5rem; }
+        .ai-status-section h4, .ai-services-section h4, .ai-control-section h4, .ai-agents-section h4, .ai-tasks-section h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem; color: rgba(255,255,255,0.9); }
+        .ai-status-header { display: flex; justify-content: space-between; align-items: center; }
+        .ai-connection-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
+        .status-dot.status-online { background: #10b981; animation: pulse-green 2s infinite; }
+        .status-dot.status-offline { background: #ef4444; }
+        @keyframes pulse-green { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .ai-services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+        .ai-service-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+        .ai-service-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); border-color: rgba(147,51,234,0.5); }
+        .service-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .service-name { font-weight: 600; font-size: 0.8rem; margin-bottom: 0.25rem; }
+        .service-desc { font-size: 0.7rem; color: rgba(255,255,255,0.7); }
+        .ai-task-form { display: flex; flex-direction: column; gap: 0.75rem; }
+        .ai-select, .ai-select-small { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white; padding: 0.5rem; font-size: 0.8rem; }
+        .ai-select-small { flex: 1; }
+        .ai-task-form textarea { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white; padding: 0.5rem; font-size: 0.8rem; resize: vertical; min-height: 60px; }
+        .ai-task-form textarea::placeholder { color: rgba(255,255,255,0.5); }
+        .ai-task-actions { display: flex; gap: 0.5rem; align-items: center; }
+        .ai-submit-btn { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: white; border: none; border-radius: 6px; padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem; }
+        .ai-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
+        .ai-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .ai-agents-list, .ai-tasks-list { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 0.75rem; min-height: 60px; }
+        .ai-no-agents, .ai-no-tasks { color: rgba(255,255,255,0.6); font-size: 0.8rem; text-align: center; padding: 1rem; }
+        @media (max-width: 768px) { .ai-agent-panel { width: 100%; } }
     </style>
 
     <script>
@@ -1586,25 +1345,21 @@ Connect your wallet first to enable full features.`);
                 
                 if (!toggleBtn || !dropdown) return;
                 
-                // Toggle dropdown
                 toggleBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.toggleDropdown();
                 });
 
-                // Close on outside click
                 document.addEventListener('click', (e) => {
                     if (!dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
                         this.closeDropdown();
                     }
                 });
 
-                // Prevent dropdown close on internal clicks
                 dropdown.addEventListener('click', (e) => {
                     e.stopPropagation();
                 });
 
-                // Quick action buttons
                 document.querySelectorAll('.quick-action-btn').forEach(btn => {
                     btn.addEventListener('click', () => {
                         const service = btn.dataset.service;
@@ -1612,7 +1367,6 @@ Connect your wallet first to enable full features.`);
                     });
                 });
 
-                // Service items
                 document.querySelectorAll('.service-item').forEach(item => {
                     item.addEventListener('click', () => {
                         const service = item.dataset.service;
@@ -1620,7 +1374,6 @@ Connect your wallet first to enable full features.`);
                     });
                 });
 
-                // Submit task
                 const submitBtn = document.getElementById('submit-task-dropdown');
                 if (submitBtn) {
                     submitBtn.addEventListener('click', () => {
@@ -1628,29 +1381,15 @@ Connect your wallet first to enable full features.`);
                     });
                 }
 
-                // Footer buttons
                 const expandBtn = document.getElementById('open-full-panel');
                 const settingsBtn = document.getElementById('agent-settings');
                 
-                if (expandBtn) {
-                    expandBtn.addEventListener('click', () => {
-                        this.openFullPanel();
-                    });
-                }
-                
-                if (settingsBtn) {
-                    settingsBtn.addEventListener('click', () => {
-                        this.openSettings();
-                    });
-                }
+                if (expandBtn) expandBtn.addEventListener('click', () => this.openFullPanel());
+                if (settingsBtn) settingsBtn.addEventListener('click', () => this.openSettings());
             }
 
             toggleDropdown() {
-                if (this.isOpen) {
-                    this.closeDropdown();
-                } else {
-                    this.openDropdown();
-                }
+                if (this.isOpen) this.closeDropdown(); else this.openDropdown();
             }
 
             openDropdown() {
@@ -1660,11 +1399,7 @@ Connect your wallet first to enable full features.`);
                 
                 dropdown.classList.remove('opacity-0', 'invisible', '-translate-y-2');
                 dropdown.classList.add('opacity-100', 'visible', 'translate-y-0');
-                
-                if (arrow) {
-                    arrow.style.transform = 'rotate(180deg)';
-                }
-                
+                if (arrow) arrow.style.transform = 'rotate(180deg)';
                 this.isOpen = true;
             }
 
@@ -1675,11 +1410,7 @@ Connect your wallet first to enable full features.`);
                 
                 dropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
                 dropdown.classList.add('opacity-0', 'invisible', '-translate-y-2');
-                
-                if (arrow) {
-                    arrow.style.transform = 'rotate(0deg)';
-                }
-                
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
                 this.isOpen = false;
             }
 
@@ -1687,14 +1418,8 @@ Connect your wallet first to enable full features.`);
                 const taskType = document.getElementById('task-type-dropdown');
                 if (taskType) {
                     taskType.value = service;
-                    
-                    // Focus description
                     const description = document.getElementById('task-description-dropdown');
-                    if (description) {
-                        description.focus();
-                    }
-                    
-                    // Visual feedback
+                    if (description) description.focus();
                     this.showNotification(`Selected: ${service.replace('-', ' ')}`);
                 }
             }
@@ -1702,7 +1427,6 @@ Connect your wallet first to enable full features.`);
             async submitTask() {
                 const taskType = document.getElementById('task-type-dropdown')?.value;
                 const description = document.getElementById('task-description-dropdown')?.value;
-                
                 if (!taskType || !description?.trim()) {
                     this.showNotification('Please select a service and provide a description');
                     return;
@@ -1712,7 +1436,6 @@ Connect your wallet first to enable full features.`);
                 const btnText = submitBtn?.querySelector('.btn-text');
                 const btnSpinner = submitBtn?.querySelector('.btn-spinner');
                 
-                // Show loading
                 if (submitBtn) {
                     submitBtn.disabled = true;
                     if (btnText) btnText.style.display = 'none';
@@ -1720,27 +1443,15 @@ Connect your wallet first to enable full features.`);
                 }
 
                 try {
-                    // Simulate task submission
                     await new Promise(resolve => setTimeout(resolve, 1500));
-                    
-                    const task = {
-                        id: 'task_' + Date.now(),
-                        type: taskType,
-                        description: description,
-                        status: 'pending',
-                        timestamp: new Date()
-                    };
-                    
+                    const task = { id: 'task_' + Date.now(), type: taskType, description, status: 'pending', timestamp: new Date() };
                     this.activeTasks.push(task);
                     this.updateTasksList();
                     this.clearForm();
-                    
                     this.showNotification('✅ Task submitted successfully!');
-                    
-                } catch (error) {
+                } catch {
                     this.showNotification('❌ Failed to submit task');
                 } finally {
-                    // Reset button
                     if (submitBtn) {
                         submitBtn.disabled = false;
                         if (btnText) btnText.style.display = 'inline';
@@ -1752,21 +1463,17 @@ Connect your wallet first to enable full features.`);
             clearForm() {
                 const taskType = document.getElementById('task-type-dropdown');
                 const description = document.getElementById('task-description-dropdown');
-                
                 if (taskType) taskType.value = '';
                 if (description) description.value = '';
             }
 
             updateTasksList() {
                 const tasksList = document.getElementById('tasks-list-compact');
-                
                 if (!tasksList) return;
-                
                 if (this.activeTasks.length === 0) {
                     tasksList.innerHTML = '<div class="no-tasks-compact text-center text-white text-opacity-50 text-xs p-2">No active tasks</div>';
                     return;
                 }
-                
                 tasksList.innerHTML = this.activeTasks.map(task => `
                     <div class="task-item-compact p-2 bg-white bg-opacity-5 rounded text-xs">
                         <div class="task-type-compact font-semibold text-white">${task.type}</div>
@@ -1778,27 +1485,19 @@ Connect your wallet first to enable full features.`);
 
             async connectToGateway() {
                 const statusElement = document.getElementById('connection-status');
-                
                 if (!statusElement) return;
-                
                 try {
-                    // Show connecting
                     statusElement.innerHTML = `
                         <span class="status-dot w-1.5 h-1.5 bg-red-500 rounded-full"></span>
                         <span class="status-text">Connecting...</span>
                     `;
-                    
                     await new Promise(resolve => setTimeout(resolve, 2000));
-                    
-                    // Connected
                     statusElement.innerHTML = `
                         <span class="status-dot w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
                         <span class="status-text">Gateway Online</span>
                     `;
-                    
                     this.connectionStatus = 'online';
-                    
-                } catch (error) {
+                } catch {
                     statusElement.innerHTML = `
                         <span class="status-dot w-1.5 h-1.5 bg-red-500 rounded-full"></span>
                         <span class="status-text">Connection Failed</span>
@@ -1806,15 +1505,8 @@ Connect your wallet first to enable full features.`);
                 }
             }
 
-            openFullPanel() {
-                this.showNotification('Full panel feature coming soon!');
-                this.closeDropdown();
-            }
-
-            openSettings() {
-                this.showNotification('Agent settings coming soon!');
-                this.closeDropdown();
-            }
+            openFullPanel() { this.showNotification('Full panel feature coming soon!'); this.closeDropdown(); }
+            openSettings() { this.showNotification('Agent settings coming soon!'); this.closeDropdown(); }
 
             showNotification(message) {
                 const notification = document.createElement('div');
@@ -1825,18 +1517,11 @@ Connect your wallet first to enable full features.`);
                     font-size: 12px; font-weight: 600; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
                 `;
                 document.body.appendChild(notification);
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 3000);
+                setTimeout(() => { if (notification.parentNode) notification.parentNode.removeChild(notification); }, 3000);
             }
         }
 
-        // Initialize AI Agent Dropdown
-        document.addEventListener('DOMContentLoaded', () => {
-            new AIAgentDropdown();
-        });
+        document.addEventListener('DOMContentLoaded', () => { new AIAgentDropdown(); });
     </script>
 </body>
 </html>
