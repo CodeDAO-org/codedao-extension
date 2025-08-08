@@ -496,7 +496,7 @@
                 return 'Claude'; // Default AI
             }
             
-            if (name.includes('Multi-AI') or name.includes('AI Agent')) {
+           if (name.includes('Multi-AI') || name.includes('AI Agent')) {
                 return message.includes('chatgpt') ? 'ChatGPT' : 'Claude';
             }
             
