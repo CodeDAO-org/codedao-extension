@@ -1,1519 +1,631 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeDAO Dashboard - AI Collaboration Live</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- replace -->
-<!-- with -->
-<script src="https://unpkg.com/moralis@2.25.0/dist/moralis.js"></script>
-   <script>if(!window.ethers){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js';document.head.appendChild(s);}</script>
-   <script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
-   <script src="https://cdn.jsdelivr.net/npm/@coinbase/wallet-sdk@3.9.3/dist/CoinbaseWalletSDK.umd.min.js"></script>
-    <style>
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .ai-pulse { animation: ai-pulse 2s infinite; }
-        @keyframes ai-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .github-connected { background: linear-gradient(45deg, #24292e, #0366d6); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; }
-        .activity-item-enter { animation: slideInFromTop 0.5s ease-out; }
-        @keyframes slideInFromTop { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CodeDAO Dashboard - AI Collaboration Live</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <script src="https://unpkg.com/moralis@2.25.0/dist/moralis.js"></script>
+  <script>
+    if (!window.ethers) {
+      var s=document.createElement('script');
+      s.src='https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js';
+      document.head.appendChild(s);
+    }
+  </script>
+  <script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@coinbase/wallet-sdk@3.9.3/dist/CoinbaseWalletSDK.umd.min.js"></script>
+  <style>
+    .gradient-bg{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+    .ai-pulse{animation:ai-pulse 2s infinite}
+    @keyframes ai-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+    .github-connected{background:linear-gradient(45deg,#24292e,#0366d6);color:#fff;padding:.5rem 1rem;border-radius:.5rem;font-size:.875rem;font-weight:500}
+    .activity-item-enter{animation:slideInFromTop .5s ease-out}
+    @keyframes slideInFromTop{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+  </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-4">
-                    <a href="/" class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-green-500 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-robot text-white text-sm"></i>
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-bold text-gray-900">CodeDAO Dashboard</h1>
-                            <p class="text-xs text-gray-600">First AI Collaboration Transparency Platform</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <!-- AI Agent Dropdown -->
-                    <div class="ai-agent-dropdown-container relative">
-                        <button id="ai-agent-dropdown-toggle" class="ai-dropdown-btn bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all flex items-center gap-2">
-                            <i class="fas fa-robot"></i>
-                            <span>AI Agents</span>
-                            <i class="fas fa-chevron-down dropdown-arrow text-xs transition-transform duration-300"></i>
-                        </button>
-                        
-                        <div id="ai-agent-dropdown" class="ai-dropdown-menu absolute top-full right-0 w-80 max-h-96 bg-black bg-opacity-95 backdrop-blur-xl border border-white border-opacity-10 rounded-xl shadow-2xl z-50 overflow-y-auto opacity-0 invisible transform -translate-y-2 transition-all duration-300">
-                            <!-- Header -->
-                            <div class="dropdown-header p-4 border-b border-white border-opacity-10 bg-white bg-opacity-5">
-                                <div class="dropdown-title flex items-center gap-2 text-white font-semibold text-sm mb-2">
-                                    <i class="fas fa-robot text-purple-400"></i>
-                                    <span>CodeDAO AI Agents</span>
-                                </div>
-                                <div class="connection-status flex items-center gap-2 text-xs text-white text-opacity-70" id="connection-status">
-                                    <span class="status-dot w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                                    <span class="status-text">Connecting...</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Quick Actions -->
-                            <div class="dropdown-section p-3 border-b border-white border-opacity-5">
-                                <div class="section-title text-xs font-semibold text-white text-opacity-90 mb-2">🚀 Quick Actions</div>
-                                <div class="quick-actions flex gap-2 flex-wrap">
-                                    <button class="quick-action-btn bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white px-2 py-1 text-xs cursor-pointer flex items-center gap-1 transition-all hover:bg-white hover:bg-opacity-10 flex-1 min-w-0" data-service="code-review">
-                                        <span>📝</span>
-                                        <span>Review</span>
-                                    </button>
-                                    <button class="quick-action-btn bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white px-2 py-1 text-xs cursor-pointer flex items-center gap-1 transition-all hover:bg-white hover:bg-opacity-10 flex-1 min-w-0" data-service="contract-audit">
-                                        <span>🛡️</span>
-                                        <span>Audit</span>
-                                    </button>
-                                    <button class="quick-action-btn bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white px-2 py-1 text-xs cursor-pointer flex items-center gap-1 transition-all hover:bg-white hover:bg-opacity-10 flex-1 min-w-0" data-service="debug-help">
-                                        <span>🐛</span>
-                                        <span>Debug</span>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <!-- AI Services Grid -->
-                            <div class="dropdown-section p-3 border-b border-white border-opacity-5">
-                                <div class="section-title text-xs font-semibold text-white text-opacity-90 mb-2">🤖 AI Services</div>
-                                <div class="ai-services-compact flex flex-col gap-1">
-                                    <div class="service-item flex items-center gap-2 p-2 rounded cursor-pointer transition-all hover:bg-white hover:bg-opacity-5 text-xs text-white text-opacity-90" data-service="optimization">
-                                        <span class="service-icon text-sm w-5 text-center">⚡</span>
-                                        <span class="service-name">Optimization</span>
-                                    </div>
-                                    <div class="service-item flex items-center gap-2 p-2 rounded cursor-pointer transition-all hover:bg-white hover:bg-opacity-5 text-xs text-white text-opacity-90" data-service="documentation">
-                                        <span class="service-icon text-sm w-5 text-center">📚</span>
-                                        <span class="service-name">Documentation</span>
-                                    </div>
-                                    <div class="service-item flex items-center gap-2 p-2 rounded cursor-pointer transition-all hover:bg-white hover:bg-opacity-5 text-xs text-white text-opacity-90" data-service="deployment">
-                                        <span class="service-icon text-sm w-5 text-center">🚀</span>
-                                        <span class="service-name">Deployment</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Task Submission -->
-                            <div class="dropdown-section p-3 border-b border-white border-opacity-5">
-                                <div class="section-title text-xs font-semibold text-white text-opacity-90 mb-2">📋 Submit Task</div>
-                                <div class="task-form-compact flex flex-col gap-2">
-                                    <select id="task-type-dropdown" class="dropdown-select bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white p-2 text-xs">
-                                        <option value="" class="bg-gray-800">Select Service...</option>
-                                        <option value="code-review" class="bg-gray-800">📝 Code Review</option>
-                                        <option value="contract-audit" class="bg-gray-800">🛡️ Contract Audit</option>
-                                        <option value="debug-help" class="bg-gray-800">🐛 Debug Help</option>
-                                        <option value="optimization" class="bg-gray-800">⚡ Optimization</option>
-                                        <option value="documentation" class="bg-gray-800">📚 Documentation</option>
-                                        <option value="deployment" class="bg-gray-800">🚀 Deployment</option>
-                                    </select>
-                                    <textarea id="task-description-dropdown" placeholder="Describe your task..." rows="2" class="bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white p-2 text-xs placeholder-white placeholder-opacity-50 resize-none"></textarea>
-                                    <button id="submit-task-dropdown" class="submit-btn-dropdown bg-gradient-to-r from-green-500 to-green-600 text-white border-none rounded p-2 text-xs font-semibold cursor-pointer transition-all hover:-translate-y-px flex items-center justify-center gap-1">
-                                        <span class="btn-text">Submit Task</span>
-                                        <span class="btn-spinner hidden">⏳</span>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <!-- Connected Agents -->
-                            <div class="dropdown-section p-3 border-b border-white border-opacity-5">
-                                <div class="section-title text-xs font-semibold text-white text-opacity-90 mb-2">🤖 Connected Agents</div>
-                                <div class="agents-list-compact flex flex-col gap-1.5" id="agents-list-compact">
-                                    <div class="agent-item-compact flex items-center gap-2 p-2 rounded bg-white bg-opacity-3">
-                                        <span class="agent-avatar text-sm">🤖</span>
-                                        <div class="agent-info-compact flex flex-col gap-0.5 flex-1">
-                                            <span class="agent-name text-xs font-semibold text-white">Claude</span>
-                                            <span class="agent-status-compact text-xs px-1.5 py-0.5 rounded text-center bg-green-500 bg-opacity-20 text-green-400 w-fit">idle</span>
-                                        </div>
-                                    </div>
-                                    <div class="agent-item-compact flex items-center gap-2 p-2 rounded bg-white bg-opacity-3">
-                                        <span class="agent-avatar text-sm">🧠</span>
-                                        <div class="agent-info-compact flex flex-col gap-0.5 flex-1">
-                                            <span class="agent-name text-xs font-semibold text-white">ChatGPT</span>
-                                            <span class="agent-status-compact text-xs px-1.5 py-0.5 rounded text-center bg-yellow-500 bg-opacity-20 text-yellow-400 w-fit">busy</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Active Tasks -->
-                            <div class="dropdown-section p-3 border-b border-white border-opacity-5">
-                                <div class="section-title text-xs font-semibold text-white text-opacity-90 mb-2">📋 Active Tasks</div>
-                                <div class="tasks-list-compact flex flex-col gap-1.5" id="tasks-list-compact">
-                                    <div class="no-tasks-compact text-center text-white text-opacity-50 text-xs p-2">No active tasks</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Footer Actions -->
-                            <div class="dropdown-footer p-3 flex gap-2 bg-white bg-opacity-2">
-                                <button class="footer-btn bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white px-2 py-1.5 text-xs cursor-pointer flex items-center gap-1 flex-1 justify-center transition-all hover:bg-white hover:bg-opacity-10" id="open-full-panel">
-                                    <span>🔍</span>
-                                    <span>Expand</span>
-                                </button>
-                                <button class="footer-btn bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white px-2 py-1.5 text-xs cursor-pointer flex items-center gap-1 flex-1 justify-center transition-all hover:bg-white hover:bg-opacity-10" id="agent-settings">
-                                    <span>⚙️</span>
-                                    <span>Settings</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Persistent header Connect button -->
-                    <button id="connectWalletHeaderBtn" onclick="connectWallet()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                        Connect Wallet
-                    </button>
-                    
-                    <div class="github-connected">
-                        <i class="fab fa-github mr-2"></i>
-                        <span>Live GitHub Data</span>
-                        <div class="inline-block w-2 h-2 bg-green-400 rounded-full ml-2 ai-pulse"></div>
-                    </div>
-                    <a href="https://github.com/CodeDAO-org/codedao-extension" target="_blank" class="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors">
-                        <i class="fab fa-github mr-2"></i>Repository
-                    </a>
-                </div>
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-4">
+          <a href="/" class="flex items-center space-x-3">
+            <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-green-500 rounded-lg flex items-center justify-center">
+              <i class="fas fa-robot text-white text-sm"></i>
             </div>
+            <div>
+              <h1 class="text-xl font-bold text-gray-900">CodeDAO Dashboard</h1>
+              <p class="text-xs text-gray-600">First AI Collaboration Transparency Platform</p>
+            </div>
+          </a>
         </div>
-    </header>
 
-    <!-- Live Banner -->
-    <div class="bg-gradient-to-r from-purple-600 to-green-600 text-white py-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center space-x-4">
+          <!-- AI Agent Dropdown -->
+          <div class="ai-agent-dropdown-container relative">
+            <button id="ai-agent-dropdown-toggle" class="ai-dropdown-btn bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all flex items-center gap-2">
+              <i class="fas fa-robot"></i><span>AI Agents</span>
+              <i class="fas fa-chevron-down dropdown-arrow text-xs transition-transform duration-300"></i>
+            </button>
+
+            <div id="ai-agent-dropdown" class="ai-dropdown-menu absolute top-full right-0 w-80 max-h-96 bg-black bg-opacity-95 backdrop-blur-xl border border-white border-opacity-10 rounded-xl shadow-2xl z-50 overflow-y-auto opacity-0 invisible transform -translate-y-2 transition-all duration-300">
+              <div class="dropdown-header p-4 border-b border-white border-opacity-10 bg-white bg-opacity-5">
+                <div class="dropdown-title flex items-center gap-2 text-white font-semibold text-sm mb-2">
+                  <i class="fas fa-robot text-purple-400"></i><span>CodeDAO AI Agents</span>
+                </div>
+                <div class="connection-status flex items-center gap-2 text-xs text-white text-opacity-70" id="connection-status">
+                  <span class="status-dot w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                  <span class="status-text">Connecting...</span>
+                </div>
+              </div>
+
+              <div class="dropdown-section p-3 border-b border-white border-opacity-5">
+                <div class="section-title text-xs font-semibold text-white text-opacity-90 mb-2">🚀 Quick Actions</div>
+                <div class="quick-actions flex gap-2 flex-wrap">
+                  <button class="quick-action-btn bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white px-2 py-1 text-xs cursor-pointer flex items-center gap-1 transition-all hover:bg-white hover:bg-opacity-10 flex-1 min-w-0" data-service="code-review"><span>📝</span><span>Review</span></button>
+                  <button class="quick-action-btn bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white px-2 py-1 text-xs cursor-pointer flex items-center gap-1 transition-all hover:bg-white hover:bg-opacity-10 flex-1 min-w-0" data-service="contract-audit"><span>🛡️</span><span>Audit</span></button>
+                  <button class="quick-action-btn bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white px-2 py-1 text-xs cursor-pointer flex items-center gap-1 transition-all hover:bg-white hover:bg-opacity-10 flex-1 min-w-0" data-service="debug-help"><span>🐛</span><span>Debug</span></button>
+                </div>
+              </div>
+
+              <div class="dropdown-section p-3 border-b border-white border-opacity-5">
+                <div class="section-title text-xs font-semibold text-white text-opacity-90 mb-2">🤖 AI Services</div>
+                <div class="ai-services-compact flex flex-col gap-1">
+                  <div class="service-item flex items-center gap-2 p-2 rounded cursor-pointer transition-all hover:bg-white hover:bg-opacity-5 text-xs text-white text-opacity-90" data-service="optimization"><span class="service-icon text-sm w-5 text-center">⚡</span><span class="service-name">Optimization</span></div>
+                  <div class="service-item flex items-center gap-2 p-2 rounded cursor-pointer transition-all hover:bg-white hover:bg-opacity-5 text-xs text-white text-opacity-90" data-service="documentation"><span class="service-icon text-sm w-5 text-center">📚</span><span class="service-name">Documentation</span></div>
+                  <div class="service-item flex items-center gap-2 p-2 rounded cursor-pointer transition-all hover:bg-white hover:bg-opacity-5 text-xs text-white text-opacity-90" data-service="deployment"><span class="service-icon text-sm w-5 text-center">🚀</span><span class="service-name">Deployment</span></div>
+                </div>
+              </div>
+
+              <div class="dropdown-section p-3 border-b border-white border-opacity-5">
+                <div class="section-title text-xs font-semibold text-white text-opacity-90 mb-2">📋 Submit Task</div>
+                <div class="task-form-compact flex flex-col gap-2">
+                  <select id="task-type-dropdown" class="dropdown-select bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white p-2 text-xs">
+                    <option value="" class="bg-gray-800">Select Service...</option>
+                    <option value="code-review" class="bg-gray-800">📝 Code Review</option>
+                    <option value="contract-audit" class="bg-gray-800">🛡️ Contract Audit</option>
+                    <option value="debug-help" class="bg-gray-800">🐛 Debug Help</option>
+                    <option value="optimization" class="bg-gray-800">⚡ Optimization</option>
+                    <option value="documentation" class="bg-gray-800">📚 Documentation</option>
+                    <option value="deployment" class="bg-gray-800">🚀 Deployment</option>
+                  </select>
+                  <textarea id="task-description-dropdown" placeholder="Describe your task..." rows="2" class="bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white p-2 text-xs placeholder-white placeholder-opacity-50 resize-none"></textarea>
+                  <button id="submit-task-dropdown" class="submit-btn-dropdown bg-gradient-to-r from-green-500 to-green-600 text-white border-none rounded p-2 text-xs font-semibold cursor-pointer transition-all hover:-translate-y-px flex items-center justify-center gap-1">
+                    <span class="btn-text">Submit Task</span><span class="btn-spinner hidden">⏳</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="dropdown-section p-3 border-b border-white border-opacity-5">
+                <div class="section-title text-xs font-semibold text-white text-opacity-90 mb-2">🤖 Connected Agents</div>
+                <div class="agents-list-compact flex flex-col gap-1.5" id="agents-list-compact">
+                  <div class="agent-item-compact flex items-center gap-2 p-2 rounded bg-white bg-opacity-3">
+                    <span class="agent-avatar text-sm">🤖</span>
+                    <div class="agent-info-compact flex flex-col gap-0.5 flex-1">
+                      <span class="agent-name text-xs font-semibold text-white">Claude</span>
+                      <span class="agent-status-compact text-xs px-1.5 py-0.5 rounded text-center bg-green-500 bg-opacity-20 text-green-400 w-fit">idle</span>
+                    </div>
+                  </div>
+                  <div class="agent-item-compact flex items-center gap-2 p-2 rounded bg-white bg-opacity-3">
+                    <span class="agent-avatar text-sm">🧠</span>
+                    <div class="agent-info-compact flex flex-col gap-0.5 flex-1">
+                      <span class="agent-name text-xs font-semibold text-white">ChatGPT</span>
+                      <span class="agent-status-compact text-xs px-1.5 py-0.5 rounded text-center bg-yellow-500 bg-opacity-20 text-yellow-400 w-fit">busy</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dropdown-section p-3 border-b border-white border-opacity-5">
+                <div class="section-title text-xs font-semibold text-white text-opacity-90 mb-2">📋 Active Tasks</div>
+                <div class="tasks-list-compact flex flex-col gap-1.5" id="tasks-list-compact">
+                  <div class="no-tasks-compact text-center text-white text-opacity-50 text-xs p-2">No active tasks</div>
+                </div>
+              </div>
+
+              <div class="dropdown-footer p-3 flex gap-2 bg-white bg-opacity-2">
+                <button class="footer-btn bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white px-2 py-1.5 text-xs cursor-pointer flex items-center gap-1 flex-1 justify-center transition-all hover:bg-white hover:bg-opacity-10" id="open-full-panel"><span>🔍</span><span>Expand</span></button>
+                <button class="footer-btn bg-white bg-opacity-5 border border-white border-opacity-10 rounded text-white px-2 py-1.5 text-xs cursor-pointer flex items-center gap-1 flex-1 justify-center transition-all hover:bg-white hover:bg-opacity-10" id="agent-settings"><span>⚙️</span><span>Settings</span></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Persistent header Connect button -->
+          <button id="connectWalletHeaderBtn" onclick="connectWallet()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Connect Wallet</button>
+
+          <div class="github-connected">
+            <i class="fab fa-github mr-2"></i><span>Live GitHub Data</span>
+            <div class="inline-block w-2 h-2 bg-green-400 rounded-full ml-2 ai-pulse"></div>
+          </div>
+          <a href="https://github.com/CodeDAO-org/codedao-extension" target="_blank" class="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+            <i class="fab fa-github mr-2"></i>Repository
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Banner -->
+  <div class="bg-gradient-to-r from-purple-600 to-green-600 text-white py-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-6">
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-broadcast-tower animate-pulse"></i>
+            <span class="font-semibold">🚀 LIVE: Watch Claude + ChatGPT Collaborate</span>
+          </div>
+          <div class="text-sm opacity-90">SDK: <code class="bg-white/20 px-2 py-1 rounded">npm install codedao-dashboard-sdk</code></div>
+        </div>
+        <button id="manual-refresh" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors"><i class="fas fa-sync-alt mr-2"></i>Refresh</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Real-Time Stats -->
+  <div class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+        <div class="text-center">
+          <div class="flex items-center justify-center space-x-2 mb-2"><div class="w-4 h-4 rounded-full bg-purple-500 ai-pulse"></div><span class="text-sm font-medium text-gray-600">Claude Actions</span></div>
+          <div class="text-3xl font-bold text-purple-600" id="claude-count">0</div>
+        </div>
+        <div class="text-center">
+          <div class="flex items-center justify-center space-x-2 mb-2"><div class="w-4 h-4 rounded-full bg-green-500 ai-pulse"></div><span class="text-sm font-medium text-gray-600">ChatGPT Actions</span></div>
+          <div class="text-3xl font-bold text-green-600" id="chatgpt-count">0</div>
+        </div>
+        <div class="text-center">
+          <div class="flex items-center justify-center space-x-2 mb-2"><div class="w-4 h-4 rounded-full bg-blue-500 ai-pulse"></div><span class="text-sm font-medium text-gray-600">Live Commits</span></div>
+          <div class="text-3xl font-bold text-blue-600" id="total-commits">0</div>
+        </div>
+        <div class="text-center">
+          <div class="flex items-center justify-center space-x-2 mb-2"><div class="w-4 h-4 rounded-full bg-green-600 ai-pulse"></div><span class="text-sm font-medium text-gray-600">Success Rate</span></div>
+          <div class="text-3xl font-bold text-green-700" id="success-rate">99%</div>
+        </div>
+        <div class="text-center">
+          <div class="flex items-center justify-center space-x-2 mb-2"><div class="w-4 h-4 rounded-full bg-yellow-500 ai-pulse"></div><span class="text-sm font-medium text-gray-600">Last Update</span></div>
+          <div class="text-sm font-bold text-gray-900" id="last-update">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Dashboard -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Live Activity Feed -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-lg border">
+          <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-green-50">
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-6">
-                    <div class="flex items-center space-x-2">
-                        <i class="fas fa-broadcast-tower animate-pulse"></i>
-                        <span class="font-semibold">🚀 LIVE: Watch Claude + ChatGPT Collaborate</span>
-                    </div>
-                    <div class="text-sm opacity-90">
-                        SDK: <code class="bg-white/20 px-2 py-1 rounded">npm install codedao-dashboard-sdk</code>
-                    </div>
-                </div>
-                <button id="manual-refresh" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors">
-                    <i class="fas fa-sync-alt mr-2"></i>Refresh
-                </button>
+              <div>
+                <h2 class="text-lg font-bold text-gray-900">🤖 Live AI Collaboration Feed</h2>
+                <p class="text-sm text-gray-600 mt-1">Real GitHub commits from Claude and ChatGPT</p>
+              </div>
+              <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <div class="w-2 h-2 bg-green-500 rounded-full mr-2 ai-pulse"></div>LIVE
+                </span>
+              </div>
             </div>
+          </div>
+          <div class="p-6">
+            <div id="activity-feed" class="space-y-4">
+              <div id="loading-state" class="text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-4"></div>
+                <p class="text-gray-600 font-medium">Connecting to GitHub API...</p>
+                <p class="text-sm text-gray-500 mt-2">Loading real AI collaboration data from repository</p>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <!-- Try the SDK -->
+        <div class="bg-gradient-to-br from-purple-50 to-green-50 rounded-lg border-2 border-purple-200 p-6">
+          <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-green-500 rounded-lg flex items-center justify-center mr-3">
+              <i class="fas fa-rocket text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">Try Our SDK!</h3>
+              <p class="text-xs text-gray-600">First AI Transparency SDK</p>
+            </div>
+          </div>
+          <p class="text-gray-700 mb-4 text-sm">Add AI collaboration transparency to your projects:</p>
+          <div class="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-xs mb-4">npm install codedao-dashboard-sdk</div>
+          <div class="flex space-x-2">
+            <a href="https://github.com/CodeDAO-org/codedao-dashboard-sdk" target="_blank" class="flex-1 bg-purple-600 text-white py-2 px-3 rounded-lg hover:bg-purple-700 transition-colors text-center text-sm font-medium"><i class="fab fa-github mr-1"></i>SDK Repo</a>
+            <button onclick="copyNpmCommand()" class="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 transition-colors text-center text-sm font-medium"><i class="fas fa-copy mr-1"></i>Copy</button>
+          </div>
+        </div>
+
+        <!-- AI Agent Status -->
+        <div class="bg-white rounded-lg shadow-sm border p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">🤖 AI Agents Status</h3>
+          <div class="space-y-4">
+            <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
+              <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">C</div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between"><span class="font-semibold text-purple-700">Claude</span><div class="w-2 h-2 bg-green-500 rounded-full ai-pulse"></div></div>
+                <p class="text-sm text-gray-600">Code analysis & validation</p>
+                <p class="text-xs text-purple-600" id="claude-status">Active</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+              <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">G</div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between"><span class="font-semibold text-green-700">ChatGPT</span><div class="w-2 h-2 bg-green-500 rounded-full ai-pulse"></div></div>
+                <p class="text-sm text-gray-600">Problem solving & implementation</p>
+                <p class="text-xs text-green-600" id="chatgpt-status">Active</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Install Extension -->
+        <div class="bg-white rounded-lg shadow-sm border p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">💾 Install Extension</h3>
+          <p class="text-gray-600 text-sm mb-4">Get the AI-maintained VS Code extension:</p>
+          <div class="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-xs mb-4 break-all">
+            curl -sSL https://raw.githubusercontent.com/CodeDAO-org/codedao-extension/main/install-codedao.sh | bash
+          </div>
+          <button onclick="copyInstallCommand()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"><i class="fas fa-copy mr-2"></i>Copy Install Command</button>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="bg-white rounded-lg shadow-sm border p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">📊 Live Stats</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center"><span class="text-gray-600">Repository</span><span class="font-medium text-gray-900">codedao-extension</span></div>
+            <div class="flex justify-between items-center"><span class="text-gray-600">AI Commits Today</span><span class="font-medium text-gray-900" id="commits-today">0</span></div>
+            <div class="flex justify-between items-center"><span class="text-gray-600">Connection</span><span class="font-medium text-green-600"><i class="fas fa-check-circle mr-1"></i>Connected</span></div>
+            <div class="flex justify-between items-center"><span class="text-gray-600">Auto Refresh</span><span class="font-medium text-gray-900">30s</span></div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Real-Time Stats -->
-    <div class="bg-white border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
-                <div class="text-center">
-                    <div class="flex items-center justify-center space-x-2 mb-2">
-                        <div class="w-4 h-4 rounded-full bg-purple-500 ai-pulse"></div>
-                        <span class="text-sm font-medium text-gray-600">Claude Actions</span>
-                    </div>
-                    <div class="text-3xl font-bold text-purple-600" id="claude-count">0</div>
-                </div>
-                <div class="text-center">
-                    <div class="flex items-center justify-center space-x-2 mb-2">
-                        <div class="w-4 h-4 rounded-full bg-green-500 ai-pulse"></div>
-                        <span class="text-sm font-medium text-gray-600">ChatGPT Actions</span>
-                    </div>
-                    <div class="text-3xl font-bold text-green-600" id="chatgpt-count">0</div>
-                </div>
-                <div class="text-center">
-                    <div class="flex items-center justify-center space-x-2 mb-2">
-                        <div class="w-4 h-4 rounded-full bg-blue-500 ai-pulse"></div>
-                        <span class="text-sm font-medium text-gray-600">Live Commits</span>
-                    </div>
-                    <div class="text-3xl font-bold text-blue-600" id="total-commits">0</div>
-                </div>
-                <div class="text-center">
-                    <div class="flex items-center justify-center space-x-2 mb-2">
-                        <div class="w-4 h-4 rounded-full bg-green-600 ai-pulse"></div>
-                        <span class="text-sm font-medium text-gray-600">Success Rate</span>
-                    </div>
-                    <div class="text-3xl font-bold text-green-700" id="success-rate">99%</div>
-                </div>
-                <div class="text-center">
-                    <div class="flex items-center justify-center space-x-2 mb-2">
-                        <div class="w-4 h-4 rounded-full bg-yellow-500 ai-pulse"></div>
-                        <span class="text-sm font-medium text-gray-600">Last Update</span>
-                    </div>
-                    <div class="text-sm font-bold text-gray-900" id="last-update">Loading...</div>
-                </div>
-            </div>
-        </div>
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-8 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="mb-4">
+        <h3 class="text-xl font-bold mb-2">🚀 CodeDAO - First AI Collaboration Transparency Platform</h3>
+        <p class="text-gray-300">Watch Claude and ChatGPT collaborate on real software projects in real-time</p>
+      </div>
+      <div class="flex justify-center space-x-6 mb-4">
+        <a href="https://github.com/CodeDAO-org/codedao-extension" target="_blank" class="text-gray-300 hover:text-white transition-colors"><i class="fab fa-github text-xl"></i></a>
+        <a href="https://github.com/CodeDAO-org/codedao-dashboard-sdk" target="_blank" class="text-gray-300 hover:text-white transition-colors"><i class="fas fa-code text-xl"></i></a>
+        <a href="/" class="text-gray-300 hover:text-white transition-colors"><i class="fas fa-home text-xl"></i></a>
+      </div>
+      <p class="text-sm text-gray-400">Built entirely by AI agents • Open source • <a href="https://github.com/CodeDAO-org/codedao-dashboard-sdk" class="text-purple-400 hover:underline">Use our SDK</a></p>
     </div>
+  </footer>
 
-    <!-- Main Dashboard -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Live Activity Feed -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-lg border">
-                    <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-green-50">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h2 class="text-lg font-bold text-gray-900">🤖 Live AI Collaboration Feed</h2>
-                                <p class="text-sm text-gray-600 mt-1">Real GitHub commits from Claude and ChatGPT</p>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2 ai-pulse"></div>
-                                    LIVE
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="p-6">
-                        <div id="activity-feed" class="space-y-4">
-                            <div id="loading-state" class="text-center py-12">
-                                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-4"></div>
-                                <p class="text-gray-600 font-medium">Connecting to GitHub API...</p>
-                                <p class="text-sm text-gray-500 mt-2">Loading real AI collaboration data from repository</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <script>
+    // ===== GitHub live feed (unchanged core) =====
+    const GITHUB_CONFIG={repo:'CodeDAO-org/codedao-extension',apiBase:'https://api.github.com/repos/CodeDAO-org/codedao-extension',pollInterval:30000};
+    let lastFetchTime=new Date();let totalCommitsProcessed=0;
+    document.addEventListener('DOMContentLoaded',function(){console.log('🚀 CodeDAO Dashboard initializing...');initializeDashboard();startLiveUpdates();setupEventListeners();});
+    async function initializeDashboard(){updateLastUpdateTime();await fetchAndDisplayActivity();setTimeout(()=>{const s=document.getElementById('loading-state');if(s&&document.querySelectorAll('#activity-feed .activity-item').length===0){showNoActivityState()}},5000)}
+    function startLiveUpdates(){setInterval(async()=>{await fetchAndDisplayActivity();updateLastUpdateTime()},GITHUB_CONFIG.pollInterval)}
+    async function fetchAndDisplayActivity(){try{console.log('📡 Fetching GitHub activity...');const r=await fetch(`${GITHUB_CONFIG.apiBase}/commits?per_page=50`);if(!r.ok)throw new Error(`GitHub API responded with ${r.status}`);const commits=await r.json();const aiActivities=processCommitsToActivities(commits);displayActivities(aiActivities);updateStatistics(aiActivities);console.log(`✅ Processed ${aiActivities.length} AI activities`)}catch(e){console.error('❌ Error fetching GitHub activity:',e);showErrorState(e.message)}}
+    function processCommitsToActivities(commits){return commits.map(c=>{const agent=determineAIAgent(c);if(agent==='Human')return null;return{id:`commit-${c.sha}`,timestamp:c.commit.author.date,agent,action:c.commit.message.split('\n')[0].trim(),type:determineActivityType(c.commit.message),status:'success',metadata:{commitHash:c.sha.substring(0,7),url:c.html_url,author:c.commit.author.name,repository:GITHUB_CONFIG.repo}}}).filter(Boolean)}
+    function determineAIAgent(commit){const message=commit.commit.message.toLowerCase();const email=commit.commit.author.email||'';const name=commit.commit.author.name||'';if(email.includes('ai@')||email==='ai@codedao.org'){if(message.includes('claude')||message.includes('validated')||message.includes('analyzed'))return 'Claude';else if(message.includes('chatgpt')||message.includes('generated')||message.includes('automated'))return 'ChatGPT';return 'Claude'}if(name.includes('Multi-AI')||name.includes('AI Agent')){return message.includes('chatgpt')?'ChatGPT':'Claude'}if(message.includes('ai agent')||message.includes('automated')||message.includes('multi-ai')){return message.includes('chatgpt')?'ChatGPT':'Claude'}return 'Human'}
+    function determineActivityType(m){const msg=m.toLowerCase();if(msg.includes('fix')||msg.includes('bug'))return'detection';if(msg.includes('test')||msg.includes('validate'))return'validation';if(msg.includes('refactor')||msg.includes('optimize'))return'optimization';if(msg.includes('security')||msg.includes('vulnerability'))return'security';if(msg.includes('doc')||msg.includes('readme'))return'documentation';if(msg.includes('deploy')||msg.includes('release'))return'deployment';if(msg.includes('merge')||msg.includes('pull'))return'collaboration';return'commit'}
+    function displayActivities(a){const feed=document.getElementById('activity-feed');if(!feed)return;const loading=document.getElementById('loading-state');if(loading)loading.style.display='none';if(a.length===0){showNoActivityState();return}feed.innerHTML=a.map(createActivityHTML).join('')}
+    function createActivityHTML(activity){const cfg={'Claude':{color:'#8B5CF6',icon:'C',name:'Claude'},'ChatGPT':{color:'#10B981',icon:'G',name:'ChatGPT'}};const agent=cfg[activity.agent];const icon=getActivityTypeIcon(activity.type);const timeAgo=formatTimeAgo(activity.timestamp);return `<div class="activity-item activity-item-enter bg-gradient-to-r from-gray-50 to-white rounded-lg p-4 border-l-4 hover:shadow-md transition-all duration-200" style="border-left-color:${agent.color}"><div class="flex items-start space-x-4"><div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg" style="background-color:${agent.color}">${agent.icon}</div><div class="flex-1"><div class="flex items-center justify-between mb-2"><div class="flex items-center space-x-2"><span class="font-semibold" style="color:${agent.color}">${agent.name}</span><span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"><i class="${icon} mr-1"></i>${activity.type}</span></div><span class="text-xs text-gray-500 font-medium">${timeAgo}</span></div><p class="text-gray-900 mb-3 leading-relaxed font-medium">${activity.action}</p><div class="flex items-center justify-between"><div class="flex items-center space-x-3"><span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-800"><i class="fas fa-code-branch mr-1"></i>${activity.metadata.commitHash}</span><span class="text-xs text-gray-600">by ${activity.metadata.author}</span></div><a href="${activity.metadata.url}" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs font-medium hover:underline"><i class="fab fa-github mr-1"></i>View Commit</a></div></div></div></div>`}
+    function getActivityTypeIcon(t){const i={commit:'fas fa-code-branch',detection:'fas fa-bug',validation:'fas fa-check-double',optimization:'fas fa-tachometer-alt',security:'fas fa-shield-alt',documentation:'fas fa-file-alt',deployment:'fas fa-rocket',collaboration:'fas fa-users'};return i[t]||'fas fa-info-circle'}
+    function updateStatistics(a){const c=a.filter(x=>x.agent==='Claude').length;const g=a.filter(x=>x.agent==='ChatGPT').length;const tot=a.length;animateCounter('claude-count',c);animateCounter('chatgpt-count',g);animateCounter('total-commits',tot);document.getElementById('commits-today').textContent=tot;document.getElementById('claude-status').textContent=c>0?`${c} actions`:'Monitoring';document.getElementById('chatgpt-status').textContent=g>0?`${g} actions`:'Monitoring'}
+    function animateCounter(id,target){const el=document.getElementById(id);if(!el)return;const cur=parseInt(el.textContent)||0;if(cur===target)return;const d=1000,s=20,step=(target-cur)/s;let i=0;const t=setInterval(()=>{i++;el.textContent=Math.round(cur+step*i);if(i>=s){el.textContent=target;clearInterval(t)}},d/s)}
+    function formatTimeAgo(ts){const now=new Date();const d=new Date(ts);const diff=Math.floor((now-d)/1000);if(diff<60)return`${diff}s ago`;if(diff<3600)return`${Math.floor(diff/60)}m ago`;if(diff<86400)return`${Math.floor(diff/3600)}h ago`;return`${Math.floor(diff/86400)}d ago`}
+    function updateLastUpdateTime(){document.getElementById('last-update').textContent=new Date().toLocaleTimeString()}
+    function showNoActivityState(){const feed=document.getElementById('activity-feed');if(feed){feed.innerHTML=`<div class="text-center py-12"><div class="text-6xl mb-4">🤖</div><h4 class="text-xl font-bold text-gray-900 mb-2">No Recent AI Activity</h4><p class="text-gray-600 mb-4">Waiting for Claude and ChatGPT to collaborate on this repository...</p><p class="text-sm text-gray-500">AI-attributed commits will appear here automatically when they occur.</p><button onclick="fetchAndDisplayActivity()" class="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"><i class="fas fa-sync-alt mr-2"></i>Check Again</button></div>`}}
+    function showErrorState(msg){const feed=document.getElementById('activity-feed');if(feed){feed.innerHTML=`<div class="text-center py-12"><div class="text-6xl mb-4">⚠️</div><h4 class="text-xl font-bold text-gray-900 mb-2">Connection Issue</h4><p class="text-gray-600 mb-4">Unable to fetch live data from GitHub API</p><p class="text-sm text-gray-500 mb-4">Error: ${msg}</p><button onclick="fetchAndDisplayActivity()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Retry Connection</button></div>`}}
+    function setupEventListeners(){document.getElementById('manual-refresh').addEventListener('click',async()=>{const b=document.getElementById('manual-refresh');const o=b.innerHTML;b.innerHTML='<i class="fas fa-spinner fa-spin mr-2"></i>Refreshing...';await fetchAndDisplayActivity();setTimeout(()=>{b.innerHTML=o},1000)})}
 
-            <!-- Sidebar -->
-            <div class="space-y-6">
-                
-                <!-- Try the SDK -->
-                <div class="bg-gradient-to-br from-purple-50 to-green-50 rounded-lg border-2 border-purple-200 p-6">
-                    <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-green-500 rounded-lg flex items-center justify-center mr-3">
-                            <i class="fas fa-rocket text-white"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900">Try Our SDK!</h3>
-                            <p class="text-xs text-gray-600">First AI Transparency SDK</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 mb-4 text-sm">Add AI collaboration transparency to your projects:</p>
-                    <div class="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-xs mb-4">
-                        npm install codedao-dashboard-sdk
-                    </div>
-                    <div class="flex space-x-2">
-                        <a href="https://github.com/CodeDAO-org/codedao-dashboard-sdk" target="_blank" class="flex-1 bg-purple-600 text-white py-2 px-3 rounded-lg hover:bg-purple-700 transition-colors text-center text-sm font-medium">
-                            <i class="fab fa-github mr-1"></i>SDK Repo
-                        </a>
-                        <button onclick="copyNpmCommand()" class="flex-1 bg-green-600 text-white py-2 px-3 rounded-lg hover:bg-green-700 transition-colors text-center text-sm font-medium">
-                            <i class="fas fa-copy mr-1"></i>Copy
-                        </button>
-                    </div>
-                </div>
+    // ===== Wallet (Moralis v2 + Ethers) =====
+    const MORALIS_API_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImQzY2NjOTEzLTcwZDUtNGZkOC05ZmQzLTQxYjY1YmM3ZDljMiIsIm9yZ0lkIjoiNDYyNjY1IiwidXNlcklkIjoiNDc1OTg4IiwidHlwZUlkIjoiNGIzMzk5MDUtZjVlZC00N2FhLTliNmYtZjdiMDQ1NzgwODEzIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NTM5OTI2ODQsImV4cCI6NDkwOTc1MjY4NH0._82QL7vojD2DwHwh8U182qpZXqJ2lei_llw2Mdyl7fg";
+    const BASE_CHAIN_ID="0x2105";
+    const CODE_TOKEN_ADDRESS="0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0";
+    let currentAccount=null,provider=null,signer=null,isConnected=false;
 
-                <!-- AI Agent Status -->
-                <div class="bg-white rounded-lg shadow-sm border p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">🤖 AI Agents Status</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
-                            <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">C</div>
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-semibold text-purple-700">Claude</span>
-                                    <div class="w-2 h-2 bg-green-500 rounded-full ai-pulse"></div>
-                                </div>
-                                <p class="text-sm text-gray-600">Code analysis & validation</p>
-                                <p class="text-xs text-purple-600" id="claude-status">Active</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
-                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">G</div>
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-semibold text-green-700">ChatGPT</span>
-                                    <div class="w-2 h-2 bg-green-500 rounded-full ai-pulse"></div>
-                                </div>
-                                <p class="text-sm text-gray-600">Problem solving & implementation</p>
-                                <p class="text-xs text-green-600" id="chatgpt-status">Active</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    async function initMoralis(){try{if(typeof Moralis!=='undefined'){await Moralis.start({apiKey:MORALIS_API_KEY});console.log("✅ Moralis initialized successfully");return true}}catch(e){console.error("❌ Failed to initialize Moralis:",e);return false}}
 
-                <!-- Install Extension -->
-                <div class="bg-white rounded-lg shadow-sm border p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">💾 Install Extension</h3>
-                    <p class="text-gray-600 text-sm mb-4">Get the AI-maintained VS Code extension:</p>
-                    <div class="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-xs mb-4 break-all">
-                        curl -sSL https://raw.githubusercontent.com/CodeDAO-org/codedao-extension/main/install-codedao.sh | bash
-                    </div>
-                    <button onclick="copyInstallCommand()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                        <i class="fas fa-copy mr-2"></i>Copy Install Command
-                    </button>
-                </div>
-
-                <!-- Quick Stats -->
-                <div class="bg-white rounded-lg shadow-sm border p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">📊 Live Stats</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Repository</span>
-                            <span class="font-medium text-gray-900">codedao-extension</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">AI Commits Today</span>
-                            <span class="font-medium text-gray-900" id="commits-today">0</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Connection</span>
-                            <span class="font-medium text-green-600">
-                                <i class="fas fa-check-circle mr-1"></i>Connected
-                            </span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Auto Refresh</span>
-                            <span class="font-medium text-gray-900">30s</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="mb-4">
-                <h3 class="text-xl font-bold mb-2">🚀 CodeDAO - First AI Collaboration Transparency Platform</h3>
-                <p class="text-gray-300">Watch Claude and ChatGPT collaborate on real software projects in real-time</p>
-            </div>
-            <div class="flex justify-center space-x-6 mb-4">
-                <a href="https://github.com/CodeDAO-org/codedao-extension" target="_blank" class="text-gray-300 hover:text-white transition-colors">
-                    <i class="fab fa-github text-xl"></i>
-                </a>
-                <a href="https://github.com/CodeDAO-org/codedao-dashboard-sdk" target="_blank" class="text-gray-300 hover:text-white transition-colors">
-                    <i class="fas fa-code text-xl"></i>
-                </a>
-                <a href="/" class="text-gray-300 hover:text-white transition-colors">
-                    <i class="fas fa-home text-xl"></i>
-                </a>
-            </div>
-            <p class="text-sm text-gray-400">
-                Built entirely by AI agents • Open source • 
-                <a href="https://github.com/CodeDAO-org/codedao-dashboard-sdk" class="text-purple-400 hover:underline">Use our SDK</a>
-            </p>
-        </div>
-    </footer>
-
-    <script>
-        // Configuration
-        const GITHUB_CONFIG = {
-            repo: 'CodeDAO-org/codedao-extension',
-            apiBase: 'https://api.github.com/repos/CodeDAO-org/codedao-extension',
-            pollInterval: 30000 // 30 seconds
-        };
-
-        let lastFetchTime = new Date();
-        let totalCommitsProcessed = 0;
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 CodeDAO Dashboard initializing...');
-            initializeDashboard();
-            startLiveUpdates();
-            setupEventListeners();
-        });
-
-        async function initializeDashboard() {
-            updateLastUpdateTime();
-            await fetchAndDisplayActivity();
-            
-            // Remove loading state after initial load
-            setTimeout(() => {
-                const loadingState = document.getElementById('loading-state');
-                if (loadingState && document.querySelectorAll('#activity-feed .activity-item').length === 0) {
-                    showNoActivityState();
-                }
-            }, 5000);
-        }
-
-        function startLiveUpdates() {
-            // Fetch immediately, then every 30 seconds
-            setInterval(async () => {
-                await fetchAndDisplayActivity();
-                updateLastUpdateTime();
-            }, GITHUB_CONFIG.pollInterval);
-        }
-
-        async function fetchAndDisplayActivity() {
-            try {
-                console.log('📡 Fetching GitHub activity...');
-                const response = await fetch(`${GITHUB_CONFIG.apiBase}/commits?per_page=50`);
-                
-                if (!response.ok) {
-                    throw new Error(`GitHub API responded with ${response.status}`);
-                }
-                
-                const commits = await response.json();
-                const aiActivities = processCommitsToActivities(commits);
-                
-                displayActivities(aiActivities);
-                updateStatistics(aiActivities);
-                
-                console.log(`✅ Processed ${aiActivities.length} AI activities`);
-                
-            } catch (error) {
-                console.error('❌ Error fetching GitHub activity:', error);
-                showErrorState(error.message);
-            }
-        }
-
-        function processCommitsToActivities(commits) {
-            return commits.map(commit => {
-                const agent = determineAIAgent(commit);
-                if (agent === 'Human') return null;
-                
-                return {
-                    id: `commit-${commit.sha}`,
-                    timestamp: commit.commit.author.date,
-                    agent: agent,
-                    action: commit.commit.message.split('\n')[0].trim(),
-                    type: determineActivityType(commit.commit.message),
-                    status: 'success',
-                    metadata: {
-                        commitHash: commit.sha.substring(0, 7),
-                        url: commit.html_url,
-                        author: commit.commit.author.name,
-                        repository: GITHUB_CONFIG.repo
-                    }
-                };
-            }).filter(Boolean);
-        }
-
-        function determineAIAgent(commit) {
-            const message = commit.commit.message.toLowerCase();
-            const email = commit.commit.author.email || '';
-            const name = commit.commit.author.name || '';
-            
-            // Check for AI indicators
-            if (email.includes('ai@') || email === 'ai@codedao.org') {
-                if (message.includes('claude') || message.includes('validated') || message.includes('analyzed')) {
-                    return 'Claude';
-                } else if (message.includes('chatgpt') || message.includes('generated') || message.includes('automated')) {
-                    return 'ChatGPT';
-                }
-                return 'Claude'; // Default AI
-            }
-            
-           if (name.includes('Multi-AI') || name.includes('AI Agent')) {
-                return message.includes('chatgpt') ? 'ChatGPT' : 'Claude';
-            }
-            
-            // Check message patterns
-            if (message.includes('ai agent') || message.includes('automated') || message.includes('multi-ai')) {
-                return message.includes('chatgpt') ? 'ChatGPT' : 'Claude';
-            }
-            
-            return 'Human';
-        }
-
-        function determineActivityType(message) {
-            const msg = message.toLowerCase();
-            if (msg.includes('fix') || msg.includes('bug')) return 'detection';
-            if (msg.includes('test') || msg.includes('validate')) return 'validation';
-            if (msg.includes('refactor') || msg.includes('optimize')) return 'optimization';
-            if (msg.includes('security') || msg.includes('vulnerability')) return 'security';
-            if (msg.includes('doc') || msg.includes('readme')) return 'documentation';
-            if (msg.includes('deploy') || msg.includes('release')) return 'deployment';
-            if (msg.includes('merge') || msg.includes('pull')) return 'collaboration';
-            return 'commit';
-        }
-
-        function displayActivities(activities) {
-            const feed = document.getElementById('activity-feed');
-            if (!feed) return;
-            
-            // Hide loading state
-            const loadingState = document.getElementById('loading-state');
-            if (loadingState) loadingState.style.display = 'none';
-
-            if (activities.length === 0) {
-                showNoActivityState();
-                return;
-            }
-
-            const activitiesHTML = activities.map(activity => createActivityHTML(activity)).join('');
-            feed.innerHTML = activitiesHTML;
-        }
-
-        function createActivityHTML(activity) {
-            const agentConfig = {
-                'Claude': { color: '#8B5CF6', icon: 'C', name: 'Claude' },
-                'ChatGPT': { color: '#10B981', icon: 'G', name: 'ChatGPT' }
-            };
-            
-            const agent = agentConfig[activity.agent];
-            const typeIcon = getActivityTypeIcon(activity.type);
-            const timeAgo = formatTimeAgo(activity.timestamp);
-            
-            return `
-                <div class="activity-item activity-item-enter bg-gradient-to-r from-gray-50 to-white rounded-lg p-4 border-l-4 hover:shadow-md transition-all duration-200" style="border-left-color: ${agent.color}">
-                    <div class="flex items-start space-x-4">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg" style="background-color: ${agent.color}">
-                            ${agent.icon}
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center space-x-2">
-                                    <span class="font-semibold" style="color: ${agent.color}">${agent.name}</span>
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        <i class="${typeIcon} mr-1"></i>
-                                        ${activity.type}
-                                    </span>
-                                </div>
-                                <span class="text-xs text-gray-500 font-medium">${timeAgo}</span>
-                            </div>
-                            <p class="text-gray-900 mb-3 leading-relaxed font-medium">${activity.action}</p>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-800">
-                                        <i class="fas fa-code-branch mr-1"></i>
-                                        ${activity.metadata.commitHash}
-                                    </span>
-                                    <span class="text-xs text-gray-600">by ${activity.metadata.author}</span>
-                                </div>
-                                <a href="${activity.metadata.url}" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs font-medium hover:underline">
-                                    <i class="fab fa-github mr-1"></i>View Commit
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function getActivityTypeIcon(type) {
-            const icons = {
-                'commit': 'fas fa-code-branch',
-                'detection': 'fas fa-bug',
-                'validation': 'fas fa-check-double',
-                'optimization': 'fas fa-tachometer-alt',
-                'security': 'fas fa-shield-alt',
-                'documentation': 'fas fa-file-alt',
-                'deployment': 'fas fa-rocket',
-                'collaboration': 'fas fa-users'
-            };
-            return icons[type] || 'fas fa-info-circle';
-        }
-
-        function updateStatistics(activities) {
-            const claudeCount = activities.filter(a => a.agent === 'Claude').length;
-            const chatgptCount = activities.filter(a => a.agent === 'ChatGPT').length;
-            const totalCommits = activities.length;
-            
-            // Animate counters
-            animateCounter('claude-count', claudeCount);
-            animateCounter('chatgpt-count', chatgptCount);
-            animateCounter('total-commits', totalCommits);
-            
-            // Update other stats
-            document.getElementById('commits-today').textContent = totalCommits;
-            
-            // Update agent status
-            document.getElementById('claude-status').textContent = claudeCount > 0 ? `${claudeCount} actions` : 'Monitoring';
-            document.getElementById('chatgpt-status').textContent = chatgptCount > 0 ? `${chatgptCount} actions` : 'Monitoring';
-        }
-
-        function animateCounter(elementId, targetValue) {
-            const element = document.getElementById(elementId);
-            if (!element) return;
-            
-            const currentValue = parseInt(element.textContent) || 0;
-            if (currentValue === targetValue) return;
-            
-            const duration = 1000;
-            const steps = 20;
-            const stepValue = (targetValue - currentValue) / steps;
-            let currentStep = 0;
-            
-            const timer = setInterval(() => {
-                currentStep++;
-                const newValue = Math.round(currentValue + (stepValue * currentStep));
-                element.textContent = newValue;
-                
-                if (currentStep >= steps) {
-                    element.textContent = targetValue;
-                    clearInterval(timer);
-                }
-            }, duration / steps);
-        }
-
-        function formatTimeAgo(timestamp) {
-            const now = new Date();
-            const date = new Date(timestamp);
-            const diffInSeconds = Math.floor((now - date) / 1000);
-            
-            if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
-            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
-            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-            return `${Math.floor(diffInSeconds / 86400)}d ago`;
-        }
-
-        function updateLastUpdateTime() {
-            const now = new Date();
-            document.getElementById('last-update').textContent = now.toLocaleTimeString();
-        }
-
-        function showNoActivityState() {
-            const feed = document.getElementById('activity-feed');
-            if (feed) {
-                feed.innerHTML = `
-                    <div class="text-center py-12">
-                        <div class="text-6xl mb-4">🤖</div>
-                        <h4 class="text-xl font-bold text-gray-900 mb-2">No Recent AI Activity</h4>
-                        <p class="text-gray-600 mb-4">Waiting for Claude and ChatGPT to collaborate on this repository...</p>
-                        <p class="text-sm text-gray-500">AI-attributed commits will appear here automatically when they occur.</p>
-                        <button onclick="fetchAndDisplayActivity()" class="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
-                            <i class="fas fa-sync-alt mr-2"></i>Check Again
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function showErrorState(errorMessage) {
-            const feed = document.getElementById('activity-feed');
-            if (feed) {
-                feed.innerHTML = `
-                    <div class="text-center py-12">
-                        <div class="text-6xl mb-4">⚠️</div>
-                        <h4 class="text-xl font-bold text-gray-900 mb-2">Connection Issue</h4>
-                        <p class="text-gray-600 mb-4">Unable to fetch live data from GitHub API</p>
-                        <p class="text-sm text-gray-500 mb-4">Error: ${errorMessage}</p>
-                        <button onclick="fetchAndDisplayActivity()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-retry mr-2"></i>Retry Connection
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function setupEventListeners() {
-            // Manual refresh button
-            document.getElementById('manual-refresh').addEventListener('click', async () => {
-                const button = document.getElementById('manual-refresh');
-                const originalHTML = button.innerHTML;
-                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Refreshing...';
-                
-                await fetchAndDisplayActivity();
-                
-                setTimeout(() => {
-                    button.innerHTML = originalHTML;
-                }, 1000);
-            });
-        }
-
-        // Utility functions for copy buttons
-        function copyNpmCommand() {
-            navigator.clipboard.writeText('npm install codedao-dashboard-sdk').then(() => {
-                showCopySuccess('NPM command copied!');
-            });
-        }
-
-        function copyInstallCommand() {
-            const command = 'curl -sSL https://raw.githubusercontent.com/CodeDAO-org/codedao-extension/main/install-codedao.sh | bash';
-            navigator.clipboard.writeText(command).then(() => {
-                showCopySuccess('Install command copied!');
-            });
-        }
-
-        function showCopySuccess(message) {
-            // Simple toast notification
-            const toast = document.createElement('div');
-            toast.textContent = message;
-            toast.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 2000);
-        }
-
-        // ========== MORALIS WALLET CONNECTION SYSTEM ==========
-        
-        // Configuration
-        const MORALIS_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImQzY2NjOTEzLTcwZDUtNGZkOC05ZmQzLTQxYjY1YmM3ZDljMiIsIm9yZ0lkIjoiNDYyNjY1IiwidXNlcklkIjoiNDc1OTg4IiwidHlwZUlkIjoiNGIzMzk5MDUtZjVlZC00N2FhLTliNmYtZjdiMDQ1NzgwODEzIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NTM5OTI2ODQsImV4cCI6NDkwOTc1MjY4NH0._82QL7vojD2DwHwh8U182qpZXqJ2lei_llw2Mdyl7fg";
-        const BASE_CHAIN_ID = "0x2105"; // Base Mainnet
-        const CODE_TOKEN_ADDRESS = "0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0";
-
-        // Global state
-        let currentAccount = null;
-        let provider = null;
-        let signer = null;
-        let isConnected = false;
-
-        // Initialize Moralis
-        async function initMoralis() {
-            try {
-                if (typeof Moralis !== 'undefined') {
-                    await Moralis.start({ apiKey: MORALIS_API_KEY });
-                    console.log("✅ Moralis initialized successfully");
-                    return true;
-                }
-            } catch (error) {
-                console.error("❌ Failed to initialize Moralis:", error);
-                return false;
-            }
-        }
-
-        // Connect wallet function - main entry point
-        async function connectWallet() {
-            try {
-                showNotification("🔄 Connecting wallet...");
-                
-                // Check if MetaMask is installed
-                if (typeof window.ethereum === 'undefined') {
-                    throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
-                }
-
-                // Request account access
-                const accounts = await window.ethereum.request({
-                    method: 'eth_requestAccounts'
-                });
-
-                if (accounts.length === 0) {
-                    throw new Error('No accounts found. Please unlock MetaMask.');
-                }
-
-                // Set up provider and signer
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                signer = provider.getSigner();
-                currentAccount = accounts[0];
-
-                // Switch to Base network
-                await ensureBaseNetwork();
-
-                // Initialize connection
-                await handleWalletConnection();
-
-                showNotification("🎉 Wallet connected successfully!");
-
-            } catch (error) {
-                console.error("❌ Wallet connection failed:", error);
-                showNotification(`❌ Connection failed: ${error.message}`);
-            }
-        }
-
-        // Handle successful wallet connection
-        <script>
-// Connect wallet function - main entry point
-async function connectWallet() {
-  localStorage.setItem('codedao_last_wallet', 'injected');
-  try {
-    showNotification("🔄 Connecting wallet...");
-
-    if (typeof window.ethereum === 'undefined') {
-      throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
-    }
-
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    if (!accounts || accounts.length === 0) {
-      throw new Error('No accounts found. Please unlock MetaMask.');
-    }
-
-    provider = new ethers.providers.Web3Provider(window.ethereum);
-    signer = provider.getSigner();
-    currentAccount = accounts[0];
-
-    await ensureBaseNetwork();
-    await handleWalletConnection();
-    showNotification("🎉 Wallet connected successfully!");
-  } catch (error) {
-    console.error("❌ Wallet connection failed:", error);
-    showNotification(`❌ Connection failed: ${error.message}`);
-  }
-}
-
-// Handle successful wallet connection
-async function handleWalletConnection() {
-  localStorage.setItem('codedao_last_account', currentAccount || '');
-  isConnected = true;
-  updateWalletDisplay();
-  await fetchWalletData();
-  setupWalletEventListeners();
-}
-
-// Fetch wallet data using Moralis API
-async function fetchWalletData() {
-  if (!currentAccount) return;
-
-  try {
-    // Fetch token approvals (v2 SDK or REST fallback)
-    let approvalsData = null;
-    try {
-      if (Moralis?.EvmApi?.token?.getWalletApprovals) {
-        const r = await Moralis.EvmApi.token.getWalletApprovals({
-          chain: BASE_CHAIN_ID,
-          address: currentAccount,
-        });
-        approvalsData = r.raw;
-      } else {
-        const resp = await fetch(
-          `https://deep-index.moralis.io/api/v2.2/wallets/${currentAccount}/approvals?chain=${BASE_CHAIN_ID}`,
-          { headers: { 'X-API-Key': MORALIS_API_KEY } }
-        );
-        approvalsData = await resp.json();
+    async function connectWallet(){
+      try{
+        showNotification("🔄 Connecting wallet...");
+        if(typeof window.ethereum==='undefined'){throw new Error('MetaMask is not installed. Please install MetaMask to continue.')}
+        const accounts=await window.ethereum.request({method:'eth_requestAccounts'});
+        if(!accounts||accounts.length===0){throw new Error('No accounts found. Please unlock MetaMask.')}
+        provider=new ethers.providers.Web3Provider(window.ethereum);
+        signer=provider.getSigner();
+        currentAccount=accounts[0];
+        await ensureBaseNetwork();
+        await handleWalletConnection();
+        showNotification("🎉 Wallet connected successfully!");
+      }catch(error){
+        console.error("❌ Wallet connection failed:",error);
+        showNotification(`❌ Connection failed: ${error.message}`);
       }
-    } catch (e) {
-      console.error('Approvals fetch failed:', e);
-      approvalsData = { result: [] };
     }
 
-    const list = approvalsData?.result || [];
-    renderApprovalsCompact(list);
+    async function handleWalletConnection(){
+      localStorage.setItem('codedao_last_account',currentAccount||'');
+      isConnected=true;
+      updateWalletDisplay();
+      await fetchWalletData();
+      setupWalletEventListeners();
+    }
 
-    // Fetch CODE token balance
-    await fetchCodeTokenBalance();
+    async function fetchWalletData(){
+      if(!currentAccount) return;
+      try{
+        // Approvals (v2 SDK or REST fallback)
+        let approvalsData=null;
+        try{
+          if(Moralis?.EvmApi?.token?.getWalletApprovals){
+            const r=await Moralis.EvmApi.token.getWalletApprovals({chain:BASE_CHAIN_ID,address:currentAccount});
+            approvalsData=r.raw;
+          }else{
+            const resp=await fetch(`https://deep-index.moralis.io/api/v2.2/wallets/${currentAccount}/approvals?chain=${BASE_CHAIN_ID}`,{headers:{'X-API-Key':MORALIS_API_KEY}});
+            approvalsData=await resp.json();
+          }
+        }catch(e){console.error('Approvals fetch failed:',e);approvalsData={result:[]}}
+        const list=approvalsData?.result||[];
+        renderApprovalsCompact(list);
 
-    // Update approval count in UI
-    updateApprovalCount(list.length || 0);
-  } catch (error) {
-    console.error("❌ Error fetching wallet data:", error);
-  }
-}
-</script>
+        await fetchCodeTokenBalance();
+        updateApprovalCount(list.length||0);
+      }catch(error){console.error("❌ Error fetching wallet data:",error)}
+    }
 
-            } catch (error) {
-                console.error("❌ Error revoking approval:", error);
-                showNotification(`❌ Failed to revoke approval: ${error.message}`);
-            }
-        };
+    async function fetchCodeTokenBalance(){
+      try{
+        if(!provider||!currentAccount) return;
+        const token=new ethers.Contract(CODE_TOKEN_ADDRESS,[
+          "function balanceOf(address owner) view returns (uint256)",
+          "function decimals() view returns (uint8)",
+          "function symbol() view returns (string)"
+        ],provider);
+        const [bal,dec,sym]=await Promise.all([token.balanceOf(currentAccount),token.decimals(),token.symbol()]);
+        const readable=(Number(ethers.utils.formatUnits(bal,dec))).toFixed(4);
+        updateTokenBalance(`${readable} ${sym}`);
+      }catch(e){console.error("❌ Error fetching token balance:",e);updateTokenBalance("Error loading balance")}
+    }
 
-        // Ensure user is on Base network
-        async function ensureBaseNetwork() {
-            if (!window.ethereum) return;
-            
-            try {
-                await window.ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: BASE_CHAIN_ID }],
-                });
-            } catch (switchError) {
-                // If the chain hasn't been added yet
-                if (switchError.code === 4902) {
-                    try {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [{
-                                chainId: BASE_CHAIN_ID,
-                                chainName: 'Base',
-                                nativeCurrency: {
-                                    name: 'Ethereum',
-                                    symbol: 'ETH',
-                                    decimals: 18
-                                },
-                                rpcUrls: ['https://mainnet.base.org'],
-                                blockExplorerUrls: ['https://basescan.org/']
-                            }],
-                        });
-                    } catch (addError) {
-                        console.error("❌ Error adding Base network:", addError);
-                    }
-                }
-            }
+    const revokeApproval=async(tokenAddress,spenderAddress)=>{try{
+      if(!signer) throw new Error("Wallet not connected");
+      const token=new ethers.Contract(tokenAddress,["function approve(address spender, uint256 value) external returns (bool)"],signer);
+      showNotification("🔄 Revoking approval...");
+      const tx=await token.approve(spenderAddress,0);await tx.wait();
+      showNotification("✅ Approval revoked successfully!");await fetchWalletData();
+    }catch(error){console.error("❌ Error revoking approval:",error);showNotification(`❌ Failed to revoke approval: ${error.message}`)}};
+
+    async function ensureBaseNetwork(){
+      if(!window.ethereum) return;
+      try{
+        await window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:BASE_CHAIN_ID}]});
+      }catch(e){
+        if(e.code===4902){
+          try{
+            await window.ethereum.request({method:'wallet_addEthereumChain',params:[{chainId:BASE_CHAIN_ID,chainName:'Base',nativeCurrency:{name:'Ethereum',symbol:'ETH',decimals:18},rpcUrls:['https://mainnet.base.org'],blockExplorerUrls:['https://basescan.org/']}]});
+          }catch(addError){console.error("❌ Error adding Base network:",addError)}
         }
+      }
+    }
 
-        // Set up wallet event listeners
-        function setupWalletEventListeners() {
-            if (window.ethereum) {
-                window.ethereum.on('accountsChanged', handleAccountsChanged);
-                window.ethereum.on('chainChanged', handleChainChanged);
-            }
-        }
+    function setupWalletEventListeners(){
+      if(window.ethereum){
+        window.ethereum.on('accountsChanged',handleAccountsChanged);
+        window.ethereum.on('chainChanged',handleChainChanged);
+      }
+    }
+    function handleAccountsChanged(accounts){if(accounts.length===0){disconnectWallet()}else if(accounts[0]!==currentAccount){currentAccount=accounts[0];handleWalletConnection()}}
+    function handleChainChanged(chainId){console.log("🔄 Chain changed to:",chainId);if(isConnected){fetchWalletData()}}
 
-        // Handle account changes
-        function handleAccountsChanged(accounts) {
-            if (accounts.length === 0) {
-                disconnectWallet();
-            } else if (accounts[0] !== currentAccount) {
-                currentAccount = accounts[0];
-                handleWalletConnection();
-            }
-        }
+    function disconnectWallet(){currentAccount=null;provider=null;signer=null;isConnected=false;updateWalletDisplay();updateTokenBalance("0.00 CODE");updateApprovalCount(0);showNotification("🔌 Wallet disconnected")}
+    function updateWalletDisplay(){const headerBtn=document.getElementById('connectWalletHeaderBtn');const overlayBtn=document.getElementById('connectWalletOverlayBtn');[headerBtn,overlayBtn].forEach(btn=>{if(!btn)return;if(isConnected&&currentAccount){btn.textContent=`Connected: ${formatAddress(currentAccount)}`;btn.disabled=true}else{btn.textContent=btn?.id==='connectWalletHeaderBtn'?'Connect Wallet':'Connect Wallet & Start';btn.disabled=false}})}
+    function updateTokenBalance(b){console.log("💰 Token balance:",b)}
+    function updateApprovalCount(c){console.log("🔐 Token approvals found:",c)}
+    function formatAddress(a){return `${a.slice(0,6)}...${a.slice(-4)}`}
+    function showNotification(m){const n=document.createElement('div');n.textContent=m;n.style.cssText="position:fixed;top:20px;right:20px;background:rgba(0,0,0,.9);color:#fff;padding:15px 20px;border-radius:10px;z-index:1000;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3)";document.body.appendChild(n);setTimeout(()=>{n.parentNode&&n.parentNode.removeChild(n)},4000)}
+    function renderApprovalsCompact(list){console.log('Approvals items:',list?.length||0)}
 
-        // Handle chain changes
-        function handleChainChanged(chainId) {
-            console.log("🔄 Chain changed to:", chainId);
-            if (isConnected) {
-                fetchWalletData();
-            }
-        }
-
-        // Disconnect wallet
-        function disconnectWallet() {
-            currentAccount = null;
-            provider = null;
-            signer = null;
-            isConnected = false;
-            
-            // Reset UI
-            updateWalletDisplay();
-            updateTokenBalance("0.00 CODE");
-            updateApprovalCount(0);
-            
-            showNotification("🔌 Wallet disconnected");
-        }
-
-        // Update wallet display (header + overlay)
-        function updateWalletDisplay() {
-            const headerBtn = document.getElementById('connectWalletHeaderBtn');
-            const overlayBtn = document.getElementById('connectWalletOverlayBtn');
-
-            [headerBtn, overlayBtn].forEach((btn) => {
-                if (!btn) return;
-                if (isConnected && currentAccount) {
-                    btn.textContent = `Connected: ${formatAddress(currentAccount)}`;
-                    btn.disabled = true;
-                } else {
-                    btn.textContent = btn.id === 'connectWalletHeaderBtn' ? 'Connect Wallet' : 'Connect Wallet & Start';
-                    btn.disabled = false;
-                }
-            });
-        }
-
-        // Update token balance display
-        function updateTokenBalance(balance) {
-            // Update any balance displays
-            console.log("💰 Token balance:", balance);
-        }
-
-        // Update approval count
-        function updateApprovalCount(count) {
-            console.log("🔐 Token approvals found:", count);
-        }
-
-        // Format address for display
-        function formatAddress(address) {
-            return `${address.slice(0, 6)}...${address.slice(-4)}`;
-        }
-
-        // Show notification
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: rgba(0, 0, 0, 0.9);
-                color: white;
-                padding: 15px 20px;
-                border-radius: 10px;
-                z-index: 1000;
-                font-weight: 600;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-                animation: slideInFromRight 0.3s ease;
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 4000);
-        }
-
-        // Handle AI Agent Control System routing
-        function initializeAgentDashboard() {
-            if (window.location.hash === '#agents') {
-                showAgentControlSystem();
-            }
-        }
-
-        // Show AI Agent Control System (when #agents is in URL)
-        function showAgentControlSystem() {
-            const agentInterface = document.createElement('div');
-            agentInterface.id = 'agent-control-system';
-            agentInterface.innerHTML = `
-                <div style="
-                    background: #000;
-                    color: white;
-                    min-height: 100vh;
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    z-index: 2000;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    text-align: center;
-                    padding: 2rem;
-                ">
-                    <div style="max-width: 800px;">
-                        <h1 style="font-size: 3rem; font-weight: bold; margin-bottom: 1rem;">
-                            Control AI Agents.<br>Execute Real Tasks.
-                        </h1>
-                        <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.8;">
-                            First AI Agent Control System for Autonomous Development
-                        </p>
-                       <p style="margin-bottom: 3rem; opacity: 0.7;">
-                            Submit tasks directly to AI agents and watch them execute real development work.
-                            From code reviews to smart contract deployments - AI agents that actually DO.
-                        </p>
-                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                            <button id="connectWalletOverlayBtn" onclick="connectWallet()" style="
-                                background: #6366f1;
-                                color: white;
-                                padding: 1rem 2rem;
-                                border-radius: 0.5rem;
-                                border: none;
-                                font-size: 1.1rem;
-                                font-weight: 600;
-                                cursor: pointer;
-                                transition: background 0.3s;
-                            ">Connect Wallet & Start</button>
-                            <button onclick="tryAIAgents()" style="
-                                background: transparent;
-                                color: white;
-                                border: 2px solid white;
-                                padding: 1rem 2rem;
-                                border-radius: 0.5rem;
-                                font-size: 1.1rem;
-                                font-weight: 600;
-                                cursor: pointer;
-                                transition: all 0.3s;
-                            ">Try AI Agents</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Smart Suggestions Panel -->
-                    <div style="
-                        position: fixed;
-                        right: 20px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        width: 300px;
-                        background: rgba(255, 255, 255, 0.1);
-                        backdrop-filter: blur(20px);
-                        border-radius: 15px;
-                        padding: 20px;
-                        border: 1px solid rgba(255, 255, 255, 0.2);
-                    ">
-                        <h3 style="margin-bottom: 1rem;">💡 Smart Suggestions:</h3>
-                        <div style="margin-bottom: 1rem;">
-                            <h4>Connect Wallet</h4>
-                            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">
-                                I notice your wallet isn't connected. Would you like help with wallet integration?
-                            </p>
-                            <button onclick="connectWallet()" style="
-                                background: #10b981;
-                                color: white;
-                                border: none;
-                                padding: 0.5rem 1rem;
-                                border-radius: 0.3rem;
-                                cursor: pointer;
-                                width: 100%;
-                            ">Help Me</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(agentInterface);
-        }
-
-        // Try AI Agents demo
-        function tryAIAgents() {
-            showNotification(`🤖 AI AGENTS DEMO
-
-Try these commands:
-• "Review my latest commit"
-• "Deploy to testnet" 
-• "Audit this contract"
-• "Debug gas optimization"
-
-Real AI agents will execute these tasks automatically!
-
-Connect your wallet first to enable full features.`);
-        }
-
-        // Initialize everything when page loads
-        document.addEventListener('DOMContentLoaded', async function() {
-            const moralisReady = await initMoralis();
-            if (moralisReady) {
-                console.log("🚀 CodeDAO Dashboard ready with Moralis!");
-                initializeAgentDashboard();
-                if (typeof window.ethereum !== 'undefined') {
-                    try {
-                        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-                        if (accounts.length > 0) {
-                            currentAccount = accounts[0];
-                            provider = new ethers.providers.Web3Provider(window.ethereum);
-                            signer = provider.getSigner();
-                            await handleWalletConnection();
-                        }
-                    } catch (error) {
-                        console.error("❌ Error checking existing connection:", error);
-                    }
-                }
-            }
-        });
-
-        window.addEventListener('hashchange', initializeAgentDashboard);
-
-        setTimeout(() => {
-            location.reload();
-        }, 600000);
-    </script>
-
-    <!-- AI Agent Control Panel -->
-    <div id="ai-agent-panel" class="ai-agent-panel ai-panel-hidden">
-        <div class="ai-panel-overlay" id="ai-panel-overlay"></div>
-        <div class="ai-panel-container">
-            <div class="ai-panel-header">
-                <div class="ai-panel-title">
-                    <i class="fas fa-robot text-purple-500"></i>
-                    <span>CodeDAO AI Agents</span>
-                </div>
-                <div class="ai-panel-controls">
-                    <button id="ai-panel-minimize" class="ai-panel-btn ai-panel-btn-secondary">
-                        <i class="fas fa-minus"></i>
-                    </button>
-                    <button id="ai-panel-close" class="ai-panel-btn ai-panel-btn-secondary">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="ai-panel-content">
-                <!-- sections unchanged -->
-                <div class="ai-status-section">
-                    <div class="ai-status-header">
-                        <h4>🔗 Connection Status</h4>
-                        <div class="ai-connection-status" id="ai-connection-status">
-                            <span class="status-dot status-offline"></span>
-                            <span>Gateway Offline</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="ai-services-section">
-                    <h4>🤖 Available Assistance:</h4>
-                    <div class="ai-services-grid">
-                        <div class="ai-service-card" data-service="code-review">
-                            <div class="service-icon">📝</div>
-                            <div class="service-name">Code Review</div>
-                            <div class="service-desc">AI-powered code analysis</div>
-                        </div>
-                        <div class="ai-service-card" data-service="contract-audit">
-                            <div class="service-icon">🛡️</div>
-                            <div class="service-name">Contract Audit</div>
-                            <div class="service-desc">Smart contract security</div>
-                        </div>
-                        <div class="ai-service-card" data-service="debug-help">
-                            <div class="service-icon">🐛</div>
-                            <div class="service-name">Debug Help</div>
-                            <div class="service-desc">Error detection & fixes</div>
-                        </div>
-                        <div class="ai-service-card" data-service="optimization">
-                            <div class="service-icon">⚡</div>
-                            <div class="service-name">Optimization</div>
-                            <div class="service-desc">Performance improvements</div>
-                        </div>
-                        <div class="ai-service-card" data-service="documentation">
-                            <div class="service-icon">📚</div>
-                            <div class="service-name">Documentation</div>
-                            <div class="service-desc">Auto-generate docs</div>
-                        </div>
-                        <div class="ai-service-card" data-service="deployment">
-                            <div class="service-icon">🚀</div>
-                            <div class="service-name">Deployment</div>
-                            <div class="service-desc">Deploy to networks</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ai-control-section">
-                    <h4>🎛️ Agent Control Center</h4>
-                    <div class="ai-task-form">
-                        <select id="ai-task-type" class="ai-select">
-                            <option value="">Select Task Type</option>
-                            <option value="code-review">📝 Code Review</option>
-                            <option value="smart-contract-audit">🛡️ Smart Contract Audit</option>
-                            <option value="debugging">🐛 Debug Assistance</option>
-                            <option value="documentation">📚 Generate Documentation</option>
-                            <option value="deployment">🚀 Deploy Contract</option>
-                            <option value="testing">🧪 Generate Tests</option>
-                            <option value="optimization">⚡ Code Optimization</option>
-                        </select>
-                        <textarea id="ai-task-description" placeholder="Describe your task in detail..." rows="3"></textarea>
-                        <div class="ai-task-actions">
-                            <select id="ai-task-priority" class="ai-select-small">
-                                <option value="normal">Normal Priority</option>
-                                <option value="high">High Priority</option>
-                                <option value="low">Low Priority</option>
-                            </select>
-                            <button id="ai-submit-task" class="ai-submit-btn">
-                                <span class="btn-text">Submit Task</span>
-                                <span class="btn-spinner" style="display: none;">⏳</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="ai-agents-section">
-                    <h4>🤖 Connected Agents</h4>
-                    <div class="ai-agents-list" id="ai-agents-list">
-                        <div class="ai-no-agents">No agents connected</div>
-                    </div>
-                </div>
-                <div class="ai-tasks-section">
-                    <h4>📋 Active Tasks</h4>
-                    <div class="ai-tasks-list" id="ai-tasks-list">
-                        <div class="ai-no-tasks">No active tasks</div>
-                    </div>
-                </div>
-            </div>
+    // Agent overlay routing
+    function initializeAgentDashboard(){if(window.location.hash==='#agents'){showAgentControlSystem()}}
+    function showAgentControlSystem(){
+      const el=document.createElement('div');el.id='agent-control-system';
+      el.innerHTML=`<div style="background:#000;color:#fff;min-height:100vh;position:fixed;top:0;left:0;right:0;z-index:2000;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;">
+        <div style="max-width:800px;">
+          <h1 style="font-size:3rem;font-weight:bold;margin-bottom:1rem;">Control AI Agents.<br>Execute Real Tasks.</h1>
+          <p style="font-size:1.2rem;margin-bottom:2rem;opacity:.8;">First AI Agent Control System for Autonomous Development</p>
+          <p style="margin-bottom:3rem;opacity:.7;">Submit tasks directly to AI agents and watch them execute real development work. From code reviews to smart contract deployments - AI agents that actually DO.</p>
+          <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+            <button id="connectWalletOverlayBtn" onclick="connectWallet()" style="background:#6366f1;color:#fff;padding:1rem 2rem;border-radius:.5rem;border:none;font-size:1.1rem;font-weight:600;cursor:pointer;transition:background .3s;">Connect Wallet & Start</button>
+            <button onclick="tryAIAgents()" style="background:transparent;color:#fff;border:2px solid #fff;padding:1rem 2rem;border-radius:.5rem;font-size:1.1rem;font-weight:600;cursor:pointer;transition:all .3s;">Try AI Agents</button>
+          </div>
         </div>
-    </div>
+        <div style="position:fixed;right:20px;top:50%;transform:translateY(-50%);width:300px;background:rgba(255,255,255,.1);backdrop-filter:blur(20px);border-radius:15px;padding:20px;border:1px solid rgba(255,255,255,.2);">
+          <h3 style="margin-bottom:1rem;">💡 Smart Suggestions:</h3>
+          <div style="margin-bottom:1rem;">
+            <h4>Connect Wallet</h4>
+            <p style="font-size:.9rem;opacity:.8;margin-bottom:.5rem;">I notice your wallet isn't connected. Would you like help with wallet integration?</p>
+            <button onclick="connectWallet()" style="background:#10b981;color:#fff;border:none;padding:.5rem 1rem;border-radius:.3rem;cursor:pointer;width:100%;">Help Me</button>
+          </div>
+        </div>
+      </div>`;
+      document.body.appendChild(el);
+    }
+    function tryAIAgents(){showNotification('🤖 AI agents demo: try "Review my latest commit" or "Audit this contract"')}
 
-    <style>
-        /* styles unchanged from your version */
-        .ai-agent-panel { position: fixed; top: 0; right: 0; bottom: 0; width: 450px; z-index: 1000; transform: translateX(100%); transition: transform 0.3s ease-in-out; }
-        .ai-agent-panel.ai-panel-visible { transform: translateX(0); }
-        .ai-agent-panel.ai-panel-minimized { transform: translateX(calc(100% - 60px)); }
-        .ai-panel-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transition: all 0.3s ease; }
-        .ai-agent-panel.ai-panel-visible .ai-panel-overlay { opacity: 1; visibility: visible; }
-        .ai-panel-container { height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); border-left: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; color: white; }
-        .ai-panel-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
-        .ai-panel-title { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 1.1rem; }
-        .ai-panel-controls { display: flex; gap: 0.5rem; }
-        .ai-panel-btn { width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
-        .ai-panel-btn-secondary { background: rgba(255,255,255,0.1); color: white; }
-        .ai-panel-btn-secondary:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
-        .ai-panel-content { flex: 1; overflow-y: auto; padding: 1rem; }
-        .ai-status-section, .ai-services-section, .ai-control-section, .ai-agents-section, .ai-tasks-section { margin-bottom: 1.5rem; }
-        .ai-status-section h4, .ai-services-section h4, .ai-control-section h4, .ai-agents-section h4, .ai-tasks-section h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem; color: rgba(255,255,255,0.9); }
-        .ai-status-header { display: flex; justify-content: space-between; align-items: center; }
-        .ai-connection-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
-        .status-dot.status-online { background: #10b981; animation: pulse-green 2s infinite; }
-        .status-dot.status-offline { background: #ef4444; }
-        @keyframes pulse-green { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-        .ai-services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-        .ai-service-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease; }
-        .ai-service-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); border-color: rgba(147,51,234,0.5); }
-        .service-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .service-name { font-weight: 600; font-size: 0.8rem; margin-bottom: 0.25rem; }
-        .service-desc { font-size: 0.7rem; color: rgba(255,255,255,0.7); }
-        .ai-task-form { display: flex; flex-direction: column; gap: 0.75rem; }
-        .ai-select, .ai-select-small { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white; padding: 0.5rem; font-size: 0.8rem; }
-        .ai-select-small { flex: 1; }
-        .ai-task-form textarea { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white; padding: 0.5rem; font-size: 0.8rem; resize: vertical; min-height: 60px; }
-        .ai-task-form textarea::placeholder { color: rgba(255,255,255,0.5); }
-        .ai-task-actions { display: flex; gap: 0.5rem; align-items: center; }
-        .ai-submit-btn { background: linear-gradient(135deg, #8b5cf6, #3b82f6); color: white; border: none; border-radius: 6px; padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem; }
-        .ai-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
-        .ai-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .ai-agents-list, .ai-tasks-list { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 0.75rem; min-height: 60px; }
-        .ai-no-agents, .ai-no-tasks { color: rgba(255,255,255,0.6); font-size: 0.8rem; text-align: center; padding: 1rem; }
-        @media (max-width: 768px) { .ai-agent-panel { width: 100%; } }
-    </style>
-
-    <script>
-        // AI Agent Dropdown System (Claude AI-style)
-        class AIAgentDropdown {
-            constructor() {
-                this.isOpen = false;
-                this.connectedAgents = [];
-                this.activeTasks = [];
-                this.connectionStatus = 'offline';
-                this.init();
+    // Init on load
+    document.addEventListener('DOMContentLoaded',async function(){
+      const ok=await initMoralis();
+      if(ok){
+        console.log("🚀 CodeDAO Dashboard ready with Moralis!");
+        initializeAgentDashboard();
+        if(typeof window.ethereum!=='undefined'){
+          try{
+            const accounts=await window.ethereum.request({method:'eth_accounts'});
+            if(accounts.length>0){
+              currentAccount=accounts[0];
+              provider=new ethers.providers.Web3Provider(window.ethereum);
+              signer=provider.getSigner();
+              await handleWalletConnection();
             }
-
-            init() {
-                this.setupEventListeners();
-                this.connectToGateway();
-            }
-
-            setupEventListeners() {
-                const toggleBtn = document.getElementById('ai-agent-dropdown-toggle');
-                const dropdown = document.getElementById('ai-agent-dropdown');
-                
-                if (!toggleBtn || !dropdown) return;
-                
-                toggleBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.toggleDropdown();
-                });
-
-                document.addEventListener('click', (e) => {
-                    if (!dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
-                        this.closeDropdown();
-                    }
-                });
-
-                dropdown.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                });
-
-                document.querySelectorAll('.quick-action-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const service = btn.dataset.service;
-                        this.selectService(service);
-                    });
-                });
-
-                document.querySelectorAll('.service-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const service = item.dataset.service;
-                        this.selectService(service);
-                    });
-                });
-
-                const submitBtn = document.getElementById('submit-task-dropdown');
-                if (submitBtn) {
-                    submitBtn.addEventListener('click', () => {
-                        this.submitTask();
-                    });
-                }
-
-                const expandBtn = document.getElementById('open-full-panel');
-                const settingsBtn = document.getElementById('agent-settings');
-                
-                if (expandBtn) expandBtn.addEventListener('click', () => this.openFullPanel());
-                if (settingsBtn) settingsBtn.addEventListener('click', () => this.openSettings());
-            }
-
-            toggleDropdown() {
-                if (this.isOpen) this.closeDropdown(); else this.openDropdown();
-            }
-
-            openDropdown() {
-                const dropdown = document.getElementById('ai-agent-dropdown');
-                const toggleBtn = document.getElementById('ai-agent-dropdown-toggle');
-                const arrow = toggleBtn.querySelector('.dropdown-arrow');
-                
-                dropdown.classList.remove('opacity-0', 'invisible', '-translate-y-2');
-                dropdown.classList.add('opacity-100', 'visible', 'translate-y-0');
-                if (arrow) arrow.style.transform = 'rotate(180deg)';
-                this.isOpen = true;
-            }
-
-            closeDropdown() {
-                const dropdown = document.getElementById('ai-agent-dropdown');
-                const toggleBtn = document.getElementById('ai-agent-dropdown-toggle');
-                const arrow = toggleBtn.querySelector('.dropdown-arrow');
-                
-                dropdown.classList.remove('opacity-100', 'visible', 'translate-y-0');
-                dropdown.classList.add('opacity-0', 'invisible', '-translate-y-2');
-                if (arrow) arrow.style.transform = 'rotate(0deg)';
-                this.isOpen = false;
-            }
-
-            selectService(service) {
-                const taskType = document.getElementById('task-type-dropdown');
-                if (taskType) {
-                    taskType.value = service;
-                    const description = document.getElementById('task-description-dropdown');
-                    if (description) description.focus();
-                    this.showNotification(`Selected: ${service.replace('-', ' ')}`);
-                }
-            }
-
-            async submitTask() {
-                const taskType = document.getElementById('task-type-dropdown')?.value;
-                const description = document.getElementById('task-description-dropdown')?.value;
-                if (!taskType || !description?.trim()) {
-                    this.showNotification('Please select a service and provide a description');
-                    return;
-                }
-
-                const submitBtn = document.getElementById('submit-task-dropdown');
-                const btnText = submitBtn?.querySelector('.btn-text');
-                const btnSpinner = submitBtn?.querySelector('.btn-spinner');
-                
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    if (btnText) btnText.style.display = 'none';
-                    if (btnSpinner) btnSpinner.classList.remove('hidden');
-                }
-
-                try {
-                    await new Promise(resolve => setTimeout(resolve, 1500));
-                    const task = { id: 'task_' + Date.now(), type: taskType, description, status: 'pending', timestamp: new Date() };
-                    this.activeTasks.push(task);
-                    this.updateTasksList();
-                    this.clearForm();
-                    this.showNotification('✅ Task submitted successfully!');
-                } catch {
-                    this.showNotification('❌ Failed to submit task');
-                } finally {
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        if (btnText) btnText.style.display = 'inline';
-                        if (btnSpinner) btnSpinner.classList.add('hidden');
-                    }
-                }
-            }
-
-            clearForm() {
-                const taskType = document.getElementById('task-type-dropdown');
-                const description = document.getElementById('task-description-dropdown');
-                if (taskType) taskType.value = '';
-                if (description) description.value = '';
-            }
-
-            updateTasksList() {
-                const tasksList = document.getElementById('tasks-list-compact');
-                if (!tasksList) return;
-                if (this.activeTasks.length === 0) {
-                    tasksList.innerHTML = '<div class="no-tasks-compact text-center text-white text-opacity-50 text-xs p-2">No active tasks</div>';
-                    return;
-                }
-                tasksList.innerHTML = this.activeTasks.map(task => `
-                    <div class="task-item-compact p-2 bg-white bg-opacity-5 rounded text-xs">
-                        <div class="task-type-compact font-semibold text-white">${task.type}</div>
-                        <div class="task-desc-compact text-white text-opacity-70">${task.description.substring(0, 30)}...</div>
-                        <div class="task-status-compact text-xs text-green-400">${task.status}</div>
-                    </div>
-                `).join('');
-            }
-
-            async connectToGateway() {
-                const statusElement = document.getElementById('connection-status');
-                if (!statusElement) return;
-                try {
-                    statusElement.innerHTML = `
-                        <span class="status-dot w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                        <span class="status-text">Connecting...</span>
-                    `;
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    statusElement.innerHTML = `
-                        <span class="status-dot w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                        <span class="status-text">Gateway Online</span>
-                    `;
-                    this.connectionStatus = 'online';
-                } catch {
-                    statusElement.innerHTML = `
-                        <span class="status-dot w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                        <span class="status-text">Connection Failed</span>
-                    `;
-                }
-            }
-
-            openFullPanel() { this.showNotification('Full panel feature coming soon!'); this.closeDropdown(); }
-            openSettings() { this.showNotification('Agent settings coming soon!'); this.closeDropdown(); }
-
-            showNotification(message) {
-                const notification = document.createElement('div');
-                notification.textContent = message;
-                notification.style.cssText = `
-                    position: fixed; top: 20px; right: 20px; background: rgba(0, 0, 0, 0.9);
-                    color: white; padding: 12px 16px; border-radius: 8px; z-index: 1001;
-                    font-size: 12px; font-weight: 600; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-                `;
-                document.body.appendChild(notification);
-                setTimeout(() => { if (notification.parentNode) notification.parentNode.removeChild(notification); }, 3000);
-            }
+          }catch(e){console.error("❌ Error checking existing connection:",e)}
         }
+      }
+    });
+    window.addEventListener('hashchange',initializeAgentDashboard);
+    setTimeout(()=>{location.reload()},600000);
+  </script>
 
-        document.addEventListener('DOMContentLoaded', () => { new AIAgentDropdown(); });
-    </script>
+  <!-- AI Agent Control Panel (unchanged styles/JS for dropdown widget) -->
+  <div id="ai-agent-panel" class="ai-agent-panel ai-panel-hidden">
+    <div class="ai-panel-overlay" id="ai-panel-overlay"></div>
+    <div class="ai-panel-container">
+      <div class="ai-panel-header">
+        <div class="ai-panel-title"><i class="fas fa-robot text-purple-500"></i><span>CodeDAO AI Agents</span></div>
+        <div class="ai-panel-controls">
+          <button id="ai-panel-minimize" class="ai-panel-btn ai-panel-btn-secondary"><i class="fas fa-minus"></i></button>
+          <button id="ai-panel-close" class="ai-panel-btn ai-panel-btn-secondary"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+      <div class="ai-panel-content">
+        <div class="ai-status-section">
+          <div class="ai-status-header">
+            <h4>🔗 Connection Status</h4>
+            <div class="ai-connection-status" id="ai-connection-status"><span class="status-dot status-offline"></span><span>Gateway Offline</span></div>
+          </div>
+        </div>
+        <div class="ai-services-section">
+          <h4>🤖 Available Assistance:</h4>
+          <div class="ai-services-grid">
+            <div class="ai-service-card" data-service="code-review"><div class="service-icon">📝</div><div class="service-name">Code Review</div><div class="service-desc">AI-powered code analysis</div></div>
+            <div class="ai-service-card" data-service="contract-audit"><div class="service-icon">🛡️</div><div class="service-name">Contract Audit</div><div class="service-desc">Smart contract security</div></div>
+            <div class="ai-service-card" data-service="debug-help"><div class="service-icon">🐛</div><div class="service-name">Debug Help</div><div class="service-desc">Error detection & fixes</div></div>
+            <div class="ai-service-card" data-service="optimization"><div class="service-icon">⚡</div><div class="service-name">Optimization</div><div class="service-desc">Performance improvements</div></div>
+            <div class="ai-service-card" data-service="documentation"><div class="service-icon">📚</div><div class="service-name">Documentation</div><div class="service-desc">Auto-generate docs</div></div>
+            <div class="ai-service-card" data-service="deployment"><div class="service-icon">🚀</div><div class="service-name">Deployment</div><div class="service-desc">Deploy to networks</div></div>
+          </div>
+        </div>
+        <div class="ai-control-section">
+          <h4>🎛️ Agent Control Center</h4>
+          <div class="ai-task-form">
+            <select id="ai-task-type" class="ai-select">
+              <option value="">Select Task Type</option>
+              <option value="code-review">📝 Code Review</option>
+              <option value="smart-contract-audit">🛡️ Smart Contract Audit</option>
+              <option value="debugging">🐛 Debug Assistance</option>
+              <option value="documentation">📚 Generate Documentation</option>
+              <option value="deployment">🚀 Deploy Contract</option>
+              <option value="testing">🧪 Generate Tests</option>
+              <option value="optimization">⚡ Code Optimization</option>
+            </select>
+            <textarea id="ai-task-description" placeholder="Describe your task in detail..." rows="3"></textarea>
+            <div class="ai-task-actions">
+              <select id="ai-task-priority" class="ai-select-small">
+                <option value="normal">Normal Priority</option>
+                <option value="high">High Priority</option>
+                <option value="low">Low Priority</option>
+              </select>
+              <button id="ai-submit-task" class="ai-submit-btn"><span class="btn-text">Submit Task</span><span class="btn-spinner" style="display:none;">⏳</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="ai-agents-section">
+          <h4>🤖 Connected Agents</h4>
+          <div class="ai-agents-list" id="ai-agents-list"><div class="ai-no-agents">No agents connected</div></div>
+        </div>
+        <div class="ai-tasks-section">
+          <h4>📋 Active Tasks</h4>
+          <div class="ai-tasks-list" id="ai-tasks-list"><div class="ai-no-tasks">No active tasks</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .ai-agent-panel{position:fixed;top:0;right:0;bottom:0;width:450px;z-index:1000;transform:translateX(100%);transition:transform .3s ease-in-out}
+    .ai-agent-panel.ai-panel-visible{transform:translateX(0)}
+    .ai-agent-panel.ai-panel-minimized{transform:translateX(calc(100% - 60px))}
+    .ai-panel-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:all .3s ease}
+    .ai-agent-panel.ai-panel-visible .ai-panel-overlay{opacity:1;visibility:visible}
+    .ai-panel-container{height:100%;background:rgba(0,0,0,.95);backdrop-filter:blur(20px);border-left:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;color:#fff}
+    .ai-panel-header{display:flex;justify-content:space-between;align-items:center;padding:1rem;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05)}
+    .ai-panel-title{display:flex;align-items:center;gap:.5rem;font-weight:600;font-size:1.1rem}
+    .ai-panel-controls{display:flex;gap:.5rem}
+    .ai-panel-btn{width:32px;height:32px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease}
+    .ai-panel-btn-secondary{background:rgba(255,255,255,.1);color:#fff}
+    .ai-panel-btn-secondary:hover{background:rgba(255,255,255,.2);transform:scale(1.05)}
+    .ai-panel-content{flex:1;overflow-y:auto;padding:1rem}
+    .ai-status-section,.ai-services-section,.ai-control-section,.ai-agents-section,.ai-tasks-section{margin-bottom:1.5rem}
+    .ai-status-section h4,.ai-services-section h4,.ai-control-section h4,.ai-agents-section h4,.ai-tasks-section h4{font-size:.9rem;font-weight:600;margin-bottom:.75rem;color:rgba(255,255,255,.9)}
+    .ai-status-header{display:flex;justify-content:space-between;align-items:center}
+    .ai-connection-status{display:flex;align-items:center;gap:.5rem;font-size:.8rem}
+    .status-dot{width:8px;height:8px;border-radius:50%;background:#ef4444}
+    .status-dot.status-online{background:#10b981;animation:pulse-green 2s infinite}
+    .status-dot.status-offline{background:#ef4444}
+    @keyframes pulse-green{0%,100%{opacity:1}50%{opacity:.6}}
+    .ai-services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
+    .ai-service-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:1rem;text-align:center;cursor:pointer;transition:all .3s ease}
+    .ai-service-card:hover{background:rgba(255,255,255,.1);transform:translateY(-2px);border-color:rgba(147,51,234,.5)}
+    .service-icon{font-size:1.5rem;margin-bottom:.5rem}
+    .service-name{font-weight:600;font-size:.8rem;margin-bottom:.25rem}
+    .service-desc{font-size:.7rem;color:rgba(255,255,255,.7)}
+    .ai-task-form{display:flex;flex-direction:column;gap:.75rem}
+    .ai-select,.ai-select-small{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:#fff;padding:.5rem;font-size:.8rem}
+    .ai-select-small{flex:1}
+    .ai-task-form textarea{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:#fff;padding:.5rem;font-size:.8rem;resize:vertical;min-height:60px}
+    .ai-task-form textarea::placeholder{color:rgba(255,255,255,.5)}
+    .ai-task-actions{display:flex;gap:.5rem;align-items:center}
+    .ai-submit-btn{background:linear-gradient(135deg,#8b5cf6,#3b82f6);color:#fff;border:none;border-radius:6px;padding:.5rem 1rem;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s ease;display:flex;align-items:center;gap:.5rem}
+    .ai-submit-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(139,92,246,.4)}
+    .ai-submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .ai-agents-list,.ai-tasks-list{background:rgba(255,255,255,.05);border-radius:8px;padding:.75rem;min-height:60px}
+    .ai-no-agents,.ai-no-tasks{color:rgba(255,255,255,.6);font-size:.8rem;text-align:center;padding:1rem}
+    @media(max-width:768px){.ai-agent-panel{width:100%}}
+  </style>
+
+  <script>
+    // AI Agent Dropdown (compact)
+    class AIAgentDropdown {
+      constructor(){this.isOpen=false;this.connectedAgents=[];this.activeTasks=[];this.connectionStatus='offline';this.init()}
+      init(){this.setupEventListeners();this.connectToGateway()}
+      setupEventListeners(){
+        const toggleBtn=document.getElementById('ai-agent-dropdown-toggle');
+        const dropdown=document.getElementById('ai-agent-dropdown');
+        if(!toggleBtn||!dropdown) return;
+        toggleBtn.addEventListener('click',e=>{e.stopPropagation();this.toggleDropdown()});
+        document.addEventListener('click',e=>{if(!dropdown.contains(e.target)&&!toggleBtn.contains(e.target))this.closeDropdown()});
+        dropdown.addEventListener('click',e=>{e.stopPropagation()});
+        document.querySelectorAll('.quick-action-btn').forEach(b=>b.addEventListener('click',()=>this.selectService(b.dataset.service)));
+        document.querySelectorAll('.service-item').forEach(i=>i.addEventListener('click',()=>this.selectService(i.dataset.service)));
+        const submitBtn=document.getElementById('submit-task-dropdown');
+        if(submitBtn) submitBtn.addEventListener('click',()=>this.submitTask());
+        const expandBtn=document.getElementById('open-full-panel');const settingsBtn=document.getElementById('agent-settings');
+        if(expandBtn) expandBtn.addEventListener('click',()=>this.openFullPanel());
+        if(settingsBtn) settingsBtn.addEventListener('click',()=>this.openSettings());
+      }
+      toggleDropdown(){this.isOpen?this.closeDropdown():this.openDropdown()}
+      openDropdown(){const d=document.getElementById('ai-agent-dropdown');const t=document.getElementById('ai-agent-dropdown-toggle');const a=t.querySelector('.dropdown-arrow');d.classList.remove('opacity-0','invisible','-translate-y-2');d.classList.add('opacity-100','visible','translate-y-0');if(a)a.style.transform='rotate(180deg)';this.isOpen=true}
+      closeDropdown(){const d=document.getElementById('ai-agent-dropdown');const t=document.getElementById('ai-agent-dropdown-toggle');const a=t.querySelector('.dropdown-arrow');d.classList.remove('opacity-100','visible','translate-y-0');d.classList.add('opacity-0','invisible','-translate-y-2');if(a)a.style.transform='rotate(0deg)';this.isOpen=false}
+      selectService(s){const t=document.getElementById('task-type-dropdown');if(t){t.value=s;const d=document.getElementById('task-description-dropdown');if(d)d.focus();this.showNotification(`Selected: ${s.replace('-',' ')}`)}}
+      async submitTask(){const t=document.getElementById('task-type-dropdown')?.value;const d=document.getElementById('task-description-dropdown')?.value;if(!t||!d?.trim()){this.showNotification('Please select a service and provide a description');return}const btn=document.getElementById('submit-task-dropdown');const txt=btn?.querySelector('.btn-text');const spn=btn?.querySelector('.btn-spinner');if(btn){btn.disabled=true;if(txt)txt.style.display='none';if(spn)spn.classList.remove('hidden')}try{await new Promise(r=>setTimeout(r,1500));const task={id:'task_'+Date.now(),type:t,description:d,status:'pending',timestamp:new Date()};this.activeTasks.push(task);this.updateTasksList();this.clearForm();this.showNotification('✅ Task submitted successfully!')}catch{this.showNotification('❌ Failed to submit task')}finally{if(btn){btn.disabled=false;if(txt)txt.style.display='inline';if(spn)spn.classList.add('hidden')}}}
+      clearForm(){const t=document.getElementById('task-type-dropdown');const d=document.getElementById('task-description-dropdown');if(t)t.value='';if(d)d.value=''}
+      updateTasksList(){const list=document.getElementById('tasks-list-compact');if(!list)return;if(this.activeTasks.length===0){list.innerHTML='<div class="no-tasks-compact text-center text-white text-opacity-50 text-xs p-2">No active tasks</div>';return}list.innerHTML=this.activeTasks.map(task=>`<div class="task-item-compact p-2 bg-white bg-opacity-5 rounded text-xs"><div class="task-type-compact font-semibold text-white">${task.type}</div><div class="task-desc-compact text-white text-opacity-70">${task.description.substring(0,30)}...</div><div class="task-status-compact text-xs text-green-400">${task.status}</div></div>`).join('')}
+      async connectToGateway(){const el=document.getElementById('connection-status');if(!el)return;try{el.innerHTML=`<span class="status-dot w-1.5 h-1.5 bg-red-500 rounded-full"></span><span class="status-text">Connecting...</span>`;await new Promise(r=>setTimeout(r,2000));el.innerHTML=`<span class="status-dot w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span><span class="status-text">Gateway Online</span>`;this.connectionStatus='online'}catch{el.innerHTML=`<span class="status-dot w-1.5 h-1.5 bg-red-500 rounded-full"></span><span class="status-text">Connection Failed</span>`}}
+      openFullPanel(){this.showNotification('Full panel feature coming soon!');this.closeDropdown()}
+      openSettings(){this.showNotification('Agent settings coming soon!');this.closeDropdown()}
+      showNotification(m){const n=document.createElement('div');n.textContent=m;n.style.cssText="position:fixed;top:20px;right:20px;background:rgba(0,0,0,.9);color:#fff;padding:12px 16px;border-radius:8px;z-index:1001;font-size:12px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3)";document.body.appendChild(n);setTimeout(()=>{n.parentNode&&n.parentNode.removeChild(n)},3000)}
+    }
+    document.addEventListener('DOMContentLoaded',()=>{new AIAgentDropdown()});
+  </script>
 </body>
 </html>
