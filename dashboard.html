@@ -809,31 +809,35 @@
             // Fetch wallet data using Moralis
             await fetchWalletData();
             
-            // Set up event listeners
-            setupWalletEventListeners();
-        }
+           // Fetch token approvals (v2 SDK or REST fallback)
+let approvalsData = null;
+try {
+  if (Moralis?.EvmApi?.token?.getWalletApprovals) {
+    const r = await Moralis.EvmApi.token.getWalletApprovals({
+      chain: BASE_CHAIN_ID,
+      address: currentAccount,
+    });
+    approvalsData = r.raw;
+  } else {
+    const resp = await fetch(
+      `https://deep-index.moralis.io/api/v2.2/wallets/${currentAccount}/approvals?chain=${BASE_CHAIN_ID}`,
+      { headers: { 'X-API-Key': MORALIS_API_KEY } }
+    );
+    approvalsData = await resp.json();
+  }
+} catch (e) {
+  console.error('Approvals fetch failed:', e);
+  approvalsData = { result: [] };
+}
 
-        // Fetch wallet data using Moralis API
-        async function fetchWalletData() {
-            if (!currentAccount) return;
+const list = approvalsData?.result || [];
+renderApprovalsCompact(list);
 
-            try {
-                // Fetch token approvals (like revoke.cash)
-                const approvals = await Moralis.EvmApi.token.getWalletApprovals({
-                    chain: BASE_CHAIN_ID,
-                    address: currentAccount,
-                });
+// Fetch CODE token balance
+await fetchCodeTokenBalance();
 
-                console.log("📊 Wallet approvals:", approvals.raw);
-
-                // Fetch CODE token balance
-                await fetchCodeTokenBalance();
-
-                // Update approval count in UI
-                updateApprovalCount(approvals.raw.result?.length || 0);
-
-            } catch (error) {
-                console.error("❌ Error fetching wallet data:", error);
+// Update approval count in UI
+updateApprovalCount(list.length || 0);
             }
         }
 
