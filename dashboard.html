@@ -800,99 +800,83 @@
         }
 
         // Handle successful wallet connection
-        async function handleWalletConnection() {
-            isConnected = true;
-            
-            // Update UI elements
-            updateWalletDisplay();
-            
-            // Fetch wallet data using Moralis
-            await fetchWalletData();
-            
-           // Fetch token approvals (v2 SDK or REST fallback)
-let approvalsData = null;
-try {
-  if (Moralis?.EvmApi?.token?.getWalletApprovals) {
-    const r = await Moralis.EvmApi.token.getWalletApprovals({
-      chain: BASE_CHAIN_ID,
-      address: currentAccount,
-    });
-    approvalsData = r.raw;
-  } else {
-    const resp = await fetch(
-      `https://deep-index.moralis.io/api/v2.2/wallets/${currentAccount}/approvals?chain=${BASE_CHAIN_ID}`,
-      { headers: { 'X-API-Key': MORALIS_API_KEY } }
-    );
-    approvalsData = await resp.json();
+        <script>
+// Connect wallet function - main entry point
+async function connectWallet() {
+  localStorage.setItem('codedao_last_wallet', 'injected');
+  try {
+    showNotification("🔄 Connecting wallet...");
+
+    if (typeof window.ethereum === 'undefined') {
+      throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
+    }
+
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    if (!accounts || accounts.length === 0) {
+      throw new Error('No accounts found. Please unlock MetaMask.');
+    }
+
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    signer = provider.getSigner();
+    currentAccount = accounts[0];
+
+    await ensureBaseNetwork();
+    await handleWalletConnection();
+    showNotification("🎉 Wallet connected successfully!");
+  } catch (error) {
+    console.error("❌ Wallet connection failed:", error);
+    showNotification(`❌ Connection failed: ${error.message}`);
   }
-} catch (e) {
-  console.error('Approvals fetch failed:', e);
-  approvalsData = { result: [] };
 }
 
-const list = approvalsData?.result || [];
-renderApprovalsCompact(list);
+// Handle successful wallet connection
+async function handleWalletConnection() {
+  localStorage.setItem('codedao_last_account', currentAccount || '');
+  isConnected = true;
+  updateWalletDisplay();
+  await fetchWalletData();
+  setupWalletEventListeners();
+}
 
-// Fetch CODE token balance
-await fetchCodeTokenBalance();
+// Fetch wallet data using Moralis API
+async function fetchWalletData() {
+  if (!currentAccount) return;
 
-// Update approval count in UI
-updateApprovalCount(list.length || 0);
-            }
-        }
+  try {
+    // Fetch token approvals (v2 SDK or REST fallback)
+    let approvalsData = null;
+    try {
+      if (Moralis?.EvmApi?.token?.getWalletApprovals) {
+        const r = await Moralis.EvmApi.token.getWalletApprovals({
+          chain: BASE_CHAIN_ID,
+          address: currentAccount,
+        });
+        approvalsData = r.raw;
+      } else {
+        const resp = await fetch(
+          `https://deep-index.moralis.io/api/v2.2/wallets/${currentAccount}/approvals?chain=${BASE_CHAIN_ID}`,
+          { headers: { 'X-API-Key': MORALIS_API_KEY } }
+        );
+        approvalsData = await resp.json();
+      }
+    } catch (e) {
+      console.error('Approvals fetch failed:', e);
+      approvalsData = { result: [] };
+    }
 
-        // Fetch CODE token balance
-        async function fetchCodeTokenBalance() {
-            try {
-                if (!provider || !currentAccount) return;
+    const list = approvalsData?.result || [];
+    renderApprovalsCompact(list);
 
-                const tokenContract = new ethers.Contract(
-                    CODE_TOKEN_ADDRESS,
-                    [
-                        "function balanceOf(address owner) view returns (uint256)",
-                        "function decimals() view returns (uint8)",
-                        "function symbol() view returns (string)"
-                    ],
-                    provider
-                );
+    // Fetch CODE token balance
+    await fetchCodeTokenBalance();
 
-                const balance = await tokenContract.balanceOf(currentAccount);
-                const decimals = await tokenContract.decimals();
-                const symbol = await tokenContract.symbol();
-
-                const formattedBalance = ethers.utils.formatUnits(balance, decimals);
-                const roundedBalance = parseFloat(formattedBalance).toFixed(2);
-
-                // Update balance display
-                updateTokenBalance(`${roundedBalance} ${symbol}`);
-
-            } catch (error) {
-                console.error("❌ Error fetching token balance:", error);
-                updateTokenBalance("Error loading balance");
-            }
-        }
-
-        // Revoke token approval function (from your example)
-        const revokeApproval = async (tokenAddress, spenderAddress) => {
-            try {
-                if (!signer) {
-                    throw new Error("Wallet not connected");
-                }
-
-                const tokenContract = new ethers.Contract(
-                    tokenAddress,
-                    ["function approve(address spender, uint256 value) external returns (bool)"],
-                    signer
-                );
-
-                showNotification("🔄 Revoking approval...");
-                const tx = await tokenContract.approve(spenderAddress, 0);
-                await tx.wait();
-                
-                showNotification("✅ Approval revoked successfully!");
-                
-                // Refresh wallet data
-                await fetchWalletData();
+    // Update approval count in UI
+    updateApprovalCount(list.length || 0);
+  } catch (error) {
+    console.error("❌ Error fetching wallet data:", error);
+  }
+}
+</script>
 
             } catch (error) {
                 console.error("❌ Error revoking approval:", error);
