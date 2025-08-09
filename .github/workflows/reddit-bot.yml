@@ -1,0 +1,137 @@
+name: CodeDAO Reddit Bot
+
+on:
+  schedule:
+    # Weekly thread every Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  
+  workflow_dispatch:
+    # Manual trigger with options
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'weekly_thread'
+        type: choice
+        options:
+        - weekly_thread
+        - test_connection
+        - post_milestone
+        - analytics_report
+      milestone_title:
+        description: 'Milestone title (if posting milestone)'
+        required: false
+        type: string
+      milestone_description:
+        description: 'Milestone description (if posting milestone)'
+        required: false
+        type: string
+
+jobs:
+  reddit-bot:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Run Reddit Bot Action
+      env:
+        REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+        REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+        REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
+        REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
+        REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+        REDDIT_SUBREDDIT: ${{ secrets.REDDIT_SUBREDDIT }}
+        REDDIT_SERVERLESS: true
+        REDDIT_WEEKLY_DAY: monday
+        REDDIT_WEEKLY_TIME: "09:00"
+        REDDIT_WEEKLY_ENABLED: true
+        REDDIT_WELCOME_ENABLED: true
+        REDDIT_MILESTONE_ENABLED: true
+      run: |
+        python -c "
+        import os
+        import sys
+        import json
+        from datetime import datetime
+        
+        # Add current directory to Python path
+        sys.path.insert(0, '.')
+        
+        from reddit_bot.bot import CodeDAOBot
+        from reddit_bot.analytics import RedditBotAnalytics
+        
+        # Determine action
+        action = '${{ github.event.inputs.action }}' or 'weekly_thread'
+        
+        try:
+            bot = CodeDAOBot()
+            analytics = RedditBotAnalytics()
+            
+            if action == 'weekly_thread':
+                print('🚀 Posting weekly thread...')
+                result = bot.post_weekly_thread()
+                if result:
+                    analytics.log_weekly_thread(result.id, result.title, result.score, result.num_comments)
+                    print(f'✅ Weekly thread posted: {result.url}')
+                    print(f'📊 Score: {result.score}, Comments: {result.num_comments}')
+                else:
+                    print('❌ Failed to post weekly thread')
+                    sys.exit(1)
+            
+            elif action == 'test_connection':
+                print('🔌 Testing Reddit connection...')
+                user = bot.reddit.user.me()
+                print(f'✅ Connected as: {user.name}')
+                print(f'📊 Karma: {user.comment_karma + user.link_karma}')
+                
+            elif action == 'post_milestone':
+                milestone_data = {
+                    'title': '${{ github.event.inputs.milestone_title }}' or 'CodeDAO Milestone',
+                    'description': '${{ github.event.inputs.milestone_description }}' or 'A new milestone has been reached!',
+                    'details': f'Automated post at {datetime.now().strftime(\"%Y-%m-%d %H:%M UTC\")}'
+                }
+                print(f'🎉 Posting milestone: {milestone_data[\"title\"]}')
+                result = bot.post_milestone_announcement(milestone_data)
+                if result:
+                    analytics.log_milestone_post('manual', milestone_data)
+                    print(f'✅ Milestone posted: {result.url}')
+                else:
+                    print('❌ Failed to post milestone')
+                    sys.exit(1)
+            
+            elif action == 'analytics_report':
+                print('📊 Generating analytics report...')
+                data = analytics.get_dashboard_data()
+                print(f'📈 Total threads: {data[\"overview\"][\"total_threads\"]}')
+                print(f'👋 Total welcomes: {data[\"overview\"][\"total_welcomes\"]}')
+                print(f'🎯 Unique users: {data[\"overview\"][\"unique_users\"]}')
+                print(f'📅 This week: {data[\"weekly\"][\"threads_posted\"]} threads, {data[\"weekly\"][\"welcome_messages_sent\"]} welcomes')
+            
+            print(f'✨ Action \"{action}\" completed successfully at {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S UTC\")}')
+            
+        except Exception as e:
+            print(f'❌ Error: {str(e)}')
+            import traceback
+            traceback.print_exc()
+            sys.exit(1)
+        "
+    
+    - name: Upload Analytics Data
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: reddit-bot-analytics
+        path: reddit_bot_analytics.json
+        retention-days: 30 
