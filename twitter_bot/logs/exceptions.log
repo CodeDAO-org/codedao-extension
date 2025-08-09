@@ -1,0 +1,10 @@
+2025-08-09 16:54:53:5453 [31merror[39m: [31muncaughtException: listen EADDRINUSE: address already in use :::3000[39m
+[31mError: listen EADDRINUSE: address already in use :::3000[39m
+[31m    at Server.setupListenHandle [as _listen2] (node:net:1940:16)[39m
+[31m    at listenInCluster (node:net:1997:12)[39m
+[31m    at Server.listen (node:net:2102:7)[39m
+[31m    at Function.listen (/Users/mikaelo/codedao-extension/twitter_bot/node_modules/express/lib/application.js:635:24)[39m
+[31m    at CodeDAOTwitterBot.setupServer (/Users/mikaelo/codedao-extension/twitter_bot/src/index.js:154:28)[39m
+[31m    at CodeDAOTwitterBot.initialize (/Users/mikaelo/codedao-extension/twitter_bot/src/index.js:53:12)[39m
+[31m    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[31m    at async handleCLI (/Users/mikaelo/codedao-extension/twitter_bot/src/index.js:482:5)[39m

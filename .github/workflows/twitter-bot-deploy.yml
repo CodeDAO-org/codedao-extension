@@ -1,0 +1,322 @@
+name: CodeDAO Twitter Bot - Deploy & Monitor
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths: 
+      - 'twitter_bot/**'
+      - '.github/workflows/twitter-bot-deploy.yml'
+  pull_request:
+    branches: [ main ]
+    paths: 
+      - 'twitter_bot/**'
+  
+  schedule:
+    # Health check every 6 hours
+    - cron: '0 */6 * * *'
+    # Weekly analytics report (Mondays 9 AM UTC)
+    - cron: '0 9 * * 1'
+  
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'deploy'
+        type: choice
+        options:
+        - deploy
+        - health_check
+        - restart_bot
+        - analytics_report
+        - test_credentials
+        - emergency_stop
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+        - development
+
+env:
+  NODE_VERSION: '18'
+  BOT_DIRECTORY: 'twitter_bot'
+
+jobs:
+  # Test and validate the bot code
+  test:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: ${{ env.BOT_DIRECTORY }}/package-lock.json
+    
+    - name: Install dependencies
+      working-directory: ${{ env.BOT_DIRECTORY }}
+      run: npm ci
+    
+    - name: Run linting
+      working-directory: ${{ env.BOT_DIRECTORY }}
+      run: npm run lint
+    
+    - name: Check code formatting
+      working-directory: ${{ env.BOT_DIRECTORY }}
+      run: npm run format:check
+    
+    - name: Run tests
+      working-directory: ${{ env.BOT_DIRECTORY }}
+      run: npm test
+      env:
+        NODE_ENV: test
+    
+    - name: Test bot configuration
+      working-directory: ${{ env.BOT_DIRECTORY }}
+      run: node -e "require('./src/config'); console.log('✅ Configuration valid')"
+
+  # Deploy to production (or handle other actions)
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: always() && (needs.test.result == 'success' || needs.test.result == 'skipped')
+    
+    environment: 
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ steps.deploy.outputs.bot_url }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: ${{ env.BOT_DIRECTORY }}/package-lock.json
+    
+    - name: Install dependencies
+      working-directory: ${{ env.BOT_DIRECTORY }}
+      run: npm ci --production
+    
+    # Determine action to perform
+    - name: Set Action
+      id: action
+      run: |
+        if [ "${{ github.event_name }}" == "schedule" ]; then
+          if [ "${{ github.event.schedule }}" == "0 */6 * * *" ]; then
+            echo "action=health_check" >> $GITHUB_OUTPUT
+          else
+            echo "action=analytics_report" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "action=${{ github.event.inputs.action || 'deploy' }}" >> $GITHUB_OUTPUT
+        fi
+        echo "environment=${{ github.event.inputs.environment || 'production' }}" >> $GITHUB_OUTPUT
+    
+    # Twitter API Credentials Test
+    - name: Test Twitter API Credentials
+      if: steps.action.outputs.action != 'emergency_stop'
+      working-directory: ${{ env.BOT_DIRECTORY }}
+      run: node test-credentials.js
+      env:
+        TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+        TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+        TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+        TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        TWITTER_TARGET_USERNAME: ${{ secrets.TWITTER_TARGET_USERNAME }}
+    
+    # Bot Actions
+    - name: Deploy Bot
+      if: steps.action.outputs.action == 'deploy'
+      id: deploy
+      working-directory: ${{ env.BOT_DIRECTORY }}
+      run: |
+        echo "🚀 Deploying CodeDAO Twitter Bot..."
+        
+        # Create environment file
+        cat << EOF > .env
+        BOT_USERNAME=${{ secrets.BOT_USERNAME }}
+        BOT_ENVIRONMENT=${{ steps.action.outputs.environment }}
+        TWITTER_API_KEY=${{ secrets.TWITTER_API_KEY }}
+        TWITTER_API_SECRET=${{ secrets.TWITTER_API_SECRET }}
+        TWITTER_ACCESS_TOKEN=${{ secrets.TWITTER_ACCESS_TOKEN }}
+        TWITTER_ACCESS_TOKEN_SECRET=${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        TWITTER_TARGET_USERNAME=${{ secrets.TWITTER_TARGET_USERNAME }}
+        MONGODB_URI=${{ secrets.MONGODB_URI }}
+        OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+        CODEDAO_DASHBOARD_URL=${{ secrets.CODEDAO_DASHBOARD_URL }}
+        CODEDAO_API_URL=${{ secrets.CODEDAO_API_URL }}
+        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+        ENGAGEMENT_STRATEGY=hybrid
+        LLM_ENABLED=true
+        EOF
+        
+        # Start bot in background for health check
+        node src/index.js &
+        BOT_PID=$!
+        sleep 10
+        
+        # Health check
+        if curl -f http://localhost:3000/health > /dev/null 2>&1; then
+          echo "✅ Bot deployed successfully"
+          echo "bot_url=http://localhost:3000" >> $GITHUB_OUTPUT
+          
+          # Test analytics endpoint
+          curl -f http://localhost:3000/analytics > /dev/null && echo "✅ Analytics working"
+          
+          # Stop background process
+          kill $BOT_PID 2>/dev/null || true
+        else
+          echo "❌ Bot deployment failed"
+          kill $BOT_PID 2>/dev/null || true
+          exit 1
+        fi
+    
+    - name: Health Check
+      if: steps.action.outputs.action == 'health_check'
+      working-directory: ${{ env.BOT_DIRECTORY }}
+      run: |
+        echo "🏥 Running Twitter Bot Health Check..."
+        
+        # Create minimal .env for health check
+        cat << EOF > .env
+        TWITTER_API_KEY=${{ secrets.TWITTER_API_KEY }}
+        TWITTER_API_SECRET=${{ secrets.TWITTER_API_SECRET }}
+        TWITTER_ACCESS_TOKEN=${{ secrets.TWITTER_ACCESS_TOKEN }}
+        TWITTER_ACCESS_TOKEN_SECRET=${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        TWITTER_TARGET_USERNAME=${{ secrets.TWITTER_TARGET_USERNAME }}
+        EOF
+        
+        # Run health check
+        if npm run test:health; then
+          echo "✅ Health check passed"
+        else
+          echo "❌ Health check failed"
+          # Send alert (you can integrate with Slack/Discord/Email here)
+          exit 1
+        fi
+    
+    - name: Analytics Report
+      if: steps.action.outputs.action == 'analytics_report'
+      working-directory: ${{ env.BOT_DIRECTORY }}
+      run: |
+        echo "📊 Generating Weekly Analytics Report..."
+        
+        cat << EOF > .env
+        TWITTER_API_KEY=${{ secrets.TWITTER_API_KEY }}
+        TWITTER_API_SECRET=${{ secrets.TWITTER_API_SECRET }}
+        TWITTER_ACCESS_TOKEN=${{ secrets.TWITTER_ACCESS_TOKEN }}
+        TWITTER_ACCESS_TOKEN_SECRET=${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        TWITTER_TARGET_USERNAME=${{ secrets.TWITTER_TARGET_USERNAME }}
+        MONGODB_URI=${{ secrets.MONGODB_URI }}
+        EOF
+        
+        # Generate analytics report
+        node -e "
+        const SimpleAnalytics = require('./src/simple-analytics');
+        const database = require('./src/database');
+        
+        (async () => {
+          try {
+            await database.connect();
+            const analytics = new SimpleAnalytics(null, database);
+            const data = await analytics.getDashboardData();
+            
+            console.log('📊 CODEDAO TWITTER BOT - WEEKLY REPORT');
+            console.log('=====================================');
+            console.log('🎯 OVERVIEW:');
+            console.log('- Total Posts:', data.overview.totalPosts);
+            console.log('- Bot Uptime:', data.overview.botUptimeHours, 'hours');
+            console.log('- Engagement Rate:', data.overview.avgEngagementRate, '%');
+            console.log('');
+            console.log('📈 GROWTH:');
+            console.log('- Posts This Week:', data.growth.postsThisWeek);
+            console.log('- Top Performing Content:', data.content.topPerforming[0]?.type || 'N/A');
+            console.log('');
+            console.log('🔥 TOP HASHTAGS:');
+            data.hashtags.topHashtags.slice(0, 3).forEach((tag, i) => {
+              console.log(\`\${i+1}. \${tag.hashtag} (\${tag.count} uses)\`);
+            });
+            
+            await database.disconnect();
+          } catch (error) {
+            console.log('❌ Error generating report:', error.message);
+          }
+        })();
+        "
+    
+    - name: Emergency Stop
+      if: steps.action.outputs.action == 'emergency_stop'
+      run: |
+        echo "🚨 EMERGENCY STOP - Disabling Twitter Bot"
+        echo "This would typically:"
+        echo "- Stop all running bot instances"
+        echo "- Disable scheduled workflows"
+        echo "- Send emergency notifications"
+        echo "- Create incident report"
+        
+        # In a real deployment, you'd implement actual stop logic here
+    
+    # Upload logs and artifacts
+    - name: Upload Bot Logs
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: twitter-bot-logs-${{ github.run_number }}
+        path: |
+          ${{ env.BOT_DIRECTORY }}/logs/
+          ${{ env.BOT_DIRECTORY }}/data/
+        retention-days: 7
+    
+    # Send notifications
+    - name: Send Success Notification
+      if: success()
+      run: |
+        echo "✅ Twitter Bot Action Completed Successfully"
+        echo "Action: ${{ steps.action.outputs.action }}"
+        echo "Environment: ${{ steps.action.outputs.environment }}"
+        echo "Time: $(date)"
+        # Add Slack/Discord webhook here if needed
+    
+    - name: Send Failure Notification
+      if: failure()
+      run: |
+        echo "❌ Twitter Bot Action Failed"
+        echo "Action: ${{ steps.action.outputs.action }}"
+        echo "Environment: ${{ steps.action.outputs.environment }}"
+        echo "Time: $(date)"
+        # Add alert integration here
+
+  # Security scan
+  security:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '${{ env.BOT_DIRECTORY }}'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+    
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif' 
