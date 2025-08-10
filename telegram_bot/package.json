@@ -55,7 +55,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/CodeDAO-org/codedao-extension.git"
+    "url": "git+https://github.com/CodeDAO-org/codedao-extension.git"
   },
-  "homepage": "https://codedao-org.github.io/codedao-extension/telegram-bot/"
+  "homepage": "https://codedao-org.github.io/codedao-extension/telegram-bot/",
+  "bugs": {
+    "url": "https://github.com/CodeDAO-org/codedao-extension/issues"
+  }
 }
