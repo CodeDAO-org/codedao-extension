@@ -2,50 +2,30 @@ name: CodeDAO Reddit Bot
 
 on:
   schedule:
-    # Weekly thread every Monday at 9 AM UTC
-    - cron: '0 9 * * 1'
-  
+    # Every 4 hours for maximum weekend engagement
+    - cron: '0 */4 * * *'
   workflow_dispatch:
-    # Manual trigger with options
     inputs:
       action:
         description: 'Action to perform'
         required: true
-        default: 'weekly_thread'
+        default: 'weekend_thread'
         type: choice
         options:
-        - weekly_thread
+        - weekend_thread
         - test_connection
-        - post_milestone
-        - analytics_report
-      milestone_title:
-        description: 'Milestone title (if posting milestone)'
-        required: false
-        type: string
-      milestone_description:
-        description: 'Milestone description (if posting milestone)'
-        required: false
-        type: string
+        - milestone_post
 
 jobs:
   reddit-bot:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-        cache: 'pip'
-    
-    - name: Install dependencies
+    - name: Install Reddit Bot Dependencies
       run: |
-        pip install -r requirements.txt
+        pip install praw python-dotenv
     
-    - name: Run Reddit Bot Action
+    - name: Execute Reddit Bot Action
       env:
         REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
         REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
@@ -53,85 +33,104 @@ jobs:
         REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
         REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
         REDDIT_SUBREDDIT: ${{ secrets.REDDIT_SUBREDDIT }}
-        REDDIT_SERVERLESS: true
-        REDDIT_WEEKLY_DAY: monday
-        REDDIT_WEEKLY_TIME: "09:00"
-        REDDIT_WEEKLY_ENABLED: true
-        REDDIT_WELCOME_ENABLED: true
-        REDDIT_MILESTONE_ENABLED: true
       run: |
         python -c "
         import os
-        import sys
-        import json
+        import praw
         from datetime import datetime
         
-        # Add current directory to Python path
-        sys.path.insert(0, '.')
+        # Initialize Reddit connection
+        reddit = praw.Reddit(
+            client_id=os.getenv('REDDIT_CLIENT_ID'),
+            client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
+            username=os.getenv('REDDIT_USERNAME'),
+            password=os.getenv('REDDIT_PASSWORD'),
+            user_agent=os.getenv('REDDIT_USER_AGENT')
+        )
         
-        from reddit_bot.bot import CodeDAOBot
-        from reddit_bot.analytics import RedditBotAnalytics
+        action = '${{ github.event.inputs.action }}' or 'weekend_thread'
+        subreddit_name = os.getenv('REDDIT_SUBREDDIT', 'CodeDAO')
+        subreddit = reddit.subreddit(subreddit_name)
         
-        # Determine action
-        action = '${{ github.event.inputs.action }}' or 'weekly_thread'
+        print(f'🔌 Connected to Reddit as: {reddit.user.me()}')
+        print(f'🎯 Target subreddit: r/{subreddit_name}')
+        print(f'⚡ Action: {action}')
         
-        try:
-            bot = CodeDAOBot()
-            analytics = RedditBotAnalytics()
+        if action == 'test_connection':
+            print('✅ Reddit bot connection test successful!')
+            print(f'📊 Account karma: {reddit.user.me().comment_karma + reddit.user.me().link_karma}')
             
-            if action == 'weekly_thread':
-                print('🚀 Posting weekly thread...')
-                result = bot.post_weekly_thread()
-                if result:
-                    analytics.log_weekly_thread(result.id, result.title, result.score, result.num_comments)
-                    print(f'✅ Weekly thread posted: {result.url}')
-                    print(f'📊 Score: {result.score}, Comments: {result.num_comments}')
-                else:
-                    print('❌ Failed to post weekly thread')
-                    sys.exit(1)
+        elif action == 'milestone_post':
+            # Simple milestone post
+            title = '🎉 CodeDAO Community Milestone!'
+            content = '''**Exciting news from the CodeDAO community!**
             
-            elif action == 'test_connection':
-                print('🔌 Testing Reddit connection...')
-                user = bot.reddit.user.me()
-                print(f'✅ Connected as: {user.name}')
-                print(f'📊 Karma: {user.comment_karma + user.link_karma}')
-                
-            elif action == 'post_milestone':
-                milestone_data = {
-                    'title': '${{ github.event.inputs.milestone_title }}' or 'CodeDAO Milestone',
-                    'description': '${{ github.event.inputs.milestone_description }}' or 'A new milestone has been reached!',
-                    'details': f'Automated post at {datetime.now().strftime(\"%Y-%m-%d %H:%M UTC\")}'
-                }
-                print(f'🎉 Posting milestone: {milestone_data[\"title\"]}')
-                result = bot.post_milestone_announcement(milestone_data)
-                if result:
-                    analytics.log_milestone_post('manual', milestone_data)
-                    print(f'✅ Milestone posted: {result.url}')
-                else:
-                    print('❌ Failed to post milestone')
-                    sys.exit(1)
+A new milestone has been reached in our developer ecosystem.
+
+**Join the CodeDAO Community:**
+- 🌐 **Dashboard**: https://codedao-org.github.io/dashboard.html
+- 📚 **Get Started**: https://codedao-org.github.io/get-started.html
+- 💰 **Earn CODE tokens** for your coding contributions
+- 🤝 **Connect with developers** building the future
+
+Keep building, keep earning! 🚀
+
+*Posted by CodeDAO Bot*'''
             
-            elif action == 'analytics_report':
-                print('📊 Generating analytics report...')
-                data = analytics.get_dashboard_data()
-                print(f'📈 Total threads: {data[\"overview\"][\"total_threads\"]}')
-                print(f'👋 Total welcomes: {data[\"overview\"][\"total_welcomes\"]}')
-                print(f'🎯 Unique users: {data[\"overview\"][\"unique_users\"]}')
-                print(f'📅 This week: {data[\"weekly\"][\"threads_posted\"]} threads, {data[\"weekly\"][\"welcome_messages_sent\"]} welcomes')
+            post = subreddit.submit(title=title, selftext=content)
+            print(f'🎉 Posted milestone: {post.url}')
+            print(f'📊 Post ID: {post.id}')
             
-            print(f'✨ Action \"{action}\" completed successfully at {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S UTC\")}')
+        else:  # weekend_thread (default)
+            # Enhanced weekend builder thread
+            current_time = datetime.now()
+            day_name = current_time.strftime('%A')
             
-        except Exception as e:
-            print(f'❌ Error: {str(e)}')
-            import traceback
-            traceback.print_exc()
-            sys.exit(1)
+            title = f'🚀 {day_name} Builder Thread - What are you coding?'
+            
+            content = f'''**Welcome to the {day_name} CodeDAO builder thread!**
+
+**Share what you are working on:**
+- 💻 Current coding projects and features
+- 🔧 Weekend hacks and experiments  
+- 🐛 Bugs you are crushing
+- 🎯 New technologies you are learning
+- 🚀 Cool discoveries and breakthroughs
+
+**CodeDAO Resources:**
+- 🌐 **Dashboard**: https://codedao-org.github.io/dashboard.html
+- 📖 **Get Started Guide**: https://codedao-org.github.io/get-started.html
+- 💰 **Earn CODE tokens**: Track contributions and get rewarded
+- 🤝 **Peer Review**: Get feedback on your code
+- 📊 **Quality Scoring**: AI-powered code analysis
+
+**Community Guidelines:**
+- Share your progress, no matter how small
+- Ask questions and offer help to others
+- Include links to your projects when possible
+- Celebrate wins and learn from challenges
+
+**Remember**: Every commit, every PR, every contribution makes you a better developer. The CodeDAO community is here to support your journey! 
+
+Let us build the future together! 🔥
+
+---
+*🤖 This thread is automatically posted every 4 hours to keep our community active. Join the conversation and share your coding adventures!*
+
+*Posted by CodeDAO Bot | {current_time.strftime('%Y-%m-%d %H:%M UTC')}*'''
+            
+            post = subreddit.submit(title=title, selftext=content)
+            print(f'✅ Posted {day_name} builder thread: {post.url}')
+            print(f'📊 Post ID: {post.id}')
+            print(f'🕐 Posted at: {current_time.strftime('%Y-%m-%d %H:%M:%S UTC')}')
+            
+        print('🎯 Reddit bot execution completed successfully!')
         "
     
-    - name: Upload Analytics Data
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: reddit-bot-analytics
-        path: reddit_bot_analytics.json
-        retention-days: 30 
+    - name: Log Execution Summary
+      run: |
+        echo "Reddit Bot Execution Summary:"
+        echo "Timestamp: $(date)"
+        echo "Action: ${{ github.event.inputs.action || 'weekend_thread' }}"
+        echo "Status: Completed"
+        echo "Track posts at: https://reddit.com/u/${{ secrets.REDDIT_USERNAME }}" 
