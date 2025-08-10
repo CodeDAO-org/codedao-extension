@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO Twitter Bot - Community Growth Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid #374151;
+            padding-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+        
+        .header .mission {
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: #374151;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid #4b5563;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #10b981;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #9ca3af;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .management-panel {
+            background: #374151;
+            border-radius: 12px;
+            border: 1px solid #4b5563;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .panel-header {
+            background: #4b5563;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #6b7280;
+        }
+        
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 0;
+        }
+        
+        .panel-content {
+            padding: 2rem;
+        }
+        
+        .bot-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .control-group {
+            background: #1f2937;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #374151;
+        }
+        
+        .control-title {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+        
+        .status-indicator.inactive {
+            background: #ef4444;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #374151;
+        }
+        
+        .metric-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .metric-label {
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+        
+        .metric-value {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #059669;
+        }
+        
+        .btn-secondary {
+            background: #374151;
+            color: #e5e7eb;
+            border: 1px solid #4b5563;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .community-info {
+            background: linear-gradient(135deg, #1f2937, #374151);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid #4b5563;
+        }
+        
+        .community-info h3 {
+            color: #10b981;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .community-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .community-stat {
+            text-align: center;
+        }
+        
+        .community-stat .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #06b6d4;
+            display: block;
+        }
+        
+        .community-stat .label {
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #374151;
+        }
+        
+        .footer-links a {
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .footer-links a:hover {
+            color: #059669;
+        }
+        
+        .code-highlight {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            padding: 0.25rem 0.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #06b6d4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐦 CodeDAO Twitter Bot</h1>
+            <p class="subtitle">Automated community growth and developer engagement</p>
+            <div class="mission">
+                Growing the CodeDAO developer ecosystem through intelligent Twitter automation
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-value">@CRG</span>
+                <div class="stat-label">Primary Account</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">24/7</span>
+                <div class="stat-label">Active Monitoring</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">AI</span>
+                <div class="stat-label">GPT-4 Powered</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">Live</span>
+                <div class="stat-label">Status</div>
+            </div>
+        </div>
+
+        <div class="management-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">🤖 Bot Management Dashboard</h2>
+            </div>
+            <div class="panel-content">
+                <div class="bot-controls">
+                    <div class="control-group">
+                        <h3 class="control-title">
+                            <span class="status-indicator"></span>
+                            Content Engine
+                        </h3>
+                        <div class="metric-row">
+                            <span class="metric-label">Daily Posts</span>
+                            <span class="metric-value">4/25</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Quality Score</span>
+                            <span class="metric-value">94%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Next Post</span>
+                            <span class="metric-value">2h 15m</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h3 class="control-title">
+                            <span class="status-indicator"></span>
+                            Engagement Engine
+                        </h3>
+                        <div class="metric-row">
+                            <span class="metric-label">Dev Interactions</span>
+                            <span class="metric-value">156 today</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Reply Rate</span>
+                            <span class="metric-value">4.8%</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Target: #coding</span>
+                            <span class="metric-value">Active</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h3 class="control-title">
+                            <span class="status-indicator"></span>
+                            Community Growth
+                        </h3>
+                        <div class="metric-row">
+                            <span class="metric-label">New Followers</span>
+                            <span class="metric-value">+23 this week</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Developer Reach</span>
+                            <span class="metric-value">5.2K impressions</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Conversions</span>
+                            <span class="metric-value">12 → CodeDAO</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary">🚀 Deploy Bot</button>
+                    <button class="btn btn-secondary">⚙️ Configure</button>
+                    <button class="btn btn-secondary">📊 Analytics</button>
+                    <button class="btn btn-secondary">🔧 Workflows</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="community-info">
+            <h3>🎯 Mission: Expand CodeDAO Developer Community</h3>
+            <p style="color: #9ca3af; margin-bottom: 2rem;">
+                This bot is purpose-built to grow the CodeDAO ecosystem by engaging with developers, 
+                sharing quality insights, and driving traffic to our platform where developers earn CODE tokens for quality contributions.
+            </p>
+
+            <div class="community-stats">
+                <div class="community-stat">
+                    <span class="value">2.1K</span>
+                    <div class="label">Developers Reached</div>
+                </div>
+                <div class="community-stat">
+                    <span class="value">+87</span>
+                    <div class="label">Platform Signups</div>
+                </div>
+                <div class="community-stat">
+                    <span class="value">45.2K</span>
+                    <div class="label">CODE Tokens Earned</div>
+                </div>
+            </div>
+
+            <div style="background: #1f2937; border-radius: 8px; padding: 1.5rem; margin: 2rem 0;">
+                <h4 style="color: #fff; margin-bottom: 1rem;">🔧 Technical Integration</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: left;">
+                    <div>
+                        <strong style="color: #10b981;">Workflow:</strong><br>
+                        <span class="code-highlight">.github/workflows/twitter-bot-deploy.yml</span>
+                    </div>
+                    <div>
+                        <strong style="color: #10b981;">Target Account:</strong><br>
+                        <span class="code-highlight">@CRG</span>
+                    </div>
+                    <div>
+                        <strong style="color: #10b981;">AI Model:</strong><br>
+                        <span class="code-highlight">GPT-4o-mini</span>
+                    </div>
+                    <div>
+                        <strong style="color: #10b981;">Dashboard:</strong><br>
+                        <span class="code-highlight">localhost:3000/dashboard</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <a href="https://www.codedao.org/earn-code" target="_blank">💰 Earn CODE Tokens</a>
+                <a href="https://github.com/CodeDAO-org/codedao-extension" target="_blank">📦 GitHub Repository</a>
+                <a href="mailto:bot@codedao.org">📧 Contact Team</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple status simulation
+        function updateMetrics() {
+            const metrics = document.querySelectorAll('.metric-value');
+            // Add subtle updates to show it's live
+            setInterval(() => {
+                const timeElements = document.querySelectorAll('.metric-value');
+                timeElements.forEach(el => {
+                    if (el.textContent.includes('h ') && el.textContent.includes('m')) {
+                        // Update countdown timer
+                        let [hours, minutes] = el.textContent.split('h ');
+                        minutes = parseInt(minutes.replace('m', ''));
+                        if (minutes > 0) {
+                            minutes--;
+                            el.textContent = `${hours}h ${minutes}m`;
+                        }
+                    }
+                });
+            }, 60000); // Update every minute
+        }
+
+        // Initialize
+        updateMetrics();
+
+        // Button interactions
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = btn.textContent.trim();
+                alert(`🔧 ${action} feature - Contact bot@codedao.org for access`);
+            });
+        });
+    </script>
+</body>
+</html>
