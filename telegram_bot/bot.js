@@ -14,6 +14,7 @@ const cron = require('node-cron');
 const winston = require('winston');
 const rateLimit = require('express-rate-limit');
 const { Octokit } = require('@octokit/rest');
+const TwitterIntegration = require('./twitter-integration');
 
 // Initialize logger
 const logger = winston.createLogger({
@@ -55,6 +56,16 @@ const config = {
     githubUrl: process.env.CODEDAO_GITHUB_URL || 'https://github.com/CodeDAO-org/codedao-extension'
   },
   
+  // Twitter integration
+  twitter: {
+    apiKey: process.env.TWITTER_API_KEY,
+    apiSecret: process.env.TWITTER_API_SECRET,
+    accessToken: process.env.TWITTER_ACCESS_TOKEN,
+    accessTokenSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+    username: process.env.TWITTER_TARGET_USERNAME || 'CRG',
+    botUrl: process.env.TWITTER_BOT_URL || 'http://localhost:3000'
+  },
+  
   // Smart contract
   contract: {
     address: process.env.CONTRACT_ADDRESS,
@@ -89,6 +100,9 @@ class CodeDAOTelegramBot {
     this.github = new Octokit({
       auth: config.github.token
     });
+    
+    // Initialize Twitter integration
+    this.twitterIntegration = new TwitterIntegration(config);
     
     // Initialize smart contract monitoring
     this.initializeContractMonitoring();
@@ -502,13 +516,32 @@ Proceed with claim?
           await this.triggerGitHubDeploy(chatId);
         }
         break;
+      case 'twitter':
+        await this.twitterIntegration.handleTwitterCommand(this.bot, chatId, args, true);
+        break;
+      case 'combined':
+        if (args[1] === 'stats') {
+          await this.sendCombinedStats(chatId);
+        }
+        break;
       default:
         await this.bot.sendMessage(chatId, `
 🔧 *Admin Commands*
 
-\`/admin stats\` - View bot statistics
-\`/admin broadcast <message>\` - Send message to all users
-\`/admin github deploy\` - Trigger GitHub deployment
+📊 *Analytics*
+\`/admin stats\` - Telegram bot statistics
+\`/admin combined stats\` - Both platforms analytics
+
+🤖 *Bot Control*
+\`/admin twitter status\` - Twitter bot status
+\`/admin twitter start\` - Start Twitter automation
+\`/admin twitter post <msg>\` - Manual tweet
+
+📢 *Communication*
+\`/admin broadcast <message>\` - Send to all users
+\`/admin github deploy\` - Trigger deployment
+
+💡 *Pro Tip:* Type \`/admin twitter\` for full Twitter commands
         `, { parse_mode: 'Markdown' });
     }
   }
@@ -546,6 +579,20 @@ Proceed with claim?
           
         case 'help':
           await this.handleHelp({ chat: { id: chatId }, from: { id: userId } });
+          break;
+          
+        // Twitter integration callbacks
+        case 'twitter_status':
+          await this.twitterIntegration.getTwitterStatus(this.bot, chatId);
+          break;
+        case 'twitter_stats':
+          await this.twitterIntegration.getTwitterStats(this.bot, chatId);
+          break;
+        case 'twitter_start':
+          await this.twitterIntegration.startTwitterBot(this.bot, chatId);
+          break;
+        case 'twitter_stop':
+          await this.twitterIntegration.stopTwitterBot(this.bot, chatId);
           break;
           
         default:
@@ -857,6 +904,86 @@ Send me the correct GitHub username:
       }
     }
     return null;
+  }
+
+  async sendCombinedStats(chatId) {
+    try {
+      // Get Telegram bot stats
+      const telegramStats = {
+        totalUsers: this.users.size,
+        activeUsers: this.analytics.activeUsers,
+        totalCommands: Object.values(this.analytics.commandsExecuted).reduce((a, b) => a + b, 0),
+        messagesProcessed: this.analytics.messagesSent
+      };
+
+      // Get Twitter bot stats
+      const twitterData = await this.twitterIntegration.fetchDashboardData();
+
+      const combinedMessage = `
+🌐 *Combined Platform Analytics*
+
+📱 *Telegram Bot Stats*
+• Total Users: ${telegramStats.totalUsers}
+• Active Users: ${telegramStats.activeUsers}
+• Commands Executed: ${telegramStats.totalCommands}
+• Messages Processed: ${telegramStats.messagesProcessed}
+
+🐦 *Twitter Bot Stats*
+• Posts Today: ${twitterData.posts_today || 0}/25
+• Engagements: ${twitterData.engagements_today || 0}
+• Followers: ${twitterData.followers_count || 0}
+• Community Reach: ${twitterData.impressions || 0}
+
+🎯 *Cross-Platform Impact*
+• Combined Reach: ${(telegramStats.totalUsers + (twitterData.followers_count || 0)).toLocaleString()}
+• Developer Engagement: High across both platforms
+• Community Growth: ${twitterData.conversions || 0} conversions this week
+
+💰 *CodeDAO Integration*
+• CODE Tokens Distributed: ${twitterData.community_tokens || 0}
+• Platform Signups: ${twitterData.new_signups || 0}
+• Active Developers: ${telegramStats.activeUsers}
+
+📊 *Performance Score*
+• Telegram: ${this.calculatePerformanceScore(telegramStats)}%
+• Twitter: ${twitterData.quality_score || 85}%
+• Combined: ${this.calculateCombinedScore(telegramStats, twitterData)}%
+      `;
+
+      const keyboard = {
+        inline_keyboard: [
+          [
+            { text: '📱 Telegram Details', callback_data: 'telegram_stats' },
+            { text: '🐦 Twitter Details', callback_data: 'twitter_stats' }
+          ],
+          [
+            { text: '🔄 Refresh Data', callback_data: 'combined_refresh' }
+          ]
+        ]
+      };
+
+      await this.bot.sendMessage(chatId, combinedMessage, {
+        parse_mode: 'Markdown',
+        reply_markup: keyboard
+      });
+
+    } catch (error) {
+      logger.error('Combined stats error:', error);
+      await this.bot.sendMessage(chatId, '❌ Failed to fetch combined statistics');
+    }
+  }
+
+  calculatePerformanceScore(stats) {
+    // Simple performance calculation based on activity
+    const score = Math.min(100, (stats.activeUsers / Math.max(1, stats.totalUsers)) * 100 + 
+                   (stats.totalCommands > 50 ? 20 : 0));
+    return Math.round(score);
+  }
+
+  calculateCombinedScore(telegramStats, twitterData) {
+    const telegramScore = this.calculatePerformanceScore(telegramStats);
+    const twitterScore = twitterData.quality_score || 85;
+    return Math.round((telegramScore + twitterScore) / 2);
   }
 }
 
