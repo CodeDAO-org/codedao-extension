@@ -1,0 +1,47 @@
+name: CodeDAO Reddit Bot
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Monday 9 AM UTC
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'weekly_thread'
+        type: choice
+        options:
+        - weekly_thread
+        - test_connection
+        - post_milestone
+
+jobs:
+  reddit-bot:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - run: pip install praw python-dotenv schedule
+    - name: Run Reddit Bot
+      env:
+        REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+        REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+        REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
+        REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
+        REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+        REDDIT_SUBREDDIT: ${{ secrets.REDDIT_SUBREDDIT }}
+      run: |
+        python -c "
+        import os, praw
+        reddit = praw.Reddit(
+            client_id=os.getenv('REDDIT_CLIENT_ID'),
+            client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
+            username=os.getenv('REDDIT_USERNAME'),
+            password=os.getenv('REDDIT_PASSWORD'),
+            user_agent=os.getenv('REDDIT_USER_AGENT')
+        )
+        print('✅ Reddit bot deployed successfully!')
+        print('Connected as:', reddit.user.me())
+        "

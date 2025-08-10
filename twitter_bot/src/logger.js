@@ -140,7 +140,20 @@ logger.rateLimit = (action, count, limit, status = 'within_limits') => {
 };
 
 logger.analytics = (metric, value, period = 'current') => {
-  logger.info(`📊 ANALYTICS: ${metric} = ${value} (${period})`, {
+  // Only log analytics to file, not console (to avoid interfering with API responses)
+  const analyticsLogger = winston.createLogger({
+    transports: [
+      new winston.transports.File({
+        filename: 'logs/analytics.log',
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.json()
+        )
+      })
+    ]
+  });
+  
+  analyticsLogger.info(`📊 ANALYTICS: ${metric} = ${value} (${period})`, {
     metric,
     value,
     period,

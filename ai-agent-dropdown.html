@@ -1,0 +1,697 @@
+<!-- ========== CodeDAO AI Agent Dropdown System ========== -->
+<!-- Claude AI-style dropdown for any CodeDAO page -->
+
+<!-- 1. ADD TO HEAD SECTION (before </head>) -->
+<script src="https://unpkg.com/moralis-v1/dist/moralis.js"></script>
+<script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+
+<!-- 2. ADD AI AGENT DROPDOWN TO HEADER NAVIGATION -->
+<!-- Insert this dropdown in your existing header nav section -->
+<div class="ai-agent-dropdown-container">
+    <button id="ai-agent-dropdown-toggle" class="ai-dropdown-btn">
+        <i class="fas fa-robot mr-2"></i>
+        <span>AI Agents</span>
+        <i class="fas fa-chevron-down ml-2 dropdown-arrow"></i>
+    </button>
+    
+    <div id="ai-agent-dropdown" class="ai-dropdown-menu">
+        <!-- Header -->
+        <div class="dropdown-header">
+            <div class="dropdown-title">
+                <i class="fas fa-robot text-purple-500"></i>
+                <span>CodeDAO AI Agents</span>
+            </div>
+            <div class="connection-status" id="connection-status">
+                <span class="status-dot status-offline"></span>
+                <span class="status-text">Connecting...</span>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="dropdown-section">
+            <div class="section-title">🚀 Quick Actions</div>
+            <div class="quick-actions">
+                <button class="quick-action-btn" data-service="code-review">
+                    <i class="fas fa-code"></i>
+                    <span>Code Review</span>
+                </button>
+                <button class="quick-action-btn" data-service="contract-audit">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Contract Audit</span>
+                </button>
+                <button class="quick-action-btn" data-service="debug-help">
+                    <i class="fas fa-bug"></i>
+                    <span>Debug Help</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- AI Services Grid -->
+        <div class="dropdown-section">
+            <div class="section-title">🤖 AI Services</div>
+            <div class="ai-services-compact">
+                <div class="service-item" data-service="optimization">
+                    <span class="service-icon">⚡</span>
+                    <span class="service-name">Optimization</span>
+                </div>
+                <div class="service-item" data-service="documentation">
+                    <span class="service-icon">📚</span>
+                    <span class="service-name">Documentation</span>
+                </div>
+                <div class="service-item" data-service="deployment">
+                    <span class="service-icon">🚀</span>
+                    <span class="service-name">Deployment</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Task Submission -->
+        <div class="dropdown-section">
+            <div class="section-title">📋 Submit Task</div>
+            <div class="task-form-compact">
+                <select id="task-type-dropdown" class="dropdown-select">
+                    <option value="">Select Service...</option>
+                    <option value="code-review">📝 Code Review</option>
+                    <option value="contract-audit">🛡️ Contract Audit</option>
+                    <option value="debug-help">🐛 Debug Help</option>
+                    <option value="optimization">⚡ Optimization</option>
+                    <option value="documentation">📚 Documentation</option>
+                    <option value="deployment">🚀 Deployment</option>
+                </select>
+                <textarea id="task-description-dropdown" placeholder="Describe your task..." rows="2"></textarea>
+                <button id="submit-task-dropdown" class="submit-btn-dropdown">
+                    <span class="btn-text">Submit Task</span>
+                    <span class="btn-spinner" style="display: none;">⏳</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Connected Agents -->
+        <div class="dropdown-section">
+            <div class="section-title">🤖 Connected Agents</div>
+            <div class="agents-list-compact" id="agents-list-compact">
+                <div class="agent-item-compact">
+                    <span class="agent-avatar">🤖</span>
+                    <div class="agent-info-compact">
+                        <span class="agent-name">Claude</span>
+                        <span class="agent-status-compact idle">idle</span>
+                    </div>
+                </div>
+                <div class="agent-item-compact">
+                    <span class="agent-avatar">🧠</span>
+                    <div class="agent-info-compact">
+                        <span class="agent-name">ChatGPT</span>
+                        <span class="agent-status-compact busy">busy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Active Tasks -->
+        <div class="dropdown-section">
+            <div class="section-title">📋 Active Tasks</div>
+            <div class="tasks-list-compact" id="tasks-list-compact">
+                <div class="no-tasks-compact">No active tasks</div>
+            </div>
+        </div>
+        
+        <!-- Footer Actions -->
+        <div class="dropdown-footer">
+            <button class="footer-btn" id="open-full-panel">
+                <i class="fas fa-expand-arrows-alt"></i>
+                <span>Expand Panel</span>
+            </button>
+            <button class="footer-btn" id="agent-settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 3. ADD CSS STYLING (in <style> section) -->
+<style>
+/* AI Agent Dropdown Styles */
+.ai-agent-dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.ai-dropdown-btn {
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.ai-dropdown-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.dropdown-arrow {
+    transition: transform 0.3s ease;
+}
+
+.ai-dropdown-btn.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.ai-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 350px;
+    max-height: 600px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.ai-dropdown-menu.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-header {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ef4444;
+}
+
+.status-dot.status-online {
+    background: #10b981;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.dropdown-section {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-section:last-child {
+    border-bottom: none;
+}
+
+.section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 8px;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.quick-action-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: white;
+    padding: 6px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+    flex: 1;
+    min-width: 0;
+}
+
+.quick-action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(139, 92, 246, 0.5);
+}
+
+.ai-services-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.service-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.service-icon {
+    font-size: 14px;
+    width: 20px;
+    text-align: center;
+}
+
+.task-form-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dropdown-select, .task-form-compact textarea {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: white;
+    padding: 8px;
+    font-size: 12px;
+    resize: vertical;
+}
+
+.dropdown-select option {
+    background: #1a1a1a;
+    color: white;
+}
+
+.task-form-compact textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.submit-btn-dropdown {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.submit-btn-dropdown:hover {
+    transform: translateY(-1px);
+}
+
+.submit-btn-dropdown:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.agents-list-compact, .tasks-list-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.agent-item-compact {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.agent-avatar {
+    font-size: 16px;
+}
+
+.agent-info-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.agent-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+}
+
+.agent-status-compact {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-align: center;
+    max-width: fit-content;
+}
+
+.agent-status-compact.idle {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.agent-status-compact.busy {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.no-tasks-compact {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    padding: 8px;
+}
+
+.dropdown-footer {
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.footer-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: white;
+    padding: 6px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.footer-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ai-dropdown-menu {
+        width: 300px;
+        right: -50px;
+    }
+}
+
+/* Close dropdown when clicking outside */
+.dropdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    background: transparent;
+}
+</style>
+
+<!-- 4. ADD JAVASCRIPT FUNCTIONALITY (before closing </body> tag) -->
+<script>
+// AI Agent Dropdown System
+class AIAgentDropdown {
+    constructor() {
+        this.isOpen = false;
+        this.connectedAgents = [];
+        this.activeTasks = [];
+        this.connectionStatus = 'offline';
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+        this.connectToGateway();
+    }
+
+    setupEventListeners() {
+        const toggleBtn = document.getElementById('ai-agent-dropdown-toggle');
+        const dropdown = document.getElementById('ai-agent-dropdown');
+        
+        // Toggle dropdown
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleDropdown();
+        });
+
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
+                this.closeDropdown();
+            }
+        });
+
+        // Prevent dropdown close on internal clicks
+        dropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Quick action buttons
+        document.querySelectorAll('.quick-action-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const service = btn.dataset.service;
+                this.selectService(service);
+            });
+        });
+
+        // Service items
+        document.querySelectorAll('.service-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const service = item.dataset.service;
+                this.selectService(service);
+            });
+        });
+
+        // Submit task
+        document.getElementById('submit-task-dropdown').addEventListener('click', () => {
+            this.submitTask();
+        });
+
+        // Footer buttons
+        document.getElementById('open-full-panel').addEventListener('click', () => {
+            this.openFullPanel();
+        });
+
+        document.getElementById('agent-settings').addEventListener('click', () => {
+            this.openSettings();
+        });
+    }
+
+    toggleDropdown() {
+        if (this.isOpen) {
+            this.closeDropdown();
+        } else {
+            this.openDropdown();
+        }
+    }
+
+    openDropdown() {
+        const dropdown = document.getElementById('ai-agent-dropdown');
+        const toggleBtn = document.getElementById('ai-agent-dropdown-toggle');
+        
+        dropdown.classList.add('visible');
+        toggleBtn.classList.add('active');
+        this.isOpen = true;
+    }
+
+    closeDropdown() {
+        const dropdown = document.getElementById('ai-agent-dropdown');
+        const toggleBtn = document.getElementById('ai-agent-dropdown-toggle');
+        
+        dropdown.classList.remove('visible');
+        toggleBtn.classList.remove('active');
+        this.isOpen = false;
+    }
+
+    selectService(service) {
+        const taskType = document.getElementById('task-type-dropdown');
+        taskType.value = service;
+        
+        // Focus description
+        document.getElementById('task-description-dropdown').focus();
+        
+        // Visual feedback
+        this.showNotification(`Selected: ${service.replace('-', ' ')}`);
+    }
+
+    async submitTask() {
+        const taskType = document.getElementById('task-type-dropdown').value;
+        const description = document.getElementById('task-description-dropdown').value;
+        
+        if (!taskType || !description.trim()) {
+            this.showNotification('Please select a service and provide a description');
+            return;
+        }
+
+        const submitBtn = document.getElementById('submit-task-dropdown');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const btnSpinner = submitBtn.querySelector('.btn-spinner');
+        
+        // Show loading
+        submitBtn.disabled = true;
+        btnText.style.display = 'none';
+        btnSpinner.style.display = 'inline';
+
+        try {
+            // Simulate task submission
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            const task = {
+                id: 'task_' + Date.now(),
+                type: taskType,
+                description: description,
+                status: 'pending',
+                timestamp: new Date()
+            };
+            
+            this.activeTasks.push(task);
+            this.updateTasksList();
+            this.clearForm();
+            
+            this.showNotification('✅ Task submitted successfully!');
+            
+        } catch (error) {
+            this.showNotification('❌ Failed to submit task');
+        } finally {
+            // Reset button
+            submitBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnSpinner.style.display = 'none';
+        }
+    }
+
+    clearForm() {
+        document.getElementById('task-type-dropdown').value = '';
+        document.getElementById('task-description-dropdown').value = '';
+    }
+
+    updateTasksList() {
+        const tasksList = document.getElementById('tasks-list-compact');
+        
+        if (this.activeTasks.length === 0) {
+            tasksList.innerHTML = '<div class="no-tasks-compact">No active tasks</div>';
+            return;
+        }
+        
+        tasksList.innerHTML = this.activeTasks.map(task => `
+            <div class="task-item-compact">
+                <div class="task-type-compact">${task.type}</div>
+                <div class="task-desc-compact">${task.description.substring(0, 30)}...</div>
+                <div class="task-status-compact">${task.status}</div>
+            </div>
+        `).join('');
+    }
+
+    async connectToGateway() {
+        const statusElement = document.getElementById('connection-status');
+        
+        try {
+            // Show connecting
+            statusElement.innerHTML = `
+                <span class="status-dot status-offline"></span>
+                <span class="status-text">Connecting...</span>
+            `;
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Connected
+            statusElement.innerHTML = `
+                <span class="status-dot status-online"></span>
+                <span class="status-text">Gateway Online</span>
+            `;
+            
+            this.connectionStatus = 'online';
+            
+        } catch (error) {
+            statusElement.innerHTML = `
+                <span class="status-dot status-offline"></span>
+                <span class="status-text">Connection Failed</span>
+            `;
+        }
+    }
+
+    openFullPanel() {
+        // If you also have the full panel system, open it
+        this.showNotification('Full panel feature coming soon!');
+        this.closeDropdown();
+    }
+
+    openSettings() {
+        this.showNotification('Agent settings coming soon!');
+        this.closeDropdown();
+    }
+
+    showNotification(message) {
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px; background: rgba(0, 0, 0, 0.9);
+            color: white; padding: 12px 16px; border-radius: 8px; z-index: 1001;
+            font-size: 12px; font-weight: 600; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+}
+
+// Initialize AI Agent Dropdown
+document.addEventListener('DOMContentLoaded', () => {
+    new AIAgentDropdown();
+});
+</script>
+
+<!-- ========== END CodeDAO AI Agent Dropdown System ========== --> 

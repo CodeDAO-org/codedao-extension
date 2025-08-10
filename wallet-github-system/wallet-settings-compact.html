@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO - Wallet Settings</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+    
+    <!-- Load required libraries from CDN -->
+    <script src="https://unpkg.com/moralis-v1/dist/moralis.js"></script>
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js"></script>
+    <script>
+        // Fallback for Ethers.js
+        if (typeof ethers === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"><\/script>');
+        }
+    </script>
+    
+    <style>
+        /* Complete inline styling - no external dependencies */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-2px);
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .setting-section {
+            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .setting-section.connected { 
+            border-color: #4CAF50; 
+            background: rgba(76, 175, 80, 0.05);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+        }
+        
+        .setting-section.warning { 
+            border-color: #ff9800; 
+            background: rgba(255, 152, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.1);
+        }
+        
+        .setting-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #333;
+        }
+        
+        .setting-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1em;
+            flex-shrink: 0;
+        }
+        
+        .setting-icon.wallet { background: #667eea; }
+        .setting-icon.network { background: #4CAF50; }
+        .setting-icon.security { background: #ff9800; }
+        .setting-icon.tokens { background: #9c27b0; }
+        
+        .setting-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-size: 0.9em;
+        }
+        
+        .setting-value {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85em;
+            word-break: break-all;
+            margin: 10px 0;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .setting-value.address {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: rgba(76, 175, 80, 0.2);
+        }
+        
+        .balance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .balance-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .balance-amount {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .balance-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4); 
+        }
+        
+        button:disabled { 
+            background: #ccc; 
+            cursor: not-allowed; 
+            transform: none; 
+            box-shadow: none; 
+        }
+        
+        button.secondary {
+            background: #6c757d;
+            margin-top: 5px;
+        }
+        
+        button.secondary:hover {
+            background: #5a6268;
+            box-shadow: 0 4px 16px rgba(108, 117, 125, 0.4);
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+            box-shadow: 0 4px 16px rgba(220, 53, 69, 0.4);
+        }
+        
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+        
+        .status.success { 
+            background: rgba(76, 175, 80, 0.15); 
+            color: #2e7d32; 
+            border: 1px solid #4CAF50; 
+        }
+        
+        .status.error { 
+            background: rgba(244, 67, 54, 0.15); 
+            color: #c62828; 
+            border: 1px solid #f44336; 
+        }
+        
+        .status.info { 
+            background: rgba(33, 150, 243, 0.15); 
+            color: #1565c0; 
+            border: 1px solid #2196F3; 
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .security-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .security-warning strong {
+            color: #856404;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .setting-section {
+                padding: 15px;
+            }
+            
+            .balance-grid,
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="back-button">
+        ← Back to Dashboard
+    </a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>💰 Wallet Settings</h1>
+            <p>Manage your wallet connection, view balances, and configure security settings for your CodeDAO account.</p>
+        </div>
+        
+        <!-- Wallet Connection -->
+        <div class="setting-section" id="walletSection">
+            <div class="setting-title">
+                <div class="setting-icon wallet">💼</div>
+                Wallet Connection
+            </div>
+            <div class="setting-description">
+                Connect or manage your cryptocurrency wallet for receiving CODE token rewards.
+            </div>
+            <div id="walletConnectionStatus">
+                <button id="connectWalletBtn" onclick="connectWallet()">Connect Wallet</button>
+            </div>
+            <div id="walletStatus"></div>
+        </div>
+        
+        <!-- Network Settings -->
+        <div class="setting-section" id="networkSection">
+            <div class="setting-title">
+                <div class="setting-icon network">🌐</div>
+                Network Settings
+            </div>
+            <div class="setting-description">
+                Current blockchain network and connection status.
+            </div>
+            <div id="networkInfo">
+                <div class="setting-value">Not connected</div>
+            </div>
+            <button id="switchNetworkBtn" onclick="switchToBase()" style="display: none;">Switch to Base Network</button>
+            <div id="networkStatus"></div>
+        </div>
+        
+        <!-- Token Balances -->
+        <div class="setting-section" id="balanceSection">
+            <div class="setting-title">
+                <div class="setting-icon tokens">🪙</div>
+                Token Balances
+            </div>
+            <div class="setting-description">
+                Your current cryptocurrency and CODE token balances.
+            </div>
+            <div class="balance-grid" id="balanceGrid">
+                <div class="balance-item">
+                    <div class="balance-amount" id="ethBalance">0.00</div>
+                    <div class="balance-label">ETH</div>
+                </div>
+                <div class="balance-item">
+                    <div class="balance-amount" id="codeBalance">0.00</div>
+                    <div class="balance-label">CODE</div>
+                </div>
+            </div>
+            <button id="refreshBalanceBtn" onclick="refreshBalances()" style="display: none;">Refresh Balances</button>
+            <div id="balanceStatus"></div>
+        </div>
+        
+        <!-- Security Settings -->
+        <div class="setting-section" id="securitySection">
+            <div class="setting-title">
+                <div class="setting-icon security">🔒</div>
+                Security & Privacy
+            </div>
+            <div class="setting-description">
+                Manage wallet security settings and connection preferences.
+            </div>
+            <div class="security-warning">
+                <strong>Security Tip:</strong> Never share your private keys or seed phrases. CodeDAO will never ask for them.
+            </div>
+            <div class="actions-grid">
+                <button class="secondary" onclick="viewConnectedSites()">Connected Sites</button>
+                <button class="secondary" onclick="exportWalletInfo()">Export Info</button>
+                <button class="danger" onclick="disconnectWallet()">Disconnect Wallet</button>
+                <button class="secondary" onclick="clearCache()">Clear Cache</button>
+            </div>
+            <div id="securityStatus"></div>
+        </div>
+        
+        <!-- Wallet Address Display -->
+        <div class="setting-section" id="addressSection" style="display: none;">
+            <div class="setting-title">
+                <div class="setting-icon wallet">📍</div>
+                Wallet Address
+            </div>
+            <div class="setting-description">
+                Your wallet address for receiving CODE token rewards.
+            </div>
+            <div class="setting-value address" id="walletAddress">Not connected</div>
+            <div class="actions-grid">
+                <button class="secondary" onclick="copyAddress()">Copy Address</button>
+                <button class="secondary" onclick="viewOnExplorer()">View on Explorer</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const MORALIS_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImQzY2NjOTEzLTcwZDUtNGZkOC05ZmQzLTQxYjY1YmM3ZDljMiIsIm9yZ0lkIjoiNDYyNjY1IiwidXNlcklkIjoiNDc1OTg4IiwidHlwZUlkIjoiNGIzMzk5MDUtZjVlZC00N2FhLTliNmYtZjdiMDQ1NzgwODEzIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NTM5OTI2ODQsImV4cCI6NDkwOTc1MjY4NH0._82QL7vojD2DwHwh8U182qpZXqJ2lei_llw2Mdyl7fg";
+        const CODE_TOKEN_ADDRESS = "0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0";
+        const BASE_CHAIN_ID = "0x2105"; // Base Mainnet
+        const BASE_RPC_URL = "https://mainnet.base.org";
+
+        // ERC20 ABI for token balance
+        const ERC20_ABI = [
+            "function balanceOf(address owner) view returns (uint256)",
+            "function decimals() view returns (uint8)",
+            "function symbol() view returns (string)"
+        ];
+        
+        let connectedWallet = null;
+        let provider = null;
+        
+        // Initialize Moralis
+        async function initMoralis() {
+            try {
+                if (typeof Moralis !== 'undefined') {
+                    await Moralis.start({ apiKey: MORALIS_API_KEY });
+                    console.log("✅ Moralis initialized successfully");
+                    return true;
+                } else {
+                    console.log("⚠️ Moralis SDK not loaded, using direct MetaMask connection");
+                    return false;
+                }
+            } catch (error) {
+                console.error("❌ Failed to initialize Moralis:", error);
+                return false;
+            }
+        }
+        
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.className = `status ${type}`;
+            element.style.display = 'block';
+        }
+
+        // Get CODE token balance
+        async function getCODEBalance(address) {
+            try {
+                if (!provider) return "0";
+                
+                const contract = new ethers.Contract(CODE_TOKEN_ADDRESS, ERC20_ABI, provider);
+                const balance = await contract.balanceOf(address);
+                const decimals = await contract.decimals();
+                return ethers.utils.formatUnits(balance, decimals);
+            } catch (error) {
+                console.error("Error getting CODE balance:", error);
+                return "0";
+            }
+        }
+
+        // Get ETH balance
+        async function getETHBalance(address) {
+            try {
+                if (!provider) return "0";
+                
+                const balance = await provider.getBalance(address);
+                return ethers.utils.formatEther(balance);
+            } catch (error) {
+                console.error("Error getting ETH balance:", error);
+                return "0";
+            }
+        }
+
+        // Switch to Base network
+        async function switchToBase() {
+            try {
+                showStatus('networkStatus', '⏳ Switching to Base network...', 'info');
+                
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: BASE_CHAIN_ID }],
+                });
+                
+                showStatus('networkStatus', '✅ Switched to Base network', 'success');
+                await updateNetworkInfo();
+                await refreshBalances();
+                
+                return true;
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: BASE_CHAIN_ID,
+                                chainName: 'Base',
+                                nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                                rpcUrls: [BASE_RPC_URL],
+                                blockExplorerUrls: ['https://basescan.org/']
+                            }]
+                        });
+                        showStatus('networkStatus', '✅ Added and switched to Base network', 'success');
+                        await updateNetworkInfo();
+                        await refreshBalances();
+                        return true;
+                    } catch (addError) {
+                        console.error("Failed to add Base network:", addError);
+                        showStatus('networkStatus', '❌ Failed to add Base network', 'error');
+                        return false;
+                    }
+                } else {
+                    console.error("Failed to switch to Base network:", switchError);
+                    showStatus('networkStatus', '❌ Failed to switch to Base network', 'error');
+                    return false;
+                }
+            }
+        }
+        
+        async function connectWallet() {
+            try {
+                // Check if libraries are loaded
+                if (typeof window.ethereum === 'undefined') {
+                    showStatus('walletStatus', '❌ MetaMask not detected. Please install MetaMask.', 'error');
+                    return;
+                }
+
+                if (typeof ethers === 'undefined') {
+                    showStatus('walletStatus', '❌ Ethers.js library not loaded. Please refresh the page.', 'error');
+                    return;
+                }
+                
+                showStatus('walletStatus', '⏳ Connecting to wallet...', 'info');
+                
+                // Initialize Moralis
+                await initMoralis();
+                
+                // Request account access
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                // Create provider
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner();
+                const address = await signer.getAddress();
+                
+                connectedWallet = address;
+                
+                // Update UI
+                showStatus('walletStatus', `✅ Connected: ${address.slice(0, 8)}...${address.slice(-6)}`, 'success');
+                
+                // Update wallet section
+                document.getElementById('walletSection').classList.add('connected');
+                document.getElementById('connectWalletBtn').textContent = 'Reconnect Wallet';
+                
+                // Show wallet address
+                document.getElementById('addressSection').style.display = 'block';
+                document.getElementById('walletAddress').textContent = address;
+                
+                // Show network switch button and refresh button
+                document.getElementById('switchNetworkBtn').style.display = 'block';
+                document.getElementById('refreshBalanceBtn').style.display = 'block';
+                
+                // Update network and balance info
+                await updateNetworkInfo();
+                await refreshBalances();
+                
+            } catch (error) {
+                console.error("Wallet connection error:", error);
+                showStatus('walletStatus', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function updateNetworkInfo() {
+            try {
+                if (!provider) return;
+                
+                const network = await provider.getNetwork();
+                const networkName = network.chainId === 8453 ? 'Base Mainnet' : 
+                                   network.chainId === 1 ? 'Ethereum Mainnet' : 
+                                   `Chain ${network.chainId}`;
+                
+                document.getElementById('networkInfo').innerHTML = `
+                    <div class="setting-value">${networkName} (Chain ID: ${network.chainId})</div>
+                `;
+                
+                if (network.chainId === 8453) {
+                    document.getElementById('networkSection').classList.add('connected');
+                    document.getElementById('switchNetworkBtn').style.display = 'none';
+                } else {
+                    document.getElementById('networkSection').classList.add('warning');
+                    document.getElementById('switchNetworkBtn').style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error("Error updating network info:", error);
+                showStatus('networkStatus', '❌ Failed to get network info', 'error');
+            }
+        }
+        
+        async function refreshBalances() {
+            try {
+                if (!provider || !connectedWallet) return;
+                
+                showStatus('balanceStatus', '⏳ Refreshing balances...', 'info');
+                
+                // Get balances
+                const ethBalance = await getETHBalance(connectedWallet);
+                const codeBalance = await getCODEBalance(connectedWallet);
+                
+                // Update UI
+                document.getElementById('ethBalance').textContent = parseFloat(ethBalance).toFixed(4);
+                document.getElementById('codeBalance').textContent = parseFloat(codeBalance).toFixed(2);
+                
+                showStatus('balanceStatus', '✅ Balances updated', 'success');
+                
+            } catch (error) {
+                console.error("Error refreshing balances:", error);
+                showStatus('balanceStatus', '❌ Failed to refresh balances', 'error');
+            }
+        }
+        
+        function copyAddress() {
+            if (connectedWallet) {
+                navigator.clipboard.writeText(connectedWallet);
+                showStatus('securityStatus', '✅ Address copied to clipboard', 'success');
+            }
+        }
+        
+        function viewOnExplorer() {
+            if (connectedWallet) {
+                window.open(`https://basescan.org/address/${connectedWallet}`, '_blank');
+            }
+        }
+        
+        function viewConnectedSites() {
+            showStatus('securityStatus', 'ℹ️ Check MetaMask for connected sites', 'info');
+        }
+        
+        function exportWalletInfo() {
+            if (connectedWallet) {
+                const info = {
+                    address: connectedWallet,
+                    timestamp: new Date().toISOString(),
+                    platform: 'CodeDAO'
+                };
+                
+                const blob = new Blob([JSON.stringify(info, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'codedao-wallet-info.json';
+                a.click();
+                
+                showStatus('securityStatus', '✅ Wallet info exported', 'success');
+            }
+        }
+        
+        async function disconnectWallet() {
+            connectedWallet = null;
+            provider = null;
+            
+            // Reset UI
+            document.getElementById('walletSection').classList.remove('connected');
+            document.getElementById('networkSection').classList.remove('connected', 'warning');
+            document.getElementById('connectWalletBtn').textContent = 'Connect Wallet';
+            document.getElementById('addressSection').style.display = 'none';
+            document.getElementById('switchNetworkBtn').style.display = 'none';
+            document.getElementById('refreshBalanceBtn').style.display = 'none';
+            
+            // Reset displays
+            document.getElementById('networkInfo').innerHTML = '<div class="setting-value">Not connected</div>';
+            document.getElementById('ethBalance').textContent = '0.00';
+            document.getElementById('codeBalance').textContent = '0.00';
+            
+            showStatus('securityStatus', '✅ Wallet disconnected', 'success');
+            showStatus('walletStatus', 'ℹ️ Wallet disconnected. Click "Connect Wallet" to reconnect.', 'info');
+        }
+        
+        function clearCache() {
+            localStorage.removeItem('codeDAO_registrations');
+            showStatus('securityStatus', '✅ Cache cleared', 'success');
+        }
+        
+        // Auto-connect if wallet is already connected
+        window.addEventListener('load', async function() {
+            console.log("🚀 CodeDAO Wallet Settings loaded");
+            
+            // Auto-connect if wallet is already connected
+            if (window.ethereum && window.ethereum.selectedAddress) {
+                setTimeout(connectWallet, 1000);
+            }
+        });
+    </script>
+</body>
+</html> 

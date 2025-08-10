@@ -1,0 +1,659 @@
+<!-- ========== CodeDAO AI Agent Control System ========== -->
+<!-- Add this to any CodeDAO page for instant AI Agent functionality -->
+
+<!-- 1. ADD TO HEAD SECTION (before </head>) -->
+<script src="https://unpkg.com/moralis-v1/dist/moralis.js"></script>
+<script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+
+<!-- 2. ADD AI AGENTS BUTTON TO HEADER NAVIGATION -->
+<!-- Insert this button in your existing header nav section -->
+<button id="ai-agent-toggle" class="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all">
+    <i class="fas fa-robot mr-2"></i>AI Agents
+</button>
+
+<!-- 3. ADD AI AGENT PANEL (before closing </body> tag) -->
+<div id="ai-agent-panel" class="ai-agent-panel ai-panel-hidden">
+    <div class="ai-panel-overlay" id="ai-panel-overlay"></div>
+    <div class="ai-panel-container">
+        <div class="ai-panel-header">
+            <div class="ai-panel-title">
+                <i class="fas fa-robot text-purple-500"></i>
+                <span>CodeDAO AI Agents</span>
+            </div>
+            <div class="ai-panel-controls">
+                <button id="ai-panel-minimize" class="ai-panel-btn ai-panel-btn-secondary">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button id="ai-panel-close" class="ai-panel-btn ai-panel-btn-secondary">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="ai-panel-content">
+            <!-- Agent Status -->
+            <div class="ai-status-section">
+                <div class="ai-status-header">
+                    <h4>🔗 Connection Status</h4>
+                    <div class="ai-connection-status" id="ai-connection-status">
+                        <span class="status-dot status-offline"></span>
+                        <span>Gateway Offline</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Services -->
+            <div class="ai-services-section">
+                <h4>🤖 Available Assistance:</h4>
+                <div class="ai-services-grid">
+                    <div class="ai-service-card" data-service="code-review">
+                        <div class="service-icon">📝</div>
+                        <div class="service-name">Code Review</div>
+                        <div class="service-desc">AI-powered code analysis</div>
+                    </div>
+                    <div class="ai-service-card" data-service="contract-audit">
+                        <div class="service-icon">🛡️</div>
+                        <div class="service-name">Contract Audit</div>
+                        <div class="service-desc">Smart contract security</div>
+                    </div>
+                    <div class="ai-service-card" data-service="debug-help">
+                        <div class="service-icon">🐛</div>
+                        <div class="service-name">Debug Help</div>
+                        <div class="service-desc">Error detection & fixes</div>
+                    </div>
+                    <div class="ai-service-card" data-service="optimization">
+                        <div class="service-icon">⚡</div>
+                        <div class="service-name">Optimization</div>
+                        <div class="service-desc">Performance improvements</div>
+                    </div>
+                    <div class="ai-service-card" data-service="documentation">
+                        <div class="service-icon">📚</div>
+                        <div class="service-name">Documentation</div>
+                        <div class="service-desc">Auto-generate docs</div>
+                    </div>
+                    <div class="ai-service-card" data-service="deployment">
+                        <div class="service-icon">🚀</div>
+                        <div class="service-name">Deployment</div>
+                        <div class="service-desc">Deploy to networks</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Control Center -->
+            <div class="ai-control-section">
+                <h4>🎛️ Agent Control Center</h4>
+                <div class="ai-task-form">
+                    <select id="ai-task-type" class="ai-select">
+                        <option value="">Select Task Type</option>
+                        <option value="code-review">📝 Code Review</option>
+                        <option value="smart-contract-audit">🛡️ Smart Contract Audit</option>
+                        <option value="debugging">🐛 Debug Assistance</option>
+                        <option value="documentation">📚 Generate Documentation</option>
+                        <option value="deployment">🚀 Deploy Contract</option>
+                        <option value="testing">🧪 Generate Tests</option>
+                        <option value="optimization">⚡ Code Optimization</option>
+                    </select>
+                    
+                    <textarea id="ai-task-description" placeholder="Describe your task in detail..." rows="3"></textarea>
+                    
+                    <div class="ai-task-actions">
+                        <select id="ai-task-priority" class="ai-select-small">
+                            <option value="normal">Normal Priority</option>
+                            <option value="high">High Priority</option>
+                            <option value="low">Low Priority</option>
+                        </select>
+                        <button id="ai-submit-task" class="ai-submit-btn">
+                            <span class="btn-text">Submit Task</span>
+                            <span class="btn-spinner" style="display: none;">⏳</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connected Agents -->
+            <div class="ai-agents-section">
+                <h4>🤖 Connected Agents</h4>
+                <div class="ai-agents-list" id="ai-agents-list">
+                    <div class="ai-no-agents">No agents connected</div>
+                </div>
+            </div>
+
+            <!-- Active Tasks -->
+            <div class="ai-tasks-section">
+                <h4>📋 Active Tasks</h4>
+                <div class="ai-tasks-list" id="ai-tasks-list">
+                    <div class="ai-no-tasks">No active tasks</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4. ADD CSS STYLING (before closing </head> or in <style> section) -->
+<style>
+/* AI Agent Panel Styles */
+.ai-agent-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 450px;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.ai-agent-panel.ai-panel-visible {
+    transform: translateX(0);
+}
+
+.ai-agent-panel.ai-panel-minimized {
+    transform: translateX(calc(100% - 60px));
+}
+
+.ai-panel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.ai-agent-panel.ai-panel-visible .ai-panel-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.ai-panel-container {
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+.ai-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.ai-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.ai-panel-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ai-panel-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.ai-panel-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.ai-panel-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.ai-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.ai-status-section, .ai-services-section, .ai-control-section, 
+.ai-agents-section, .ai-tasks-section {
+    margin-bottom: 1.5rem;
+}
+
+.ai-status-section h4, .ai-services-section h4, .ai-control-section h4,
+.ai-agents-section h4, .ai-tasks-section h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.ai-status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ai-connection-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+}
+
+.status-dot.status-online {
+    background: #10b981;
+    animation: pulse-green 2s infinite;
+}
+
+.status-dot.status-offline {
+    background: #ef4444;
+}
+
+@keyframes pulse-green {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.ai-services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.ai-service-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ai-service-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    border-color: rgba(147, 51, 234, 0.5);
+}
+
+.service-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.service-name {
+    font-weight: 600;
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+.service-desc {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.ai-task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.ai-select, .ai-select-small {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.ai-select-small {
+    flex: 1;
+}
+
+.ai-task-form textarea {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.ai-task-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.ai-task-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.ai-submit-btn {
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ai-submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.ai-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.ai-agents-list, .ai-tasks-list {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 0.75rem;
+    min-height: 60px;
+}
+
+.ai-no-agents, .ai-no-tasks {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ai-agent-panel {
+        width: 100%;
+    }
+}
+</style>
+
+<!-- 5. ADD JAVASCRIPT FUNCTIONALITY (before closing </body> tag) -->
+<script>
+// AI Agent Panel Functionality
+class AIAgentPanel {
+    constructor() {
+        this.isVisible = false;
+        this.isMinimized = false;
+        this.connectedAgents = [];
+        this.activeTasks = [];
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+        this.connectToGateway();
+    }
+
+    setupEventListeners() {
+        // Toggle panel
+        document.getElementById('ai-agent-toggle').addEventListener('click', () => {
+            this.togglePanel();
+        });
+
+        // Close panel
+        document.getElementById('ai-panel-close').addEventListener('click', () => {
+            this.hidePanel();
+        });
+
+        // Minimize panel
+        document.getElementById('ai-panel-minimize').addEventListener('click', () => {
+            this.toggleMinimize();
+        });
+
+        // Overlay click to close
+        document.getElementById('ai-panel-overlay').addEventListener('click', () => {
+            this.hidePanel();
+        });
+
+        // Service card clicks
+        document.querySelectorAll('.ai-service-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const service = card.dataset.service;
+                this.selectService(service);
+            });
+        });
+
+        // Submit task
+        document.getElementById('ai-submit-task').addEventListener('click', () => {
+            this.submitTask();
+        });
+    }
+
+    togglePanel() {
+        if (this.isVisible) {
+            this.hidePanel();
+        } else {
+            this.showPanel();
+        }
+    }
+
+    showPanel() {
+        const panel = document.getElementById('ai-agent-panel');
+        panel.classList.remove('ai-panel-hidden');
+        panel.classList.add('ai-panel-visible');
+        this.isVisible = true;
+        
+        // Update button
+        const button = document.getElementById('ai-agent-toggle');
+        button.innerHTML = '<i class="fas fa-robot mr-2"></i>Close Agents';
+    }
+
+    hidePanel() {
+        const panel = document.getElementById('ai-agent-panel');
+        panel.classList.remove('ai-panel-visible', 'ai-panel-minimized');
+        panel.classList.add('ai-panel-hidden');
+        this.isVisible = false;
+        this.isMinimized = false;
+        
+        // Update button
+        const button = document.getElementById('ai-agent-toggle');
+        button.innerHTML = '<i class="fas fa-robot mr-2"></i>AI Agents';
+    }
+
+    toggleMinimize() {
+        const panel = document.getElementById('ai-agent-panel');
+        if (this.isMinimized) {
+            panel.classList.remove('ai-panel-minimized');
+            this.isMinimized = false;
+        } else {
+            panel.classList.add('ai-panel-minimized');
+            this.isMinimized = true;
+        }
+    }
+
+    selectService(service) {
+        const taskType = document.getElementById('ai-task-type');
+        taskType.value = service;
+        
+        // Add visual feedback
+        document.querySelectorAll('.ai-service-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        event.currentTarget.classList.add('selected');
+        
+        // Focus description
+        document.getElementById('ai-task-description').focus();
+    }
+
+    async submitTask() {
+        const taskType = document.getElementById('ai-task-type').value;
+        const description = document.getElementById('ai-task-description').value;
+        const priority = document.getElementById('ai-task-priority').value;
+        
+        if (!taskType || !description.trim()) {
+            this.showNotification('Please select a task type and provide a description');
+            return;
+        }
+
+        const submitBtn = document.getElementById('ai-submit-task');
+        const btnText = submitBtn.querySelector('.btn-text');
+        const btnSpinner = submitBtn.querySelector('.btn-spinner');
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        btnText.style.display = 'none';
+        btnSpinner.style.display = 'inline';
+
+        try {
+            // Simulate task submission
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            const task = {
+                id: 'task_' + Date.now(),
+                type: taskType,
+                description: description,
+                priority: priority,
+                status: 'pending',
+                timestamp: new Date().toISOString()
+            };
+            
+            this.activeTasks.push(task);
+            this.updateTasksList();
+            this.clearForm();
+            
+            this.showNotification('✅ Task submitted successfully!');
+        } catch (error) {
+            this.showNotification('❌ Failed to submit task');
+        } finally {
+            // Reset button state
+            submitBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnSpinner.style.display = 'none';
+        }
+    }
+
+    clearForm() {
+        document.getElementById('ai-task-type').value = '';
+        document.getElementById('ai-task-description').value = '';
+        document.getElementById('ai-task-priority').value = 'normal';
+        
+        // Remove selection from service cards
+        document.querySelectorAll('.ai-service-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+    }
+
+    updateTasksList() {
+        const tasksList = document.getElementById('ai-tasks-list');
+        
+        if (this.activeTasks.length === 0) {
+            tasksList.innerHTML = '<div class="ai-no-tasks">No active tasks</div>';
+            return;
+        }
+        
+        tasksList.innerHTML = this.activeTasks.map(task => `
+            <div class="ai-task-item">
+                <div class="task-header">
+                    <span class="task-type">${task.type}</span>
+                    <span class="task-status">${task.status}</span>
+                </div>
+                <div class="task-description">${task.description}</div>
+                <div class="task-time">${new Date(task.timestamp).toLocaleTimeString()}</div>
+            </div>
+        `).join('');
+    }
+
+    async connectToGateway() {
+        // Simulate gateway connection
+        const statusElement = document.getElementById('ai-connection-status');
+        
+        try {
+            // Show connecting state
+            statusElement.innerHTML = '<span class="status-dot status-offline"></span><span>Connecting...</span>';
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Simulate connection success
+            statusElement.innerHTML = '<span class="status-dot status-online"></span><span>Gateway Online</span>';
+            
+            // Add some demo agents
+            this.connectedAgents = [
+                { id: 'claude', name: 'Claude', status: 'idle', capabilities: ['code-review', 'debugging'] },
+                { id: 'chatgpt', name: 'ChatGPT', status: 'busy', capabilities: ['documentation', 'optimization'] }
+            ];
+            
+            this.updateAgentsList();
+        } catch (error) {
+            statusElement.innerHTML = '<span class="status-dot status-offline"></span><span>Connection Failed</span>';
+        }
+    }
+
+    updateAgentsList() {
+        const agentsList = document.getElementById('ai-agents-list');
+        
+        if (this.connectedAgents.length === 0) {
+            agentsList.innerHTML = '<div class="ai-no-agents">No agents connected</div>';
+            return;
+        }
+        
+        agentsList.innerHTML = this.connectedAgents.map(agent => `
+            <div class="ai-agent-item">
+                <div class="agent-info">
+                    <span class="agent-name">${agent.name}</span>
+                    <span class="agent-status ${agent.status}">${agent.status}</span>
+                </div>
+                <div class="agent-capabilities">
+                    ${agent.capabilities.map(cap => `<span class="capability-tag">${cap}</span>`).join('')}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    showNotification(message) {
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px; background: rgba(0, 0, 0, 0.9);
+            color: white; padding: 15px 20px; border-radius: 10px; z-index: 1001;
+            font-weight: 600; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+}
+
+// Initialize AI Agent Panel when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    new AIAgentPanel();
+});
+</script>
+
+<!-- ========== END CodeDAO AI Agent Control System ========== --> 

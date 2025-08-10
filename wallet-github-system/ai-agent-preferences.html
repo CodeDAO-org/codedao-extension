@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO - AI Agent Preferences</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+    
+    <style>
+        /* Complete inline styling - no external dependencies */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-2px);
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .preference-section {
+            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .preference-section.enabled { 
+            border-color: #4CAF50; 
+            background: rgba(76, 175, 80, 0.05);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+        }
+        
+        .preference-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #333;
+        }
+        
+        .preference-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1em;
+            flex-shrink: 0;
+        }
+        
+        .preference-icon.claude { background: #ff6b35; }
+        .preference-icon.chatgpt { background: #10a37f; }
+        .preference-icon.copilot { background: #24292e; }
+        .preference-icon.general { background: #667eea; }
+        
+        .preference-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-size: 0.9em;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .preference-options {
+            display: grid;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            font-size: 0.9em;
+        }
+        
+        .option-label {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .option-value {
+            color: #666;
+            font-family: monospace;
+            font-size: 0.8em;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .input-group {
+            margin: 10px 0;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .select-field {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            outline: none;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .range-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+        
+        .range-value {
+            font-size: 0.8em;
+            color: #666;
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+        
+        .status.success { 
+            background: rgba(76, 175, 80, 0.15); 
+            color: #2e7d32; 
+            border: 1px solid #4CAF50; 
+        }
+        
+        .status.info { 
+            background: rgba(33, 150, 243, 0.15); 
+            color: #1565c0; 
+            border: 1px solid #2196F3; 
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        button:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4); 
+        }
+        
+        button.secondary {
+            background: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .preference-section {
+                padding: 15px;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="back-button">
+        ← Back to Dashboard
+    </a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Agent Preferences</h1>
+            <p>Configure your AI agent settings, integrations, and behavior preferences for optimal CodeDAO collaboration.</p>
+        </div>
+        
+        <!-- Claude Integration -->
+        <div class="preference-section" id="claudeSection">
+            <div class="preference-title">
+                <div class="preference-icon claude">🧠</div>
+                Claude Integration
+            </div>
+            <div class="preference-description">
+                Configure Anthropic Claude AI agent integration and behavior settings.
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="claudeEnabled" onchange="toggleAgent('claude')">
+                <span class="slider"></span>
+            </label>
+            <div id="claudeOptions" class="preference-options" style="display: none;">
+                <div class="input-group">
+                    <label class="input-label">API Key</label>
+                    <input type="password" class="input-field" placeholder="sk-ant-..." id="claudeApiKey">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Model</label>
+                    <select class="select-field" id="claudeModel">
+                        <option value="claude-3-sonnet">Claude 3 Sonnet</option>
+                        <option value="claude-3-haiku">Claude 3 Haiku</option>
+                        <option value="claude-3-opus">Claude 3 Opus</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Creativity Level</label>
+                    <input type="range" class="range-slider" min="0" max="100" value="50" id="claudeCreativity" oninput="updateRangeValue('claude')">
+                    <div class="range-value" id="claudeCreativityValue">50%</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ChatGPT Integration -->
+        <div class="preference-section" id="chatgptSection">
+            <div class="preference-title">
+                <div class="preference-icon chatgpt">🤖</div>
+                ChatGPT Integration
+            </div>
+            <div class="preference-description">
+                Configure OpenAI ChatGPT integration and response settings.
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="chatgptEnabled" onchange="toggleAgent('chatgpt')">
+                <span class="slider"></span>
+            </label>
+            <div id="chatgptOptions" class="preference-options" style="display: none;">
+                <div class="input-group">
+                    <label class="input-label">API Key</label>
+                    <input type="password" class="input-field" placeholder="sk-..." id="chatgptApiKey">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Model</label>
+                    <select class="select-field" id="chatgptModel">
+                        <option value="gpt-4">GPT-4</option>
+                        <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Temperature</label>
+                    <input type="range" class="range-slider" min="0" max="100" value="70" id="chatgptTemperature" oninput="updateRangeValue('chatgpt')">
+                    <div class="range-value" id="chatgptTemperatureValue">0.7</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- GitHub Copilot -->
+        <div class="preference-section" id="copilotSection">
+            <div class="preference-title">
+                <div class="preference-icon copilot">🐙</div>
+                GitHub Copilot
+            </div>
+            <div class="preference-description">
+                Configure GitHub Copilot integration and code suggestion preferences.
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="copilotEnabled" onchange="toggleAgent('copilot')">
+                <span class="slider"></span>
+            </label>
+            <div id="copilotOptions" class="preference-options" style="display: none;">
+                <div class="option-item">
+                    <span class="option-label">Status</span>
+                    <span class="option-value" id="copilotStatus">Checking...</span>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Suggestion Style</label>
+                    <select class="select-field" id="copilotStyle">
+                        <option value="balanced">Balanced</option>
+                        <option value="conservative">Conservative</option>
+                        <option value="aggressive">Aggressive</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- General AI Settings -->
+        <div class="preference-section" id="generalSection">
+            <div class="preference-title">
+                <div class="preference-icon general">⚙️</div>
+                General AI Settings
+            </div>
+            <div class="preference-description">
+                Configure general AI behavior and reward preferences.
+            </div>
+            <div class="preference-options">
+                <div class="input-group">
+                    <label class="input-label">Auto-commit AI Changes</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autoCommit" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Reward Distribution</label>
+                    <select class="select-field" id="rewardDistribution">
+                        <option value="automatic">Automatic</option>
+                        <option value="manual">Manual Approval</option>
+                        <option value="threshold">Threshold Based</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Minimum Reward Threshold</label>
+                    <input type="number" class="input-field" placeholder="0.01" id="minReward" step="0.01" min="0">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Preferred AI Agent</label>
+                    <select class="select-field" id="preferredAgent">
+                        <option value="none">No Preference</option>
+                        <option value="claude">Claude</option>
+                        <option value="chatgpt">ChatGPT</option>
+                        <option value="copilot">GitHub Copilot</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Save Settings -->
+        <div class="actions-grid">
+            <button onclick="savePreferences()">Save Preferences</button>
+            <button class="secondary" onclick="resetToDefaults()">Reset to Defaults</button>
+        </div>
+        
+        <div id="statusMessage"></div>
+    </div>
+    
+    <script>
+        // Initialize preferences from localStorage
+        function loadPreferences() {
+            const preferences = JSON.parse(localStorage.getItem('codeDAO_aiPreferences') || '{}');
+            
+            // Load saved values
+            Object.keys(preferences).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = preferences[key];
+                    } else {
+                        element.value = preferences[key];
+                    }
+                }
+            });
+            
+            // Update UI based on loaded preferences
+            ['claude', 'chatgpt', 'copilot'].forEach(agent => {
+                const checkbox = document.getElementById(agent + 'Enabled');
+                if (checkbox && checkbox.checked) {
+                    toggleAgent(agent);
+                }
+            });
+            
+            // Update range values
+            updateRangeValue('claude');
+            updateRangeValue('chatgpt');
+        }
+        
+        function toggleAgent(agentType) {
+            const checkbox = document.getElementById(agentType + 'Enabled');
+            const options = document.getElementById(agentType + 'Options');
+            const section = document.getElementById(agentType + 'Section');
+            
+            if (checkbox.checked) {
+                options.style.display = 'block';
+                section.classList.add('enabled');
+            } else {
+                options.style.display = 'none';
+                section.classList.remove('enabled');
+            }
+        }
+        
+        function updateRangeValue(agentType) {
+            if (agentType === 'claude') {
+                const slider = document.getElementById('claudeCreativity');
+                const display = document.getElementById('claudeCreativityValue');
+                display.textContent = slider.value + '%';
+            } else if (agentType === 'chatgpt') {
+                const slider = document.getElementById('chatgptTemperature');
+                const display = document.getElementById('chatgptTemperatureValue');
+                display.textContent = (slider.value / 100).toFixed(1);
+            }
+        }
+        
+        function savePreferences() {
+            const preferences = {};
+            
+            // Collect all form values
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    preferences[input.id] = input.checked;
+                } else {
+                    preferences[input.id] = input.value;
+                }
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('codeDAO_aiPreferences', JSON.stringify(preferences));
+            
+            // Show success message
+            showStatus('✅ Preferences saved successfully!', 'success');
+            
+            console.log('🤖 AI Preferences saved:', preferences);
+        }
+        
+        function resetToDefaults() {
+            if (confirm('Are you sure you want to reset all AI preferences to defaults?')) {
+                localStorage.removeItem('codeDAO_aiPreferences');
+                
+                // Reset form values
+                document.querySelectorAll('input, select').forEach(input => {
+                    if (input.type === 'checkbox') {
+                        input.checked = false;
+                    } else if (input.type === 'range') {
+                        if (input.id === 'claudeCreativity') {
+                            input.value = 50;
+                        } else if (input.id === 'chatgptTemperature') {
+                            input.value = 70;
+                        }
+                    } else {
+                        input.value = '';
+                    }
+                });
+                
+                // Reset sections
+                ['claude', 'chatgpt', 'copilot'].forEach(agent => {
+                    document.getElementById(agent + 'Options').style.display = 'none';
+                    document.getElementById(agent + 'Section').classList.remove('enabled');
+                });
+                
+                // Update range displays
+                updateRangeValue('claude');
+                updateRangeValue('chatgpt');
+                
+                showStatus('✅ Preferences reset to defaults', 'success');
+            }
+        }
+        
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.innerHTML = message;
+            statusElement.className = `status ${type}`;
+            statusElement.style.display = 'block';
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Check Copilot status (mock function)
+        function checkCopilotStatus() {
+            setTimeout(() => {
+                const statusElement = document.getElementById('copilotStatus');
+                const isActive = Math.random() > 0.5; // Mock check
+                statusElement.textContent = isActive ? 'Active' : 'Inactive';
+                statusElement.style.color = isActive ? '#4CAF50' : '#f44336';
+            }, 1000);
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            console.log("🤖 CodeDAO AI Agent Preferences loaded");
+            loadPreferences();
+            checkCopilotStatus();
+        });
+    </script>
+</body>
+</html> 

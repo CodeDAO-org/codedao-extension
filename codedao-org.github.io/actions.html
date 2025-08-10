@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO - Start Earning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .action-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .action-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        .action-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .back-btn {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header with Back Button -->
+    <div class="p-6">
+        <a href="dashboard.html" class="back-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white hover:bg-white hover:bg-opacity-20 transition-all">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Dashboard</span>
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex items-center justify-center p-6">
+        <div class="max-w-4xl w-full">
+            <!-- Title -->
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-bold text-white mb-4">🚀 Start Earning CODE</h1>
+                <p class="text-xl text-white text-opacity-90">Choose your action to begin earning cryptocurrency rewards</p>
+            </div>
+
+            <!-- Action Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Check Balance -->
+                <div class="action-card rounded-2xl p-8 text-center cursor-pointer" onclick="window.location.href='wallet-settings-compact.html'">
+                    <div class="action-icon text-green-400">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Check Balance</h3>
+                    <p class="text-white text-opacity-80 mb-4">View your CODE token balance and wallet status</p>
+                    <div class="inline-flex items-center gap-2 text-green-400 font-semibold">
+                        <span>View Wallet</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Authorize Wallet -->
+                <div class="action-card rounded-2xl p-8 text-center cursor-pointer" onclick="window.location.href='wallet-github-production-compact.html'">
+                    <div class="action-icon text-blue-400">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Authorize Wallet</h3>
+                    <p class="text-white text-opacity-80 mb-4">Link your wallet to GitHub for automatic rewards</p>
+                    <div class="inline-flex items-center gap-2 text-blue-400 font-semibold">
+                        <span>Connect Now</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Earn from Coding -->
+                <div class="action-card rounded-2xl p-8 text-center cursor-pointer" onclick="startCoding()">
+                    <div class="action-icon text-purple-400">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Earn from Coding</h3>
+                    <p class="text-white text-opacity-80 mb-4">Start coding and earn CODE tokens automatically</p>
+                    <div class="inline-flex items-center gap-2 text-purple-400 font-semibold">
+                        <span>Start Coding</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Instruct Agent -->
+                <div class="action-card rounded-2xl p-8 text-center cursor-pointer" onclick="openAgentPanel()">
+                    <div class="action-icon text-orange-400">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Instruct Agent</h3>
+                    <p class="text-white text-opacity-80 mb-4">Give tasks to AI agents and earn from their work</p>
+                    <div class="inline-flex items-center gap-2 text-orange-400 font-semibold">
+                        <span>Open AI Panel</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Footer -->
+            <div class="text-center mt-12">
+                <div class="inline-flex items-center gap-2 text-white text-opacity-70">
+                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span>System Ready - All services online</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startCoding() {
+            // Show VS Code installation prompt if needed
+            if (confirm('Ready to start coding? This will guide you through installing the CodeDAO VS Code extension.')) {
+                window.open('https://marketplace.visualstudio.com/items?itemName=CodeDAO.codedao-extension', '_blank');
+            }
+        }
+
+        function openAgentPanel() {
+            // Redirect back to dashboard with AI panel open
+            window.location.href = 'dashboard.html#ai-agents';
+        }
+
+        // Add smooth animations on load
+        window.addEventListener('load', () => {
+            const cards = document.querySelectorAll('.action-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.6s ease';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 150);
+            });
+        });
+    </script>
+</body>
+</html> 

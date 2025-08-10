@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO Twitter Bot - Analytics Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+        
+        .metric-label {
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .metric-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #2d3748;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .status.healthy {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .status.unhealthy {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            transition: width 0.3s ease;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 20px auto;
+            display: block;
+            transition: transform 0.2s ease;
+        }
+        
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .emoji {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .last-updated {
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #4a5568;
+            font-style: italic;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .debug-info {
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 CodeDAO Twitter Bot</h1>
+            <p>Real-time Analytics Dashboard</p>
+        </div>
+        
+        <button class="refresh-btn" onclick="loadDashboard()">🔄 Refresh Data</button>
+        
+        <div class="dashboard" id="dashboard">
+            <div class="loading">Loading dashboard data...</div>
+        </div>
+        
+        <div class="last-updated" id="lastUpdated"></div>
+        
+        <div id="debugInfo" style="display:none;"></div>
+    </div>
+
+    <script>
+        let debugMode = false;
+
+        function showDebug(message, data = null) {
+            if (debugMode) {
+                const debugDiv = document.getElementById('debugInfo');
+                debugDiv.style.display = 'block';
+                debugDiv.innerHTML += `<div class="debug-info">DEBUG: ${message}${data ? '<br>Data: ' + JSON.stringify(data, null, 2) : ''}</div>`;
+            }
+        }
+
+        async function loadDashboard() {
+            const dashboard = document.getElementById('dashboard');
+            
+            try {
+                showDebug('Starting dashboard load...');
+                
+                dashboard.innerHTML = '<div class="loading">Loading dashboard data...</div>';
+                
+                showDebug('Fetching /analytics...');
+                const response = await fetch('/analytics');
+                
+                showDebug('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                showDebug('Data received successfully', data);
+                
+                renderDashboard(data);
+                
+                document.getElementById('lastUpdated').textContent = 
+                    `Last updated: ${new Date().toLocaleString()}`;
+                    
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showDebug('ERROR occurred', error.message);
+                
+                dashboard.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Error loading dashboard data</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p>Please check if the bot is running and try again.</p>
+                        <button onclick="debugMode = !debugMode; loadDashboard();" style="margin-top: 10px; padding: 8px 16px; background: #4299e1; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            ${debugMode ? 'Hide' : 'Show'} Debug Info
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderDashboard(data) {
+            const dashboard = document.getElementById('dashboard');
+            
+            showDebug('Rendering dashboard with data keys:', Object.keys(data));
+            
+            dashboard.innerHTML = `
+                <!-- Overview Card -->
+                <div class="card">
+                    <h3><span class="emoji">📊</span>Overview</h3>
+                    <div class="metric">
+                        <span class="metric-label">Total Posts</span>
+                        <span class="metric-value">${data.overview?.total_posts || 0}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Total Engagements</span>
+                        <span class="metric-value">${data.overview?.total_engagements || 0}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Engagement Rate</span>
+                        <span class="metric-value">${(data.overview?.engagement_rate || 0).toFixed(1)}%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Engagement Targets</span>
+                        <span class="metric-value">${data.overview?.engagement_targets || 0}</span>
+                    </div>
+                </div>
+
+                <!-- Bot Status Card -->
+                <div class="card">
+                    <h3><span class="emoji">🤖</span>Bot Status</h3>
+                    <div class="metric">
+                        <span class="metric-label">Status</span>
+                        <span class="status healthy">🟢 Active</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Posts Today</span>
+                        <span class="metric-value">${data.engagement?.daily_actions?.posts_today || 0}/25</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Likes Given</span>
+                        <span class="metric-value">${data.engagement?.daily_actions?.likes_given || 0}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Replies Sent</span>
+                        <span class="metric-value">${data.engagement?.daily_actions?.replies_sent || 0}</span>
+                    </div>
+                </div>
+
+                <!-- Performance Card -->
+                <div class="card">
+                    <h3><span class="emoji">📈</span>Performance</h3>
+                    <div class="metric">
+                        <span class="metric-label">Average Engagement</span>
+                        <span class="metric-value">${(data.content_performance?.avg_engagement_rate || 0).toFixed(1)}%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Total Impressions</span>
+                        <span class="metric-value">${data.overview?.total_impressions || 0}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Response Rate</span>
+                        <span class="metric-value">${(data.engagement?.efficiency?.response_rate || 0).toFixed(1)}%</span>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Card -->
+                <div class="card">
+                    <h3><span class="emoji">⚡</span>Recent Activity</h3>
+                    <div id="recentPosts">
+                        ${(data.recent_posts || []).slice(0, 3).map(post => `
+                            <div class="metric">
+                                <span class="metric-label">${post.content_type || 'Tweet'}</span>
+                                <span class="metric-value">${post.metrics?.likes || 0}❤️</span>
+                            </div>
+                        `).join('') || '<div class="loading">No recent posts yet - bot just started!</div>'}
+                    </div>
+                </div>
+
+                <!-- Growth Card -->
+                <div class="card">
+                    <h3><span class="emoji">🚀</span>Growth Metrics</h3>
+                    <div class="metric">
+                        <span class="metric-label">Followers Growth</span>
+                        <span class="metric-value">+${data.growth?.followers_growth || 0}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Engagement Growth</span>
+                        <span class="metric-value">+${data.growth?.engagement_growth || 0}%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Weekly Target</span>
+                        <span class="metric-value">${Math.round((data.growth?.weekly_progress || 0) * 100)}%</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${Math.min(100, (data.growth?.weekly_progress || 0) * 100)}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bot Configuration Card -->
+                <div class="card">
+                    <h3><span class="emoji">⚙️</span>Bot Configuration</h3>
+                    <div class="metric">
+                        <span class="metric-label">Target Account</span>
+                        <span class="metric-value" style="color: #38a169;">@CRG ✅</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Strategy</span>
+                        <span class="metric-value" style="color: #38a169;">Hybrid ✅</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">LLM Integration</span>
+                        <span class="metric-value" style="color: #f59e0b;">Ready (API key needed)</span>
+                    </div>
+                    <div style="background: #f0fff4; padding: 15px; border-radius: 8px; margin-top: 15px; color: #22543d;">
+                        <strong>✅ Configured for @CRG:</strong><br>
+                        • 40% Manual content (your tweets)<br>
+                        • 35% AI-assisted engagement<br>
+                        • 25% Scheduled content<br>
+                        <br>
+                        <strong>Optional:</strong> Add OpenAI API key for LLM responses
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load dashboard on page load
+        window.addEventListener('load', function() {
+            showDebug('Page loaded, starting initial load...');
+            loadDashboard();
+        });
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadDashboard, 30000);
+        
+        // Error handler for fetch failures
+        window.addEventListener('unhandledrejection', function(event) {
+            showDebug('Unhandled promise rejection:', event.reason);
+        });
+    </script>
+</body>
+</html> 

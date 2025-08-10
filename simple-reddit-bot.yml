@@ -1,0 +1,65 @@
+name: CodeDAO Reddit Bot
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    inputs:
+      action:
+        default: 'weekly_thread'
+        type: choice
+        options:
+        - weekly_thread
+        - test_connection
+        - post_milestone
+jobs:
+  reddit-bot:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - run: pip install praw python-dotenv schedule
+    - name: Run Reddit Bot
+      env:
+        REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+        REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+        REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
+        REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
+        REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+        REDDIT_SUBREDDIT: ${{ secrets.REDDIT_SUBREDDIT }}
+      run: |
+        python -c "
+        import os, praw
+        reddit = praw.Reddit(
+            client_id=os.getenv('REDDIT_CLIENT_ID'),
+            client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
+            username=os.getenv('REDDIT_USERNAME'),
+            password=os.getenv('REDDIT_PASSWORD'),
+            user_agent=os.getenv('REDDIT_USER_AGENT')
+        )
+        action = '${{ github.event.inputs.action }}' or 'weekly_thread'
+        if action == 'weekly_thread':
+            subreddit = reddit.subreddit(os.getenv('REDDIT_SUBREDDIT', 'CodeDAO'))
+            title = '🚀 Weekly Builder Thread - What are you building this weekend?'
+            content = '''Welcome to the weekly CodeDAO builder thread!
+
+**Share what you are working on:**
+- Your current coding projects  
+- New features you are building
+- Challenges you are facing
+- Cool discoveries and breakthroughs
+
+**Getting Started with CodeDAO:**
+- 🌐 Dashboard: https://codedao-org.github.io/dashboard.html
+- 📚 Get Started: https://codedao-org.github.io/get-started.html
+- 💰 Earn CODE tokens for your contributions!
+
+Remember: Every commit, every PR, every contribution makes you a better developer. Let us build together! 🔥'''
+            
+            post = subreddit.submit(title=title, selftext=content)
+            print(f'✅ Posted weekly thread: {post.url}')
+        else:
+            user = reddit.user.me()
+            print(f'✅ Connected as: {user.name}')
+        "

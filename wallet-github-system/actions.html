@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO - Start Earning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .action-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            border-radius: 12px;
+        }
+        .action-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+        }
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Header -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex items-center justify-between mb-6">
+            <button onclick="window.location.href='dashboard-with-settings.html'" 
+                    class="back-btn px-4 py-2 rounded-lg text-white hover:text-blue-300 transition-colors flex items-center space-x-2">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </button>
+        </div>
+
+        <!-- Title -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">
+                <i class="fas fa-rocket text-blue-400"></i>
+                Start Earning CODE
+            </h1>
+            <p class="text-gray-300 text-sm">Choose your action to begin earning cryptocurrency rewards</p>
+        </div>
+
+        <!-- Actions Grid -->
+        <div class="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            <!-- Check Balance -->
+            <div class="action-card p-6 cursor-pointer" onclick="window.location.href='wallet-settings-compact.html'">
+                <div class="text-center">
+                    <div class="action-icon text-green-400">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Check Balance</h3>
+                    <p class="text-gray-300 text-sm mb-4">View your CODE token balance and wallet status</p>
+                    <div class="text-green-400 font-medium text-sm">
+                        <i class="fas fa-arrow-right mr-1"></i>
+                        View Wallet
+                    </div>
+                </div>
+            </div>
+
+            <!-- Authorize Wallet -->
+            <div class="action-card p-6 cursor-pointer" onclick="window.location.href='wallet-github-production-compact.html'">
+                <div class="text-center">
+                    <div class="action-icon text-blue-400">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Authorize Wallet</h3>
+                    <p class="text-gray-300 text-sm mb-4">Link your wallet to GitHub for automatic rewards</p>
+                    <div class="text-blue-400 font-medium text-sm">
+                        <i class="fas fa-arrow-right mr-1"></i>
+                        Connect Now
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earn from Coding -->
+            <div class="action-card p-6 cursor-pointer" onclick="window.location.href='earn-from-coding.html'">
+                <div class="text-center">
+                    <div class="action-icon text-purple-400">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Earn from Coding</h3>
+                    <p class="text-gray-300 text-sm mb-4">Start coding and earn CODE tokens automatically</p>
+                    <div class="text-purple-400 font-medium text-sm">
+                        <i class="fas fa-arrow-right mr-1"></i>
+                        Start Coding
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instruct Agent -->
+            <div class="action-card p-6 cursor-pointer" onclick="window.location.href='instruct-agent.html'">
+                <div class="text-center">
+                    <div class="action-icon text-orange-400">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Instruct Agent</h3>
+                    <p class="text-gray-300 text-sm mb-4">Set up and manage AI agents for automated coding</p>
+                    <div class="text-orange-400 font-medium text-sm">
+                        <i class="fas fa-arrow-right mr-1"></i>
+                        Setup Guide
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Instruct Agent now redirects to dedicated setup page
+        // No hash navigation needed anymore
+
+        // Handle messages from dashboard
+        window.addEventListener('message', (event) => {
+            if (event.data.action === 'returnToDashboard') {
+                window.location.href = 'dashboard-with-settings.html';
+            }
+        });
+    </script>
+</body>
+</html> 

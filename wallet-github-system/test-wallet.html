@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Connection Test</title>
+    <!-- Load Moralis SDK -->
+    <script src="https://unpkg.com/moralis-v1/dist/moralis.js"></script>
+    <!-- Load Ethers.js with fallback -->
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js"></script>
+    <script>
+        // Fallback for Ethers.js
+        if (typeof ethers === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"><\/script>');
+        }
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { opacity: 0.8; }
+        .primary { background: #007bff; color: white; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Wallet Connection Test</h1>
+    
+    <div class="test-section" id="libraryTest">
+        <h3>📚 Library Loading Test</h3>
+        <div id="libraryResults">Testing...</div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🦊 MetaMask Test</h3>
+        <button class="primary" onclick="testMetaMask()">Test MetaMask Connection</button>
+        <div id="metamaskResults"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🌐 Moralis Test</h3>
+        <button class="primary" onclick="testMoralis()">Test Moralis API</button>
+        <div id="moralisResults"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>💰 CODE Token Test</h3>
+        <button class="primary" onclick="testCODEToken()" id="tokenBtn" disabled>Test CODE Token Balance</button>
+        <div id="tokenResults"></div>
+    </div>
+
+    <script>
+        const MORALIS_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImQzY2NjOTEzLTcwZDUtNGZkOC05ZmQzLTQxYjY1YmM3ZDljMiIsIm9yZ0lkIjoiNDYyNjY1IiwidXNlcklkIjoiNDc1OTg4IiwidHlwZUlkIjoiNGIzMzk5MDUtZjVlZC00N2FhLTliNmYtZjdiMDQ1NzgwODEzIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NTM5OTI2ODQsImV4cCI6NDkwOTc1MjY4NH0._82QL7vojD2DwHwh8U182qpZXqJ2lei_llw2Mdyl7fg";
+        const CODE_TOKEN_ADDRESS = "0x1F8b43F7aeD0D1b524Ec5b4930C19098E8D4fbD0";
+        
+        let provider = null;
+        let currentAccount = null;
+        
+        // Test library loading
+        function testLibraries() {
+            let results = [];
+            
+            // Test MetaMask
+            if (typeof window.ethereum !== 'undefined') {
+                results.push("✅ MetaMask/Web3 provider detected");
+            } else {
+                results.push("❌ MetaMask not found");
+            }
+            
+            // Test Ethers.js
+            if (typeof ethers !== 'undefined') {
+                results.push("✅ Ethers.js loaded successfully");
+            } else {
+                results.push("❌ Ethers.js not loaded");
+            }
+            
+            // Test Moralis
+            if (typeof Moralis !== 'undefined') {
+                results.push("✅ Moralis SDK loaded successfully");
+            } else {
+                results.push("❌ Moralis SDK not loaded");
+            }
+            
+            document.getElementById('libraryResults').innerHTML = 
+                `<div class="${results.every(r => r.includes('✅')) ? 'success' : 'error'}">
+                    ${results.join('<br>')}
+                </div>`;
+        }
+        
+        async function testMetaMask() {
+            const resultsDiv = document.getElementById('metamaskResults');
+            
+            try {
+                if (typeof window.ethereum === 'undefined') {
+                    throw new Error('MetaMask not detected');
+                }
+                
+                resultsDiv.innerHTML = '<div class="info">⏳ Connecting to MetaMask...</div>';
+                
+                // Request account access
+                const accounts = await window.ethereum.request({ 
+                    method: 'eth_requestAccounts' 
+                });
+                
+                if (accounts.length === 0) {
+                    throw new Error('No accounts found');
+                }
+                
+                // Create provider
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                const network = await provider.getNetwork();
+                currentAccount = accounts[0];
+                
+                // Enable token test button
+                document.getElementById('tokenBtn').disabled = false;
+                
+                resultsDiv.innerHTML = 
+                    `<div class="success">
+                        ✅ MetaMask connected successfully!<br>
+                        📍 Account: ${currentAccount}<br>
+                        🌐 Network: ${network.name} (${network.chainId})<br>
+                        💰 You can now test CODE token balance
+                    </div>`;
+                    
+            } catch (error) {
+                resultsDiv.innerHTML = 
+                    `<div class="error">❌ MetaMask test failed: ${error.message}</div>`;
+            }
+        }
+        
+        async function testMoralis() {
+            const resultsDiv = document.getElementById('moralisResults');
+            
+            try {
+                if (typeof Moralis === 'undefined') {
+                    throw new Error('Moralis SDK not loaded');
+                }
+                
+                resultsDiv.innerHTML = '<div class="info">⏳ Initializing Moralis...</div>';
+                
+                await Moralis.start({ apiKey: MORALIS_API_KEY });
+                
+                resultsDiv.innerHTML = 
+                    `<div class="success">
+                        ✅ Moralis initialized successfully!<br>
+                        🔑 API Key: Valid<br>
+                        🌐 Ready for blockchain interactions
+                    </div>`;
+                    
+            } catch (error) {
+                resultsDiv.innerHTML = 
+                    `<div class="error">❌ Moralis test failed: ${error.message}</div>`;
+            }
+        }
+        
+        async function testCODEToken() {
+            const resultsDiv = document.getElementById('tokenResults');
+            
+            try {
+                if (!provider || !currentAccount) {
+                    throw new Error('Please connect MetaMask first');
+                }
+                
+                resultsDiv.innerHTML = '<div class="info">⏳ Reading CODE token balance...</div>';
+                
+                const ERC20_ABI = [
+                    "function balanceOf(address owner) view returns (uint256)",
+                    "function decimals() view returns (uint8)",
+                    "function symbol() view returns (string)"
+                ];
+                
+                const contract = new ethers.Contract(CODE_TOKEN_ADDRESS, ERC20_ABI, provider);
+                const balance = await contract.balanceOf(currentAccount);
+                const decimals = await contract.decimals();
+                const symbol = await contract.symbol();
+                const formattedBalance = ethers.utils.formatUnits(balance, decimals);
+                
+                resultsDiv.innerHTML = 
+                    `<div class="success">
+                        ✅ CODE token contract accessible!<br>
+                        💰 Balance: ${parseFloat(formattedBalance).toFixed(4)} ${symbol}<br>
+                        📊 Contract: ${CODE_TOKEN_ADDRESS}<br>
+                        🏷️ Decimals: ${decimals}
+                    </div>`;
+                    
+            } catch (error) {
+                resultsDiv.innerHTML = 
+                    `<div class="error">❌ CODE token test failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Run library test on load
+        window.addEventListener('load', function() {
+            setTimeout(testLibraries, 500);
+        });
+    </script>
+</body>
+</html> 

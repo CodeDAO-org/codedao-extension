@@ -1,0 +1,44 @@
+{
+  "name": "codedao-telegram-bot",
+  "version": 2,
+  "builds": [
+    {
+      "src": "serverless/api/**/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "serverless/public/**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/webhook",
+      "dest": "/serverless/api/webhook.js"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "/serverless/api/admin.js"
+    },
+    {
+      "src": "/message-interface",
+      "dest": "/serverless/public/message-interface.html"
+    },
+    {
+      "src": "/",
+      "dest": "/serverless/public/index.html"
+    }
+  ],
+  "env": {
+    "BOT_TOKEN": "@bot_token",
+    "GITHUB_TOKEN": "@github_token",
+    "ADMIN_TELEGRAM_USERNAME": "codedaoorg",
+    "CONTRACT_ADDRESS": "@contract_address",
+    "RPC_URL": "@rpc_url"
+  },
+  "functions": {
+    "serverless/api/**/*.js": {
+      "maxDuration": 30
+    }
+  }
+}

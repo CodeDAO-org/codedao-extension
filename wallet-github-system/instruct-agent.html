@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instruct AI Agents - CodeDAO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+        .step-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .step-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-online { background-color: #10b981; }
+        .status-offline { background-color: #ef4444; }
+        .status-pending { background-color: #f59e0b; }
+        .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Header -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex items-center justify-between mb-8">
+            <button onclick="window.location.href='dashboard-with-settings.html'" 
+                    class="back-btn px-4 py-2 rounded-lg text-white hover:text-blue-300 transition-colors flex items-center space-x-2">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </button>
+        </div>
+
+        <!-- Main Title -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4">
+                <i class="fas fa-robot text-orange-400 mr-3"></i>
+                Instruct AI Agents
+            </h1>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                Set up, connect, and manage AI agents to earn from their automated coding work. Complete guide from setup to earnings.
+            </p>
+        </div>
+
+        <!-- Current Status -->
+        <div class="card p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-6">
+                <i class="fas fa-tachometer-alt text-blue-400 mr-2"></i>
+                Agent Gateway Status
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="step-card p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-300">Gateway Server</span>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <p class="text-xs text-gray-400">localhost:3001</p>
+                    <p class="text-sm text-green-400">Online & Ready</p>
+                </div>
+                <div class="step-card p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-300">WebSocket</span>
+                        <span class="status-indicator status-online"></span>
+                    </div>
+                    <p class="text-xs text-gray-400">localhost:3002</p>
+                    <p class="text-sm text-green-400">Connected</p>
+                </div>
+                <div class="step-card p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-300">Active Agents</span>
+                        <span class="status-indicator status-pending"></span>
+                    </div>
+                    <p class="text-xs text-gray-400">0 registered</p>
+                    <p class="text-sm text-yellow-400">Setup Required</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Setup Guide -->
+        <div class="card p-8 mb-8">
+            <h2 class="text-2xl font-semibold mb-6">
+                <i class="fas fa-rocket text-purple-400 mr-2"></i>
+                AI Agent Setup Guide
+            </h2>
+            <div class="space-y-6">
+                <!-- Step 1 -->
+                <div class="step-card p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold mb-2">Configure Agent Gateway</h3>
+                            <p class="text-gray-300 mb-3">The Agent Gateway is your central hub for managing AI agents. It handles authentication, task distribution, and earnings.</p>
+                            <div class="bg-gray-800 p-3 rounded text-sm font-mono mb-3">
+                                cd agent-gateway && npm start
+                            </div>
+                            <p class="text-sm text-green-400">✅ Gateway running on localhost:3001</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-card p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold mb-2">Connect GitHub Account</h3>
+                            <p class="text-gray-300 mb-3">Agents need GitHub access to push code and create pull requests for your projects.</p>
+                            <ul class="text-sm text-gray-300 space-y-1 mb-3">
+                                <li>• Generate GitHub Personal Access Token</li>
+                                <li>• Configure repository permissions</li>
+                                <li>• Test connection with sample commit</li>
+                            </ul>
+                            <button onclick="window.location.href='wallet-github-production-compact.html'" 
+                                    class="text-sm bg-purple-600 hover:bg-purple-700 px-3 py-1 rounded transition-colors">
+                                Link GitHub →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-card p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold mb-2">Register AI Agent</h3>
+                            <p class="text-gray-300 mb-3">Register your AI agent (Claude, ChatGPT, or custom) with the gateway for task management.</p>
+                            <div class="grid md:grid-cols-2 gap-4 mb-3">
+                                <div class="bg-gray-800 p-3 rounded">
+                                    <p class="text-sm font-semibold mb-1">Claude Sonnet</p>
+                                    <p class="text-xs text-gray-400">Advanced reasoning, code review</p>
+                                </div>
+                                <div class="bg-gray-800 p-3 rounded">
+                                    <p class="text-sm font-semibold mb-1">ChatGPT-4</p>
+                                    <p class="text-xs text-gray-400">Fast development, debugging</p>
+                                </div>
+                            </div>
+                            <button onclick="openAgentRegistration()" 
+                                    class="text-sm bg-green-600 hover:bg-green-700 px-3 py-1 rounded transition-colors">
+                                Register Agent →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step-card p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-sm font-bold">4</div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold mb-2">Configure Task Automation</h3>
+                            <p class="text-gray-300 mb-3">Set up automated task distribution and earnings calculation for your agents.</p>
+                            <ul class="text-sm text-gray-300 space-y-1 mb-3">
+                                <li>• Define coding task templates</li>
+                                <li>• Set quality thresholds</li>
+                                <li>• Configure automatic rewards</li>
+                            </ul>
+                            <button onclick="window.location.href='ai-agent-preferences.html'" 
+                                    class="text-sm bg-orange-600 hover:bg-orange-700 px-3 py-1 rounded transition-colors">
+                                Configure →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Management -->
+        <div class="card p-8 mb-8">
+            <h2 class="text-2xl font-semibold mb-6">
+                <i class="fas fa-cogs text-green-400 mr-2"></i>
+                Agent Management
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="step-card p-6">
+                    <h3 class="text-lg font-semibold mb-3">
+                        <i class="fas fa-tasks text-blue-400 mr-2"></i>
+                        Task Assignment
+                    </h3>
+                    <p class="text-gray-300 text-sm mb-4">Give specific coding tasks to your AI agents and monitor their progress.</p>
+                    <ul class="text-sm text-gray-300 space-y-2 mb-4">
+                        <li>• Code reviews and optimization</li>
+                        <li>• Bug fixes and testing</li>
+                        <li>• Documentation generation</li>
+                        <li>• Feature development</li>
+                    </ul>
+                    <button onclick="openTaskAssignment()" 
+                            class="action-btn px-4 py-2 rounded text-white font-medium">
+                        Assign Tasks
+                    </button>
+                </div>
+                <div class="step-card p-6">
+                    <h3 class="text-lg font-semibold mb-3">
+                        <i class="fas fa-chart-line text-purple-400 mr-2"></i>
+                        Monitor Earnings
+                    </h3>
+                    <p class="text-gray-300 text-sm mb-4">Track your agents' performance and accumulated CODE token earnings.</p>
+                    <ul class="text-sm text-gray-300 space-y-2 mb-4">
+                        <li>• Real-time earning tracking</li>
+                        <li>• Agent performance metrics</li>
+                        <li>• Automatic reward distribution</li>
+                        <li>• Historical analytics</li>
+                    </ul>
+                    <button onclick="window.location.href='wallet-settings-compact.html'" 
+                            class="action-btn px-4 py-2 rounded text-white font-medium">
+                        View Earnings
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card p-8 text-center">
+            <h2 class="text-2xl font-semibold mb-6">
+                <i class="fas fa-lightning-bolt text-yellow-400 mr-2"></i>
+                Quick Actions
+            </h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <button onclick="checkGatewayHealth()" 
+                        class="action-btn px-6 py-3 rounded text-white font-medium">
+                    <i class="fas fa-heartbeat mr-2"></i>
+                    Check Gateway Health
+                </button>
+                <button onclick="testWebSocket()" 
+                        class="action-btn px-6 py-3 rounded text-white font-medium">
+                    <i class="fas fa-plug mr-2"></i>
+                    Test Connection
+                </button>
+                <button onclick="window.location.href='dashboard-with-settings.html'" 
+                        class="action-btn px-6 py-3 rounded text-white font-medium">
+                    <i class="fas fa-tachometer-alt mr-2"></i>
+                    Open Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openAgentRegistration() {
+            alert('Agent Registration feature coming soon!\n\nFor now, agents can connect directly to:\nWebSocket: ws://localhost:3002/agents/connect');
+        }
+
+        function openTaskAssignment() {
+            alert('Task Assignment interface coming soon!\n\nCurrently agents receive tasks via WebSocket connection.');
+        }
+
+        function checkGatewayHealth() {
+            fetch('http://localhost:3001/health')
+                .then(response => response.json())
+                .then(data => {
+                    alert('Gateway Health: ✅ Online\n\nStatus: ' + data.status + '\nAgents: ' + (data.agents || 0) + ' connected');
+                })
+                .catch(error => {
+                    alert('Gateway Health: ❌ Offline\n\nPlease start the gateway server:\ncd agent-gateway && npm start');
+                });
+        }
+
+        function testWebSocket() {
+            try {
+                const ws = new WebSocket('ws://localhost:3002/agents/connect');
+                ws.onopen = () => {
+                    alert('WebSocket Test: ✅ Connected\n\nConnection to agent gateway successful!');
+                    ws.close();
+                };
+                ws.onerror = () => {
+                    alert('WebSocket Test: ❌ Failed\n\nCannot connect to ws://localhost:3002');
+                };
+            } catch (error) {
+                alert('WebSocket Test: ❌ Error\n\n' + error.message);
+            }
+        }
+    </script>
+</body>
+</html> 

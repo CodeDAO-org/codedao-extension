@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .settings-dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+        .settings-dropdown-content {
+            position: absolute;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        .settings-dropdown-content.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .settings-dropdown-item {
+            display: block;
+            padding: 12px 16px;
+            color: #374151;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .settings-dropdown-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #1d4ed8;
+        }
+        .settings-dropdown-item:last-child {
+            border-bottom: none;
+        }
+        .settings-dropdown-item i {
+            margin-right: 8px;
+            width: 16px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo and Navigation -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            <i class="fas fa-bolt text-yellow-500"></i> CodeDAO
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Header Actions -->
+                <div class="flex items-center space-x-4">
+                    <!-- Settings Dropdown -->
+                    <div class="settings-dropdown-container">
+                        <button id="settingsDropdownBtn" class="text-gray-500 hover:text-gray-700 transition-colors">
+                            <i class="fas fa-cog text-lg"></i>
+                        </button>
+                        <div id="settingsDropdownContent" class="settings-dropdown-content">
+                            <a href="get-started-guide.html" class="settings-dropdown-item">
+                                <i class="fas fa-rocket"></i>Get Started
+                            </a>
+                            <a href="wallet-github-production-compact.html" class="settings-dropdown-item">
+                                <i class="fab fa-github"></i>Link GitHub Account
+                            </a>
+                            <a href="wallet-settings-compact.html" class="settings-dropdown-item">
+                                <i class="fas fa-wallet"></i>Wallet Settings
+                            </a>
+                            <a href="ai-agent-preferences.html" class="settings-dropdown-item">
+                                <i class="fas fa-robot"></i>AI Agent Preferences
+                            </a>
+                            <a href="notifications-settings.html" class="settings-dropdown-item">
+                                <i class="fas fa-bell"></i>Notifications
+                            </a>
+                            <a href="security-privacy.html" class="settings-dropdown-item">
+                                <i class="fas fa-shield-alt"></i>Security & Privacy
+                            </a>
+                            <a href="help-support.html" class="settings-dropdown-item">
+                                <i class="fas fa-question-circle"></i>Help & Support
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Start Now Button (was Connect Wallet) -->
+                    <button id="connectWalletBtn" onclick="window.location.href='actions.html'" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <span id="walletBtnText">🚀 Start Now</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <!-- Live Activity Feed -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                        🔥 Live Activity Feed
+                    </h3>
+                    <div id="activityFeed" class="space-y-3">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="inline-block w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                            System online and ready for AI agent tasks
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                            Wallet connection system active
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="inline-block w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                            GitHub integration ready
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Settings dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const settingsBtn = document.getElementById('settingsDropdownBtn');
+            const settingsContent = document.getElementById('settingsDropdownContent');
+
+            if (settingsBtn && settingsContent) {
+                settingsBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    settingsContent.classList.toggle('show');
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!settingsBtn.contains(e.target) && !settingsContent.contains(e.target)) {
+                        settingsContent.classList.remove('show');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -165,3 +165,88 @@
 {"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ CodeDAO Twitter Bot initialized successfully\u001b[39m","timestamp":"2025-08-09 17:29:54:2954"}
 {"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🌐 Server running on port 3000\u001b[39m","timestamp":"2025-08-09 17:29:54:2954"}
 {"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📋 Bot Initialization Summary:\u001b[39m","timestamp":"2025-08-09 17:29:54:2954"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📊 ANALYTICS: DASHBOARD_DATA_REQUEST = completed (current)\u001b[39m","metric":"DASHBOARD_DATA_REQUEST","period":"current","timestamp":"2025-08-09 19:40:26:4026","value":"completed"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📊 ANALYTICS: DASHBOARD_DATA_REQUEST = completed (current)\u001b[39m","metric":"DASHBOARD_DATA_REQUEST","period":"current","timestamp":"2025-08-09 19:40:51:4051","value":"completed"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📴 Shutting down CodeDAO Twitter Bot...\u001b[39m","timestamp":"2025-08-09 19:42:14:4214"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🚀 Initializing CodeDAO Twitter Bot...\u001b[39m","timestamp":"2025-08-09 19:42:16:4216"}
+{"level":"\u001b[33mwarn\u001b[39m","message":"\u001b[33mMongoDB not available, falling back to simple file-based database:\u001b[39m","timestamp":"2025-08-09 19:42:46:4246"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32mSimple file-based database initialized\u001b[39m","timestamp":"2025-08-09 19:42:46:4246"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ Using simple file-based database\u001b[39m","timestamp":"2025-08-09 19:42:46:4246"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ Twitter Bot initialized successfully as @undefined\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"action":"INITIALIZATION","details":{"followers_count":0,"user_id":1879605233493405700},"environment":"development","level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🤖 BOT ACTION: INITIALIZATION\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32mℹ️ OpenAI LLM integration disabled (no API key)\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Setting up scheduled tasks...\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: daily_stats\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: educational_content\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: engagement_questions\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: success_stories\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: engagement_cycle\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: metrics_update\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: weekly_report\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ 7 scheduled tasks configured\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ CodeDAO Twitter Bot initialized successfully\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🌐 Server running on port 3000\u001b[39m","timestamp":"2025-08-09 19:42:47:4247"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📋 Bot Initialization Summary:\u001b[39m","timestamp":"2025-08-09 19:42:48:4248"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📴 Shutting down CodeDAO Twitter Bot...\u001b[39m","timestamp":"2025-08-09 19:43:55:4355"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🚀 Initializing CodeDAO Twitter Bot...\u001b[39m","timestamp":"2025-08-09 19:43:57:4357"}
+{"level":"\u001b[33mwarn\u001b[39m","message":"\u001b[33mMongoDB not available, falling back to simple file-based database:\u001b[39m","timestamp":"2025-08-09 19:44:27:4427"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32mSimple file-based database initialized\u001b[39m","timestamp":"2025-08-09 19:44:27:4427"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ Using simple file-based database\u001b[39m","timestamp":"2025-08-09 19:44:27:4427"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ Twitter Bot initialized successfully as @undefined\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"action":"INITIALIZATION","details":{"followers_count":0,"user_id":1879605233493405700},"environment":"development","level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🤖 BOT ACTION: INITIALIZATION\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32mℹ️ OpenAI LLM integration disabled (no API key)\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Setting up scheduled tasks...\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: daily_stats\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: educational_content\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: engagement_questions\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: success_stories\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: engagement_cycle\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: metrics_update\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: weekly_report\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ 7 scheduled tasks configured\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ CodeDAO Twitter Bot initialized successfully\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🌐 Server running on port 3000\u001b[39m","timestamp":"2025-08-09 19:44:28:4428"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📋 Bot Initialization Summary:\u001b[39m","timestamp":"2025-08-09 19:44:29:4429"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📴 Shutting down CodeDAO Twitter Bot...\u001b[39m","timestamp":"2025-08-09 19:50:42:5042"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🚀 Initializing CodeDAO Twitter Bot...\u001b[39m","timestamp":"2025-08-09 19:50:45:5045"}
+{"level":"\u001b[33mwarn\u001b[39m","message":"\u001b[33mMongoDB not available, falling back to simple file-based database:\u001b[39m","timestamp":"2025-08-09 19:51:14:5114"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32mSimple file-based database initialized\u001b[39m","timestamp":"2025-08-09 19:51:14:5114"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ Using simple file-based database\u001b[39m","timestamp":"2025-08-09 19:51:14:5114"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ Twitter Bot initialized successfully as @undefined\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"action":"INITIALIZATION","details":{"followers_count":0,"user_id":1879605233493405700},"environment":"development","level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🤖 BOT ACTION: INITIALIZATION\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32mℹ️ OpenAI LLM integration disabled (no API key)\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Setting up scheduled tasks...\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: daily_stats\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: educational_content\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: engagement_questions\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: success_stories\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: engagement_cycle\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: metrics_update\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: weekly_report\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ 7 scheduled tasks configured\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ CodeDAO Twitter Bot initialized successfully\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🌐 Server running on port 3000\u001b[39m","timestamp":"2025-08-09 19:51:15:5115"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📋 Bot Initialization Summary:\u001b[39m","timestamp":"2025-08-09 19:51:17:5117"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📴 Shutting down CodeDAO Twitter Bot...\u001b[39m","timestamp":"2025-08-09 20:02:44:244"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🚀 Initializing CodeDAO Twitter Bot...\u001b[39m","timestamp":"2025-08-09 20:02:46:246"}
+{"level":"\u001b[33mwarn\u001b[39m","message":"\u001b[33mMongoDB not available, falling back to simple file-based database:\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32mSimple file-based database initialized\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ Using simple file-based database\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ Twitter Bot initialized successfully as @undefined\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"action":"INITIALIZATION","details":{"followers_count":0,"user_id":1879605233493405700},"environment":"development","level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🤖 BOT ACTION: INITIALIZATION\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32mℹ️ OpenAI LLM integration disabled (no API key)\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Setting up scheduled tasks...\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: daily_stats\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: educational_content\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: engagement_questions\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: success_stories\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: engagement_cycle\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: metrics_update\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📅 Scheduled task started: weekly_report\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ 7 scheduled tasks configured\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m✅ CodeDAO Twitter Bot initialized successfully\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🌐 Server running on port 3000\u001b[39m","timestamp":"2025-08-09 20:03:16:316"}
+{"level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m📋 Bot Initialization Summary:\u001b[39m","timestamp":"2025-08-09 20:03:18:318"}
+{"action":"METRICS_UPDATE_START","details":{},"environment":"development","level":"\u001b[32minfo\u001b[39m","message":"\u001b[32m🤖 BOT ACTION: METRICS_UPDATE_START\u001b[39m","timestamp":"2025-08-09 21:00:00:00"}
+{"level":"\u001b[31merror\u001b[39m","message":"\u001b[31m❌ Failed to get my tweets: this.roClient.userTimeline is not a function\u001b[39m","stack":"TypeError: this.roClient.userTimeline is not a function\n    at TwitterBot.getMyTweets (/Users/mikaelo/codedao-extension/twitter_bot/src/TwitterBot.js:268:42)\n    at TwitterBot.updatePostMetrics (/Users/mikaelo/codedao-extension/twitter_bot/src/TwitterBot.js:285:39)\n    at cron.schedule.scheduled [as _execution] (/Users/mikaelo/codedao-extension/twitter_bot/src/index.js:250:22)\n    at Task.execute (/Users/mikaelo/codedao-extension/twitter_bot/node_modules/node-cron/src/task.js:17:25)\n    at ScheduledTask.now (/Users/mikaelo/codedao-extension/twitter_bot/node_modules/node-cron/src/scheduled-task.js:38:33)\n    at Scheduler.<anonymous> (/Users/mikaelo/codedao-extension/twitter_bot/node_modules/node-cron/src/scheduled-task.js:25:18)\n    at Scheduler.emit (node:events:518:28)\n    at Timeout.matchTime [as _onTimeout] (/Users/mikaelo/codedao-extension/twitter_bot/node_modules/node-cron/src/scheduler.js:30:26)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)","timestamp":"2025-08-09 21:00:00:00"}
+{"level":"\u001b[31merror\u001b[39m","message":"\u001b[31mFailed to update daily metrics: Cannot read properties of null (reading 'collection')\u001b[39m","stack":"TypeError: Cannot read properties of null (reading 'collection')\n    at Database.saveDailyMetrics (/Users/mikaelo/codedao-extension/twitter_bot/src/database.js:230:34)\n    at SimpleAnalytics.updateDailyMetrics (/Users/mikaelo/codedao-extension/twitter_bot/src/simple-analytics.js:231:33)\n    at cron.schedule.scheduled [as _execution] (/Users/mikaelo/codedao-extension/twitter_bot/src/index.js:251:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-09 21:00:00:00"}

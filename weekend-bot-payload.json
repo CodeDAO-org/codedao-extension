@@ -1,0 +1,12 @@
+{
+  "userId": "reddit-weekend-bot",
+  "repo": "codedao-extension",
+  "files": [
+    {
+      "path": ".github/workflows/reddit-bot.yml",
+      "content": "name: CodeDAO Reddit Bot\non:\n  schedule:\n    - cron: '0 */3 * * *'\n  workflow_dispatch:\njobs:\n  reddit-bot:\n    runs-on: ubuntu-latest\n    steps:\n    - uses: actions/checkout@v4\n    - uses: actions/setup-python@v4\n      with:\n        python-version: 3.11\n    - run: pip install praw\n    - name: Weekend Reddit Thread\n      env:\n        REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}\n        REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}\n        REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}\n        REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}\n        REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}\n        REDDIT_SUBREDDIT: ${{ secrets.REDDIT_SUBREDDIT }}\n      run: |\n        python -c \"\n        import os, praw\n        reddit = praw.Reddit(\n          client_id=os.getenv('REDDIT_CLIENT_ID'),\n          client_secret=os.getenv('REDDIT_CLIENT_SECRET'),\n          username=os.getenv('REDDIT_USERNAME'),\n          password=os.getenv('REDDIT_PASSWORD'),\n          user_agent=os.getenv('REDDIT_USER_AGENT')\n        )\n        print('Connected as:', reddit.user.me())\n        subreddit = reddit.subreddit(os.getenv('REDDIT_SUBREDDIT', 'CodeDAO'))\n        title = 'Weekend Builder Thread - What are you coding?'\n        content = 'Share your weekend projects and coding adventures!'\n        post = subreddit.submit(title=title, selftext=content)\n        print('Posted thread:', post.url)\n        \""
+    }
+  ],
+  "commitMessage": "Deploy Reddit bot for weekend threads",
+  "agentId": "reddit-weekend-bot"
+}

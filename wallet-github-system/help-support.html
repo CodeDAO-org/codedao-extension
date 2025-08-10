@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO - Help & Support</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❓</text></svg>">
+    
+    <style>
+        /* Complete inline styling - no external dependencies */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-2px);
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .help-section {
+            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .help-section:hover { 
+            border-color: #667eea; 
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #333;
+        }
+        
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1em;
+            flex-shrink: 0;
+        }
+        
+        .section-icon.faq { background: #4CAF50; }
+        .section-icon.troubleshoot { background: #ff9800; }
+        .section-icon.contact { background: #2196F3; }
+        .section-icon.docs { background: #9c27b0; }
+        
+        .faq-item {
+            margin-bottom: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+        
+        .faq-question {
+            padding: 12px 15px;
+            background: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        
+        .faq-question:hover {
+            background: #e9ecef;
+        }
+        
+        .faq-toggle {
+            font-size: 1.2em;
+            color: #667eea;
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-toggle.active {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .faq-answer.active {
+            padding: 15px;
+            max-height: 300px;
+        }
+        
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .quick-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 10px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-link:hover {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .quick-link-icon {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+        
+        .quick-link-text {
+            font-size: 0.9em;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .contact-options {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1em;
+        }
+        
+        .contact-icon.discord { background: #5865F2; }
+        .contact-icon.telegram { background: #0088cc; }
+        .contact-icon.email { background: #ea4335; }
+        .contact-icon.github { background: #24292e; }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-title {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .contact-description {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: auto;
+        }
+        
+        .status-indicator.online { background: #4CAF50; }
+        .status-indicator.busy { background: #ff9800; }
+        .status-indicator.offline { background: #f44336; }
+        
+        .troubleshoot-steps {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .troubleshoot-steps li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .troubleshoot-steps li:last-child {
+            border-bottom: none;
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .step-content {
+            flex: 1;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .system-status {
+            background: rgba(76, 175, 80, 0.05);
+            border: 2px solid #4CAF50;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 20px 0;
+        }
+        
+        .status-title {
+            color: #2e7d32;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .feedback-form {
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .help-section {
+                padding: 15px;
+            }
+            
+            .quick-links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="back-button">
+        ← Back to Dashboard
+    </a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>❓ Help & Support</h1>
+            <p>Get help with CodeDAO features, troubleshoot issues, and find answers to common questions.</p>
+        </div>
+        
+        <!-- System Status -->
+        <div class="system-status">
+            <div class="status-title">
+                🟢 System Status - All Systems Operational
+            </div>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>Dashboard</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>AI Agents</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>Blockchain</span>
+                </div>
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>GitHub API</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="help-section">
+            <div class="section-title">
+                <div class="section-icon" style="background: #667eea;">⚡</div>
+                Quick Actions
+            </div>
+            <div class="quick-links">
+                <a href="get-started-guide.html" class="quick-link">
+                    <div class="quick-link-icon">🚀</div>
+                    <div class="quick-link-text">Get Started</div>
+                </a>
+                <a href="wallet-settings-compact.html" class="quick-link">
+                    <div class="quick-link-icon">💰</div>
+                    <div class="quick-link-text">Wallet Help</div>
+                </a>
+                <a href="ai-agent-preferences.html" class="quick-link">
+                    <div class="quick-link-icon">🤖</div>
+                    <div class="quick-link-text">AI Agents</div>
+                </a>
+                <a href="#" class="quick-link">
+                    <div class="quick-link-icon">📚</div>
+                    <div class="quick-link-text">Documentation</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- FAQ Section -->
+        <div class="help-section">
+            <div class="section-title">
+                <div class="section-icon faq">❓</div>
+                Frequently Asked Questions
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(0)">
+                    <span>How do I earn CODE tokens?</span>
+                    <div class="faq-toggle">▼</div>
+                </div>
+                <div class="faq-answer">
+                    You earn CODE tokens by writing code, using AI agents, and contributing to repositories. Every line of code, function, class, and test you write is tracked and rewarded automatically.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(1)">
+                    <span>How do I connect my wallet?</span>
+                    <div class="faq-toggle">▼</div>
+                </div>
+                <div class="faq-answer">
+                    Click on "Wallet Settings" in the Settings menu. You'll need MetaMask installed. The system will automatically switch you to the Base network for optimal performance and low fees.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(2)">
+                    <span>How do AI agents work with my code?</span>
+                    <div class="faq-toggle">▼</div>
+                </div>
+                <div class="faq-answer">
+                    AI agents can read your repository requirements, write code, and push directly to your GitHub repositories. You maintain full control and can review all changes before they're merged.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(3)">
+                    <span>Is my private code secure?</span>
+                    <div class="faq-toggle">▼</div>
+                </div>
+                <div class="faq-answer">
+                    Yes! CodeDAO only tracks coding activity metrics (lines, functions, etc.) - never your actual code content. Private repositories remain private, and you control all access permissions.
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(4)">
+                    <span>What networks are supported?</span>
+                    <div class="faq-toggle">▼</div>
+                </div>
+                <div class="faq-answer">
+                    CodeDAO primarily operates on Base network for fast, low-cost transactions. We also support Ethereum mainnet, but recommend Base for the best user experience.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Troubleshooting -->
+        <div class="help-section">
+            <div class="section-title">
+                <div class="section-icon troubleshoot">🔧</div>
+                Common Issues & Solutions
+            </div>
+            
+            <h4>Wallet Connection Issues:</h4>
+            <ol class="troubleshoot-steps">
+                <li>
+                    <div class="step-number">1</div>
+                    <div class="step-content">Make sure MetaMask is installed and unlocked</div>
+                </li>
+                <li>
+                    <div class="step-number">2</div>
+                    <div class="step-content">Check that you're on the correct network (Base or Ethereum)</div>
+                </li>
+                <li>
+                    <div class="step-number">3</div>
+                    <div class="step-content">Clear browser cache and refresh the page</div>
+                </li>
+                <li>
+                    <div class="step-number">4</div>
+                    <div class="step-content">Try disconnecting and reconnecting your wallet</div>
+                </li>
+            </ol>
+            
+            <h4>AI Agent Problems:</h4>
+            <ol class="troubleshoot-steps">
+                <li>
+                    <div class="step-number">1</div>
+                    <div class="step-content">Check that your GitHub account is properly linked</div>
+                </li>
+                <li>
+                    <div class="step-number">2</div>
+                    <div class="step-content">Verify API keys are correctly configured</div>
+                </li>
+                <li>
+                    <div class="step-number">3</div>
+                    <div class="step-content">Ensure repository permissions allow AI access</div>
+                </li>
+                <li>
+                    <div class="step-number">4</div>
+                    <div class="step-content">Check the AI Agent preferences settings</div>
+                </li>
+            </ol>
+        </div>
+        
+        <!-- Contact & Support -->
+        <div class="help-section">
+            <div class="section-title">
+                <div class="section-icon contact">💬</div>
+                Contact & Community
+            </div>
+            
+            <div class="contact-options">
+                <div class="contact-item">
+                    <div class="contact-icon discord">💬</div>
+                    <div class="contact-info">
+                        <div class="contact-title">Discord Community</div>
+                        <div class="contact-description">Join our active developer community</div>
+                    </div>
+                    <div class="status-indicator online"></div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon telegram">📱</div>
+                    <div class="contact-info">
+                        <div class="contact-title">Telegram Support</div>
+                        <div class="contact-description">24/7 community support channel</div>
+                    </div>
+                    <div class="status-indicator online"></div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon email">📧</div>
+                    <div class="contact-info">
+                        <div class="contact-title">Email Support</div>
+                        <div class="contact-description">support@codedao.org</div>
+                    </div>
+                    <div class="status-indicator busy"></div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon github">🐙</div>
+                    <div class="contact-info">
+                        <div class="contact-title">GitHub Issues</div>
+                        <div class="contact-description">Report bugs and feature requests</div>
+                    </div>
+                    <div class="status-indicator online"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Documentation -->
+        <div class="help-section">
+            <div class="section-title">
+                <div class="section-icon docs">📚</div>
+                Documentation & Resources
+            </div>
+            
+            <div class="quick-links">
+                <a href="#" class="quick-link">
+                    <div class="quick-link-icon">📖</div>
+                    <div class="quick-link-text">User Guide</div>
+                </a>
+                <a href="#" class="quick-link">
+                    <div class="quick-link-icon">🔧</div>
+                    <div class="quick-link-text">API Docs</div>
+                </a>
+                <a href="#" class="quick-link">
+                    <div class="quick-link-icon">🎥</div>
+                    <div class="quick-link-text">Video Tutorials</div>
+                </a>
+                <a href="#" class="quick-link">
+                    <div class="quick-link-icon">💡</div>
+                    <div class="quick-link-text">Best Practices</div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Feedback Form -->
+        <div class="help-section">
+            <div class="section-title">
+                <div class="section-icon" style="background: #4CAF50;">💝</div>
+                Send Feedback
+            </div>
+            
+            <form class="feedback-form" onsubmit="submitFeedback(event)">
+                <div class="form-group">
+                    <label class="form-label">Feedback Type</label>
+                    <select class="form-input" id="feedbackType">
+                        <option value="bug">Bug Report</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="improvement">Improvement Suggestion</option>
+                        <option value="general">General Feedback</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <input type="text" class="form-input" id="feedbackSubject" placeholder="Brief description of your feedback">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Details</label>
+                    <textarea class="form-input form-textarea" id="feedbackDetails" placeholder="Please provide detailed information about your feedback..."></textarea>
+                </div>
+                
+                <button type="submit">Send Feedback</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function toggleFAQ(index) {
+            const faqItems = document.querySelectorAll('.faq-item');
+            const item = faqItems[index];
+            const answer = item.querySelector('.faq-answer');
+            const toggle = item.querySelector('.faq-toggle');
+            
+            // Close all other FAQs
+            faqItems.forEach((otherItem, otherIndex) => {
+                if (otherIndex !== index) {
+                    const otherAnswer = otherItem.querySelector('.faq-answer');
+                    const otherToggle = otherItem.querySelector('.faq-toggle');
+                    otherAnswer.classList.remove('active');
+                    otherToggle.classList.remove('active');
+                }
+            });
+            
+            // Toggle current FAQ
+            answer.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
+        
+        function submitFeedback(event) {
+            event.preventDefault();
+            
+            const type = document.getElementById('feedbackType').value;
+            const subject = document.getElementById('feedbackSubject').value;
+            const details = document.getElementById('feedbackDetails').value;
+            
+            if (!subject.trim() || !details.trim()) {
+                alert('Please fill in both subject and details fields.');
+                return;
+            }
+            
+            // Simulate feedback submission
+            const feedback = {
+                type: type,
+                subject: subject,
+                details: details,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+            
+            console.log('Feedback submitted:', feedback);
+            
+            // Show success message
+            alert('Thank you for your feedback! We\'ll review it and get back to you soon.');
+            
+            // Reset form
+            document.getElementById('feedbackSubject').value = '';
+            document.getElementById('feedbackDetails').value = '';
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            console.log("❓ CodeDAO Help & Support loaded");
+        });
+    </script>
+</body>
+</html> 

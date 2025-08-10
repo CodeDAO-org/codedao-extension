@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO - Notifications Settings</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔔</text></svg>">
+    
+    <style>
+        /* Complete inline styling - no external dependencies */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-2px);
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .notification-section {
+            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .notification-section.enabled { 
+            border-color: #4CAF50; 
+            background: rgba(76, 175, 80, 0.05);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #333;
+        }
+        
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1em;
+            flex-shrink: 0;
+        }
+        
+        .section-icon.rewards { background: #4CAF50; }
+        .section-icon.activity { background: #2196F3; }
+        .section-icon.security { background: #ff9800; }
+        .section-icon.system { background: #9c27b0; }
+        
+        .section-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-size: 0.9em;
+        }
+        
+        .notification-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-title {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .item-description {
+            font-size: 0.8em;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        
+        .frequency-selector {
+            margin: 10px 0;
+        }
+        
+        .frequency-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .frequency-option {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+        }
+        
+        .frequency-option.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .frequency-option:hover {
+            border-color: #667eea;
+        }
+        
+        .recent-notifications {
+            background: rgba(33, 150, 243, 0.05);
+            border: 2px solid #2196F3;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 20px 0;
+        }
+        
+        .recent-title {
+            color: #1565c0;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .notification-log {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .log-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(33, 150, 243, 0.1);
+            font-size: 0.9em;
+        }
+        
+        .log-item:last-child {
+            border-bottom: none;
+        }
+        
+        .log-time {
+            color: #666;
+            font-size: 0.8em;
+            min-width: 60px;
+        }
+        
+        .log-message {
+            flex: 1;
+            color: #333;
+        }
+        
+        .log-type {
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: 500;
+        }
+        
+        .log-type.reward { background: #e8f5e8; color: #2e7d32; }
+        .log-type.security { background: #fff3e0; color: #f57c00; }
+        .log-type.system { background: #f3e5f5; color: #7b1fa2; }
+        
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+        
+        .status.success { 
+            background: rgba(76, 175, 80, 0.15); 
+            color: #2e7d32; 
+            border: 1px solid #4CAF50; 
+        }
+        
+        .status.info { 
+            background: rgba(33, 150, 243, 0.15); 
+            color: #1565c0; 
+            border: 1px solid #2196F3; 
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        button:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4); 
+        }
+        
+        button.secondary {
+            background: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .notification-section {
+                padding: 15px;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .frequency-options {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="back-button">
+        ← Back to Dashboard
+    </a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🔔 Notifications Settings</h1>
+            <p>Manage your notification preferences for CODE rewards, AI activity, security alerts, and system updates.</p>
+        </div>
+        
+        <!-- Reward Notifications -->
+        <div class="notification-section" id="rewardsSection">
+            <div class="section-title">
+                <div class="section-icon rewards">💰</div>
+                Reward Notifications
+            </div>
+            <div class="section-description">
+                Get notified when you earn CODE tokens through coding activities or AI collaborations.
+            </div>
+            
+            <div class="notification-item">
+                <div class="item-info">
+                    <div class="item-title">CODE Token Rewards</div>
+                    <div class="item-description">Notify when CODE tokens are earned</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="rewardNotifications" checked onchange="updateSection('rewards')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="notification-item">
+                <div class="item-info">
+                    <div class="item-title">Daily Summary</div>
+                    <div class="item-description">Daily coding activity and earnings summary</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="dailySummary" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="notification-item">
+                <div class="item-info">
+                    <div class="item-title">Milestone Achievements</div>
+                    <div class="item-description">Celebrate coding milestones and achievements</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="milestones" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- AI Activity Notifications -->
+        <div class="notification-section" id="activitySection">
+            <div class="section-title">
+                <div class="section-icon activity">🤖</div>
+                AI Activity Notifications
+            </div>
+            <div class="section-description">
+                Stay informed about AI agent activities, commits, and collaboration events.
+            </div>
+            
+            <div class="notification-item">
+                <div class="item-info">
+                    <div class="item-title">AI Commits</div>
+                    <div class="item-description">When AI agents push code to your repositories</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="aiCommits" checked onchange="updateSection('activity')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="notification-item">
+                <div class="item-info">
+                    <div class="item-title">Collaboration Requests</div>
+                    <div class="item-description">When AI agents request collaboration</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="collaborationRequests">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="notification-item">
+                <div class="item-info">
+                    <div class="item-title">Code Reviews</div>
+                    <div class="item-description">AI-generated code review notifications</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="codeReviews">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Security Notifications -->
+        <div class="notification-section" id="securitySection">
+            <div class="section-title">
+                <div class="section-icon security">🔒</div>
+                Security & Privacy
+            </div>
+            <div class="section-description">
+                Important security alerts and privacy-related notifications.
+            </div>
+            
+            <div class="notification-item">
+                <div class="item-info">
+                    <div class="item-title">Wallet Activities</div>
+                    <div class="item-description">Wallet connections and transactions</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="walletActivities" checked onchange="updateSection('security')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="notification-item">
+                <div class="item-info">
+                    <div class="item-title">Security Alerts</div>
+                    <div class="item-description">Suspicious activities and security warnings</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="securityAlerts" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- System Notifications -->
+        <div class="notification-section" id="systemSection">
+            <div class="section-title">
+                <div class="section-icon system">⚙️</div>
+                System Updates
+            </div>
+            <div class="section-description">
+                Platform updates, maintenance notices, and feature announcements.
+            </div>
+            
+            <div class="notification-item">
+                <div class="item-info">
+                    <div class="item-title">Platform Updates</div>
+                    <div class="item-description">New features and platform improvements</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="platformUpdates" checked onchange="updateSection('system')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="notification-item">
+                <div class="item-info">
+                    <div class="item-title">Maintenance Notices</div>
+                    <div class="item-description">Scheduled maintenance and downtime alerts</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="maintenance" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Notification Frequency -->
+        <div class="notification-section">
+            <div class="section-title">
+                <div class="section-icon general" style="background: #667eea;">📅</div>
+                Notification Frequency
+            </div>
+            <div class="section-description">
+                Choose how often you want to receive notifications.
+            </div>
+            <div class="frequency-selector">
+                <div class="frequency-options">
+                    <div class="frequency-option active" onclick="setFrequency('instant')">Instant</div>
+                    <div class="frequency-option" onclick="setFrequency('hourly')">Hourly</div>
+                    <div class="frequency-option" onclick="setFrequency('daily')">Daily</div>
+                    <div class="frequency-option" onclick="setFrequency('weekly')">Weekly</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Notifications -->
+        <div class="recent-notifications">
+            <div class="recent-title">
+                📋 Recent Notifications
+            </div>
+            <div class="notification-log" id="notificationLog">
+                <div class="log-item">
+                    <div class="log-time">2m ago</div>
+                    <div class="log-message">Earned 2.5 CODE tokens from AI collaboration</div>
+                    <div class="log-type reward">Reward</div>
+                </div>
+                <div class="log-item">
+                    <div class="log-time">1h ago</div>
+                    <div class="log-message">Claude AI pushed code to repository</div>
+                    <div class="log-type system">AI</div>
+                </div>
+                <div class="log-item">
+                    <div class="log-time">3h ago</div>
+                    <div class="log-message">Wallet connected to Base network</div>
+                    <div class="log-type security">Security</div>
+                </div>
+                <div class="log-item">
+                    <div class="log-time">1d ago</div>
+                    <div class="log-message">Daily coding summary: 15 functions, 245 lines</div>
+                    <div class="log-type system">Summary</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Save Settings -->
+        <div class="actions-grid">
+            <button onclick="saveNotificationSettings()">Save Settings</button>
+            <button class="secondary" onclick="testNotification()">Test Notification</button>
+        </div>
+        
+        <div id="statusMessage"></div>
+    </div>
+    
+    <script>
+        let selectedFrequency = 'instant';
+        
+        // Load notification settings from localStorage
+        function loadNotificationSettings() {
+            const settings = JSON.parse(localStorage.getItem('codeDAO_notificationSettings') || '{}');
+            
+            // Load checkbox states
+            Object.keys(settings).forEach(key => {
+                const element = document.getElementById(key);
+                if (element && element.type === 'checkbox') {
+                    element.checked = settings[key];
+                }
+            });
+            
+            // Load frequency
+            if (settings.frequency) {
+                setFrequency(settings.frequency);
+            }
+            
+            // Update section states
+            updateSection('rewards');
+            updateSection('activity');
+            updateSection('security');
+            updateSection('system');
+        }
+        
+        function updateSection(sectionType) {
+            const section = document.getElementById(sectionType + 'Section');
+            let hasEnabled = false;
+            
+            // Check if any notifications in this section are enabled
+            const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    hasEnabled = true;
+                }
+            });
+            
+            if (hasEnabled) {
+                section.classList.add('enabled');
+            } else {
+                section.classList.remove('enabled');
+            }
+        }
+        
+        function setFrequency(frequency) {
+            selectedFrequency = frequency;
+            
+            // Update UI
+            document.querySelectorAll('.frequency-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+        }
+        
+        function saveNotificationSettings() {
+            const settings = { frequency: selectedFrequency };
+            
+            // Collect all checkbox states
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                settings[checkbox.id] = checkbox.checked;
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('codeDAO_notificationSettings', JSON.stringify(settings));
+            
+            // Show success message
+            showStatus('✅ Notification settings saved successfully!', 'success');
+            
+            console.log('🔔 Notification settings saved:', settings);
+        }
+        
+        function testNotification() {
+            // Show test notification
+            if ('Notification' in window) {
+                if (Notification.permission === 'granted') {
+                    new Notification('CodeDAO Test', {
+                        body: 'Your notifications are working perfectly! 🎉',
+                        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔔</text></svg>'
+                    });
+                    showStatus('✅ Test notification sent!', 'success');
+                } else if (Notification.permission === 'default') {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            new Notification('CodeDAO Test', {
+                                body: 'Notifications enabled! You\'ll receive CodeDAO updates.',
+                                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🔔</text></svg>'
+                            });
+                            showStatus('✅ Notifications enabled and test sent!', 'success');
+                        } else {
+                            showStatus('ℹ️ Notifications permission denied', 'info');
+                        }
+                    });
+                } else {
+                    showStatus('ℹ️ Notifications are blocked. Please enable in browser settings.', 'info');
+                }
+            } else {
+                showStatus('ℹ️ Notifications not supported in this browser', 'info');
+            }
+        }
+        
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.innerHTML = message;
+            statusElement.className = `status ${type}`;
+            statusElement.style.display = 'block';
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Add new notification to log (simulation)
+        function addNotificationToLog(message, type, time = 'now') {
+            const logContainer = document.getElementById('notificationLog');
+            const logItem = document.createElement('div');
+            logItem.className = 'log-item';
+            logItem.innerHTML = `
+                <div class="log-time">${time}</div>
+                <div class="log-message">${message}</div>
+                <div class="log-type ${type}">${type}</div>
+            `;
+            logContainer.insertBefore(logItem, logContainer.firstChild);
+            
+            // Keep only last 10 notifications
+            const items = logContainer.querySelectorAll('.log-item');
+            if (items.length > 10) {
+                items[items.length - 1].remove();
+            }
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            console.log("🔔 CodeDAO Notifications Settings loaded");
+            loadNotificationSettings();
+            
+            // Request notification permission if not granted
+            if ('Notification' in window && Notification.permission === 'default') {
+                showStatus('ℹ️ Click "Test Notification" to enable browser notifications', 'info');
+            }
+        });
+    </script>
+</body>
+</html> 

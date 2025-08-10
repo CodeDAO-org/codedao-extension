@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO - Security & Privacy</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
+    
+    <style>
+        /* Complete inline styling - no external dependencies */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-2px);
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .security-section {
+            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .security-section.active { 
+            border-color: #4CAF50; 
+            background: rgba(76, 175, 80, 0.05);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+        }
+        
+        .security-section.warning { 
+            border-color: #ff9800; 
+            background: rgba(255, 152, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #333;
+        }
+        
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1em;
+            flex-shrink: 0;
+        }
+        
+        .section-icon.auth { background: #4CAF50; }
+        .section-icon.privacy { background: #2196F3; }
+        .section-icon.data { background: #ff9800; }
+        .section-icon.connections { background: #9c27b0; }
+        
+        .section-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-size: 0.9em;
+        }
+        
+        .security-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .security-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-title {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .item-description {
+            font-size: 0.8em;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .item-status {
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        
+        .item-status.active { background: #e8f5e8; color: #2e7d32; }
+        .item-status.inactive { background: #ffebee; color: #c62828; }
+        .item-status.warning { background: #fff3e0; color: #f57c00; }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        
+        .security-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .security-warning strong {
+            color: #856404;
+        }
+        
+        .data-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 6px;
+        }
+        
+        .data-info {
+            flex: 1;
+        }
+        
+        .data-size {
+            font-size: 0.8em;
+            color: #666;
+            font-family: monospace;
+        }
+        
+        .action-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: #5a6268;
+        }
+        
+        .action-btn.danger {
+            background: #dc3545;
+        }
+        
+        .action-btn.danger:hover {
+            background: #c82333;
+        }
+        
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+        
+        .status.success { 
+            background: rgba(76, 175, 80, 0.15); 
+            color: #2e7d32; 
+            border: 1px solid #4CAF50; 
+        }
+        
+        .status.info { 
+            background: rgba(33, 150, 243, 0.15); 
+            color: #1565c0; 
+            border: 1px solid #2196F3; 
+        }
+        
+        .status.warning { 
+            background: rgba(255, 152, 0, 0.15); 
+            color: #f57c00; 
+            border: 1px solid #ff9800; 
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        button:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4); 
+        }
+        
+        button.secondary {
+            background: #6c757d;
+            margin-top: 5px;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+            box-shadow: 0 4px 16px rgba(220, 53, 69, 0.4);
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .security-section {
+                padding: 15px;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="javascript:history.back()" class="back-button">
+        ← Back to Dashboard
+    </a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Security & Privacy</h1>
+            <p>Manage your security settings, privacy preferences, and data controls for your CodeDAO account.</p>
+        </div>
+        
+        <!-- Authentication & Access -->
+        <div class="security-section active" id="authSection">
+            <div class="section-title">
+                <div class="section-icon auth">🔐</div>
+                Authentication & Access
+            </div>
+            <div class="section-description">
+                Control wallet connections and access permissions.
+            </div>
+            
+            <div class="security-item">
+                <div class="item-info">
+                    <div class="item-title">Wallet Connection</div>
+                    <div class="item-description">Current wallet connection status</div>
+                </div>
+                <div class="item-status active" id="walletStatus">Connected</div>
+            </div>
+            
+            <div class="security-item">
+                <div class="item-info">
+                    <div class="item-title">Auto-disconnect</div>
+                    <div class="item-description">Automatically disconnect after inactivity</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="autoDisconnect">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="security-item">
+                <div class="item-info">
+                    <div class="item-title">Session Timeout</div>
+                    <div class="item-description">Current session expires in 2 hours</div>
+                </div>
+                <div class="item-status warning">2h left</div>
+            </div>
+        </div>
+        
+        <!-- Privacy Controls -->
+        <div class="security-section" id="privacySection">
+            <div class="section-title">
+                <div class="section-icon privacy">👁️</div>
+                Privacy Controls
+            </div>
+            <div class="section-description">
+                Control what information is shared and how it's used.
+            </div>
+            
+            <div class="security-item">
+                <div class="item-info">
+                    <div class="item-title">Activity Tracking</div>
+                    <div class="item-description">Track coding activity for rewards</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="activityTracking" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="security-item">
+                <div class="item-info">
+                    <div class="item-title">Anonymous Analytics</div>
+                    <div class="item-description">Help improve CodeDAO with anonymous usage data</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="analytics" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="security-item">
+                <div class="item-info">
+                    <div class="item-title">Public Profile</div>
+                    <div class="item-description">Show your coding achievements publicly</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="publicProfile">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="security-warning">
+                <strong>Privacy Note:</strong> CodeDAO never shares your private keys, wallet passwords, or personal code. All tracking is done locally and anonymized.
+            </div>
+        </div>
+        
+        <!-- Data Management -->
+        <div class="security-section" id="dataSection">
+            <div class="section-title">
+                <div class="section-icon data">📊</div>
+                Data Management
+            </div>
+            <div class="section-description">
+                Manage your stored data and export options.
+            </div>
+            
+            <div class="data-item">
+                <div class="data-info">
+                    <div class="item-title">Coding Activity Data</div>
+                    <div class="data-size">~2.3 MB</div>
+                </div>
+                <button class="action-btn" onclick="exportData('activity')">Export</button>
+            </div>
+            
+            <div class="data-item">
+                <div class="data-info">
+                    <div class="item-title">Wallet Transaction History</div>
+                    <div class="data-size">~156 KB</div>
+                </div>
+                <button class="action-btn" onclick="exportData('transactions')">Export</button>
+            </div>
+            
+            <div class="data-item">
+                <div class="data-info">
+                    <div class="item-title">AI Collaboration Logs</div>
+                    <div class="data-size">~892 KB</div>
+                </div>
+                <button class="action-btn" onclick="exportData('ai-logs')">Export</button>
+            </div>
+            
+            <div class="data-item">
+                <div class="data-info">
+                    <div class="item-title">Preferences & Settings</div>
+                    <div class="data-size">~8 KB</div>
+                </div>
+                <button class="action-btn" onclick="exportData('settings')">Export</button>
+            </div>
+        </div>
+        
+        <!-- Connected Services -->
+        <div class="security-section" id="connectionsSection">
+            <div class="section-title">
+                <div class="section-icon connections">🔗</div>
+                Connected Services
+            </div>
+            <div class="section-description">
+                Manage connections to external services and platforms.
+            </div>
+            
+            <div class="security-item">
+                <div class="item-info">
+                    <div class="item-title">GitHub Integration</div>
+                    <div class="item-description">Connected: adminpipelabs</div>
+                </div>
+                <div class="item-status active">Active</div>
+            </div>
+            
+            <div class="security-item">
+                <div class="item-info">
+                    <div class="item-title">Base Network</div>
+                    <div class="item-description">Blockchain network connection</div>
+                </div>
+                <div class="item-status active">Connected</div>
+            </div>
+            
+            <div class="security-item">
+                <div class="item-info">
+                    <div class="item-title">Moralis API</div>
+                    <div class="item-description">Web3 data provider</div>
+                </div>
+                <div class="item-status active">Active</div>
+            </div>
+            
+            <div class="security-item">
+                <div class="item-info">
+                    <div class="item-title">AI Agent Gateway</div>
+                    <div class="item-description">AI collaboration service</div>
+                </div>
+                <div class="item-status inactive">Disabled</div>
+            </div>
+        </div>
+        
+        <!-- Danger Zone -->
+        <div class="security-section warning">
+            <div class="section-title">
+                <div class="section-icon" style="background: #dc3545;">⚠️</div>
+                Danger Zone
+            </div>
+            <div class="section-description">
+                Irreversible actions that will permanently affect your account.
+            </div>
+            
+            <div class="actions-grid">
+                <button class="secondary" onclick="clearAllData()">Clear All Data</button>
+                <button class="danger" onclick="deleteAccount()">Delete Account</button>
+            </div>
+            
+            <div class="security-warning">
+                <strong>Warning:</strong> These actions cannot be undone. Make sure to export your data before proceeding.
+            </div>
+        </div>
+        
+        <!-- Save Settings -->
+        <button onclick="saveSecuritySettings()">Save Security Settings</button>
+        
+        <div id="statusMessage"></div>
+    </div>
+    
+    <script>
+        // Load security settings from localStorage
+        function loadSecuritySettings() {
+            const settings = JSON.parse(localStorage.getItem('codeDAO_securitySettings') || '{}');
+            
+            // Load checkbox states
+            Object.keys(settings).forEach(key => {
+                const element = document.getElementById(key);
+                if (element && element.type === 'checkbox') {
+                    element.checked = settings[key];
+                }
+            });
+            
+            // Check wallet status
+            checkWalletConnection();
+        }
+        
+        function checkWalletConnection() {
+            const walletStatusElement = document.getElementById('walletStatus');
+            
+            if (window.ethereum && window.ethereum.selectedAddress) {
+                walletStatusElement.textContent = 'Connected';
+                walletStatusElement.className = 'item-status active';
+                document.getElementById('authSection').classList.add('active');
+            } else {
+                walletStatusElement.textContent = 'Not Connected';
+                walletStatusElement.className = 'item-status inactive';
+                document.getElementById('authSection').classList.remove('active');
+                document.getElementById('authSection').classList.add('warning');
+            }
+        }
+        
+        function exportData(dataType) {
+            const data = {
+                type: dataType,
+                timestamp: new Date().toISOString(),
+                user: 'Current User',
+                data: {}
+            };
+            
+            // Simulate different data exports
+            switch (dataType) {
+                case 'activity':
+                    data.data = {
+                        totalLines: 15420,
+                        totalFunctions: 342,
+                        totalClasses: 89,
+                        totalTests: 156,
+                        languages: ['JavaScript', 'Python', 'Solidity'],
+                        dailyActivity: '...(mock data)...'
+                    };
+                    break;
+                case 'transactions':
+                    data.data = {
+                        totalTransactions: 23,
+                        totalRewards: '45.67 CODE',
+                        transactions: '...(mock data)...'
+                    };
+                    break;
+                case 'ai-logs':
+                    data.data = {
+                        collaborations: 67,
+                        aiCommits: 34,
+                        logs: '...(mock data)...'
+                    };
+                    break;
+                case 'settings':
+                    data.data = {
+                        preferences: localStorage.getItem('codeDAO_aiPreferences'),
+                        notifications: localStorage.getItem('codeDAO_notificationSettings'),
+                        security: localStorage.getItem('codeDAO_securitySettings')
+                    };
+                    break;
+            }
+            
+            // Create and download file
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `codedao-${dataType}-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            
+            showStatus(`✅ ${dataType.charAt(0).toUpperCase() + dataType.slice(1)} data exported successfully!`, 'success');
+        }
+        
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all locally stored data? This action cannot be undone.')) {
+                // Clear all localStorage data
+                const keys = Object.keys(localStorage).filter(key => key.startsWith('codeDAO_'));
+                keys.forEach(key => localStorage.removeItem(key));
+                
+                showStatus('✅ All local data cleared successfully', 'success');
+                
+                // Reload page after delay
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
+        }
+        
+        function deleteAccount() {
+            const confirmText = 'DELETE';
+            const userInput = prompt(`This will permanently delete your CodeDAO account and all associated data.\n\nType "${confirmText}" to confirm:`);
+            
+            if (userInput === confirmText) {
+                // Simulate account deletion
+                clearAllData();
+                showStatus('⚠️ Account deletion initiated. You will be redirected shortly.', 'warning');
+                
+                setTimeout(() => {
+                    alert('Account deletion completed. Thank you for using CodeDAO.');
+                    window.location.href = '/';
+                }, 3000);
+            } else if (userInput !== null) {
+                showStatus('❌ Account deletion cancelled - incorrect confirmation', 'info');
+            }
+        }
+        
+        function saveSecuritySettings() {
+            const settings = {};
+            
+            // Collect all checkbox states
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                settings[checkbox.id] = checkbox.checked;
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('codeDAO_securitySettings', JSON.stringify(settings));
+            
+            // Show success message
+            showStatus('✅ Security settings saved successfully!', 'success');
+            
+            console.log('🔒 Security settings saved:', settings);
+        }
+        
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.innerHTML = message;
+            statusElement.className = `status ${type}`;
+            statusElement.style.display = 'block';
+            
+            // Hide after 4 seconds for longer messages
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 4000);
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            console.log("🔒 CodeDAO Security & Privacy Settings loaded");
+            loadSecuritySettings();
+        });
+        
+        // Update wallet status when wallet changes
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', function() {
+                setTimeout(checkWalletConnection, 500);
+            });
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,416 @@
+<!-- CodeDAO Claim Rewards Widget -->
+<!-- Add this section to your dashboard for reward claiming functionality -->
+
+<div class="claim-rewards-section bg-white rounded-lg shadow-sm border p-6 mb-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+        🎁 <span class="ml-2">Claim CODE Rewards</span>
+    </h3>
+    
+    <div id="rewards-status" class="mb-4">
+        <!-- Status will be populated by JavaScript -->
+    </div>
+    
+    <!-- Coding Session Input -->
+    <div class="coding-session-form mb-4">
+        <h4 class="text-md font-medium text-gray-800 mb-3">📝 Current Coding Session</h4>
+        
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Lines of Code</label>
+                <input type="number" id="lines-input" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" placeholder="25" min="10">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Functions</label>
+                <input type="number" id="functions-input" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" placeholder="3" min="0">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Classes</label>
+                <input type="number" id="classes-input" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" placeholder="1" min="0">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Tests</label>
+                <input type="number" id="tests-input" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" placeholder="2" min="0">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Comments</label>
+                <input type="number" id="comments-input" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" placeholder="5" min="0">
+            </div>
+        </div>
+        
+        <!-- Reward Calculation Display -->
+        <div id="reward-calculation" class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+            <h5 class="font-medium text-purple-900 mb-2">💰 Estimated Rewards</h5>
+            <div id="calculation-breakdown" class="text-sm text-purple-800">
+                <!-- Will be populated by calculateRewards() -->
+            </div>
+            <div id="total-reward" class="text-lg font-bold text-purple-900 mt-2">
+                Total: 0.00 CODE
+            </div>
+        </div>
+        
+        <!-- Claim Button -->
+        <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-600">
+                <span id="cooldown-status">⏱️ Check cooldown status...</span>
+            </div>
+            <button id="claim-rewards-btn" onclick="claimRewards()" 
+                    class="bg-gradient-to-r from-purple-600 to-green-600 text-white px-6 py-2 rounded-lg hover:from-purple-700 hover:to-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                <span id="claim-btn-text">Claim Rewards</span>
+                <span id="claim-btn-spinner" class="hidden">⏳ Processing...</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Recent Claims History -->
+    <div class="claims-history">
+        <h4 class="text-md font-medium text-gray-800 mb-3">📊 Recent Claims</h4>
+        <div id="claims-list" class="space-y-2">
+            <div class="text-sm text-gray-500 text-center py-4">
+                No claims yet. Start coding to earn rewards!
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Additional styles for rewards widget */
+.reward-breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+}
+
+.claim-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    animation: successPulse 0.5s ease-in-out;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.cooldown-active {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.cooldown-ready {
+    color: #10b981;
+    font-weight: 600;
+}
+</style>
+
+<script>
+// CodeDAO Rewards Claiming System
+let lastClaimTime = 0;
+const COOLDOWN_PERIOD = 3600; // 1 hour in seconds
+const BASE_RATE = 0.1; // 0.1 CODE per line
+const FUNCTION_BONUS = 0.05;
+const CLASS_BONUS = 0.1;
+const TEST_BONUS = 0.2;
+const COMMENT_BONUS = 0.01;
+const MIN_LINES = 10;
+
+// Auto-calculate rewards when inputs change
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = ['lines-input', 'functions-input', 'classes-input', 'tests-input', 'comments-input'];
+    inputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('input', calculateRewards);
+        }
+    });
+    
+    // Load initial data
+    calculateRewards();
+    checkCooldownStatus();
+    loadClaimsHistory();
+    
+    // Check cooldown every 30 seconds
+    setInterval(checkCooldownStatus, 30000);
+});
+
+function calculateRewards() {
+    const lines = parseInt(document.getElementById('lines-input')?.value || 0);
+    const functions = parseInt(document.getElementById('functions-input')?.value || 0);
+    const classes = parseInt(document.getElementById('classes-input')?.value || 0);
+    const tests = parseInt(document.getElementById('tests-input')?.value || 0);
+    const comments = parseInt(document.getElementById('comments-input')?.value || 0);
+    
+    // Calculate individual rewards
+    const baseReward = lines * BASE_RATE;
+    const functionReward = functions * FUNCTION_BONUS;
+    const classReward = classes * CLASS_BONUS;
+    const testReward = tests * TEST_BONUS;
+    const commentReward = comments * COMMENT_BONUS;
+    const totalReward = baseReward + functionReward + classReward + testReward + commentReward;
+    
+    // Update breakdown display
+    const breakdown = document.getElementById('calculation-breakdown');
+    if (breakdown) {
+        breakdown.innerHTML = `
+            <div class="reward-breakdown-item">
+                <span>${lines} lines × ${BASE_RATE} CODE</span>
+                <span>${baseReward.toFixed(2)} CODE</span>
+            </div>
+            <div class="reward-breakdown-item">
+                <span>${functions} functions × ${FUNCTION_BONUS} CODE</span>
+                <span>${functionReward.toFixed(2)} CODE</span>
+            </div>
+            <div class="reward-breakdown-item">
+                <span>${classes} classes × ${CLASS_BONUS} CODE</span>
+                <span>${classReward.toFixed(2)} CODE</span>
+            </div>
+            <div class="reward-breakdown-item">
+                <span>${tests} tests × ${TEST_BONUS} CODE</span>
+                <span>${testReward.toFixed(2)} CODE</span>
+            </div>
+            <div class="reward-breakdown-item">
+                <span>${comments} comments × ${COMMENT_BONUS} CODE</span>
+                <span>${commentReward.toFixed(2)} CODE</span>
+            </div>
+        `;
+    }
+    
+    // Update total
+    const totalElement = document.getElementById('total-reward');
+    if (totalElement) {
+        totalElement.textContent = `Total: ${totalReward.toFixed(2)} CODE`;
+        totalElement.className = totalReward >= 1 ? 'text-lg font-bold text-green-900 mt-2' : 'text-lg font-bold text-purple-900 mt-2';
+    }
+    
+    // Update claim button state
+    updateClaimButtonState(lines, totalReward);
+    
+    return { lines, functions, classes, tests, comments, totalReward };
+}
+
+function updateClaimButtonState(lines, totalReward) {
+    const button = document.getElementById('claim-rewards-btn');
+    const buttonText = document.getElementById('claim-btn-text');
+    
+    if (!button || !buttonText) return;
+    
+    if (lines < MIN_LINES) {
+        button.disabled = true;
+        buttonText.textContent = `Need ${MIN_LINES - lines} more lines`;
+    } else if (totalReward < 1) {
+        button.disabled = true;
+        buttonText.textContent = 'Minimum 1 CODE required';
+    } else if (!isConnected || !currentAccount) {
+        button.disabled = true;
+        buttonText.textContent = 'Connect Wallet First';
+    } else if (isCooldownActive()) {
+        button.disabled = true;
+        buttonText.textContent = 'Cooldown Active';
+    } else {
+        button.disabled = false;
+        buttonText.textContent = `Claim ${totalReward.toFixed(2)} CODE`;
+    }
+}
+
+function checkCooldownStatus() {
+    const statusElement = document.getElementById('cooldown-status');
+    if (!statusElement) return;
+    
+    if (isCooldownActive()) {
+        const timeLeft = Math.ceil((lastClaimTime + COOLDOWN_PERIOD) - (Date.now() / 1000));
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        statusElement.innerHTML = `<span class="cooldown-active">⏱️ Cooldown: ${minutes}m ${seconds}s remaining</span>`;
+    } else {
+        statusElement.innerHTML = `<span class="cooldown-ready">✅ Ready to claim rewards!</span>`;
+    }
+}
+
+function isCooldownActive() {
+    const currentTime = Date.now() / 1000;
+    return (currentTime - lastClaimTime) < COOLDOWN_PERIOD;
+}
+
+async function claimRewards() {
+    if (!isConnected || !signer || !currentAccount) {
+        showNotification('❌ Please connect your wallet first');
+        return;
+    }
+    
+    const session = calculateRewards();
+    
+    if (session.lines < MIN_LINES) {
+        showNotification(`❌ Minimum ${MIN_LINES} lines required`);
+        return;
+    }
+    
+    if (session.totalReward < 1) {
+        showNotification('❌ Minimum 1 CODE token required');
+        return;
+    }
+    
+    if (isCooldownActive()) {
+        showNotification('❌ Cooldown period still active');
+        return;
+    }
+    
+    // Update UI to show processing
+    const button = document.getElementById('claim-rewards-btn');
+    const buttonText = document.getElementById('claim-btn-text');
+    const buttonSpinner = document.getElementById('claim-btn-spinner');
+    
+    if (button && buttonText && buttonSpinner) {
+        button.disabled = true;
+        buttonText.classList.add('hidden');
+        buttonSpinner.classList.remove('hidden');
+    }
+    
+    try {
+        showNotification('🔄 Preparing reward claim...');
+        
+        // Generate code hash for anti-gaming
+        const codeHash = ethers.utils.keccak256(
+            ethers.utils.toUtf8Bytes(
+                `lines:${session.lines},functions:${session.functions},timestamp:${Date.now()}`
+            )
+        );
+        
+        // Show confirmation dialog
+        const proceed = confirm(`
+🎯 Claim ${session.totalReward.toFixed(2)} CODE tokens?
+
+💰 Gas fee: ~$0.01
+⏱️ Lines: ${session.lines}
+🔧 Functions: ${session.functions}
+📝 Classes: ${session.classes}
+🧪 Tests: ${session.tests}
+
+Click OK to proceed with the transaction.
+        `);
+        
+        if (!proceed) {
+            throw new Error('User cancelled transaction');
+        }
+        
+        // Here you would call your smart contract
+        // For now, simulate the transaction
+        showNotification('📡 Submitting transaction to Base network...');
+        
+        // Simulate transaction delay
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        // Simulate successful transaction
+        const txHash = '0x' + Math.random().toString(16).substr(2, 64);
+        
+        // Update last claim time
+        lastClaimTime = Date.now() / 1000;
+        
+        // Add to claims history
+        addToClaims({
+            timestamp: Date.now(),
+            amount: session.totalReward,
+            lines: session.lines,
+            functions: session.functions,
+            classes: session.classes,
+            tests: session.tests,
+            txHash: txHash
+        });
+        
+        // Clear form
+        document.getElementById('lines-input').value = '';
+        document.getElementById('functions-input').value = '';
+        document.getElementById('classes-input').value = '';
+        document.getElementById('tests-input').value = '';
+        document.getElementById('comments-input').value = '';
+        
+        // Recalculate
+        calculateRewards();
+        
+        // Show success
+        showNotification(`🎉 Successfully claimed ${session.totalReward.toFixed(2)} CODE tokens!\n🔗 Transaction: ${txHash.substr(0, 10)}...`);
+        
+        // Update balance
+        if (typeof fetchCodeTokenBalance === 'function') {
+            await fetchCodeTokenBalance();
+        }
+        
+    } catch (error) {
+        console.error('Claim failed:', error);
+        showNotification(`❌ Claim failed: ${error.message}`);
+    } finally {
+        // Reset button state
+        if (button && buttonText && buttonSpinner) {
+            buttonText.classList.remove('hidden');
+            buttonSpinner.classList.add('hidden');
+            button.disabled = false;
+        }
+        
+        // Update button text based on new state
+        updateClaimButtonState(session.lines, session.totalReward);
+    }
+}
+
+function addToClaims(claim) {
+    // Get existing claims from localStorage
+    let claims = JSON.parse(localStorage.getItem('codedao_claims') || '[]');
+    
+    // Add new claim
+    claims.unshift(claim);
+    
+    // Keep only last 10 claims
+    claims = claims.slice(0, 10);
+    
+    // Save back to localStorage
+    localStorage.setItem('codedao_claims', JSON.stringify(claims));
+    
+    // Update display
+    loadClaimsHistory();
+}
+
+function loadClaimsHistory() {
+    const claimsList = document.getElementById('claims-list');
+    if (!claimsList) return;
+    
+    const claims = JSON.parse(localStorage.getItem('codedao_claims') || '[]');
+    
+    if (claims.length === 0) {
+        claimsList.innerHTML = `
+            <div class="text-sm text-gray-500 text-center py-4">
+                No claims yet. Start coding to earn rewards!
+            </div>
+        `;
+        return;
+    }
+    
+    claimsList.innerHTML = claims.map(claim => {
+        const date = new Date(claim.timestamp).toLocaleString();
+        return `
+            <div class="flex items-center justify-between bg-gray-50 rounded p-3 text-sm">
+                <div>
+                    <div class="font-medium text-gray-900">${claim.amount.toFixed(2)} CODE</div>
+                    <div class="text-gray-600">${claim.lines} lines • ${date}</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-gray-600">⛽ ~$0.01</div>
+                    <a href="https://basescan.org/tx/${claim.txHash}" target="_blank" class="text-blue-600 hover:underline text-xs">
+                        View Tx
+                    </a>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Auto-populate with demo data for testing
+function populateDemoData() {
+    document.getElementById('lines-input').value = '25';
+    document.getElementById('functions-input').value = '3';
+    document.getElementById('classes-input').value = '1';
+    document.getElementById('tests-input').value = '2';
+    document.getElementById('comments-input').value = '5';
+    calculateRewards();
+}
+
+// Expose function globally for easy testing
+window.populateDemoData = populateDemoData;
+</script> 

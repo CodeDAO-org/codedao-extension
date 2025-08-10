@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earn from Coding - CodeDAO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+        .step-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .step-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+        .install-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Header -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex items-center justify-between mb-8">
+            <button onclick="window.location.href='dashboard-with-settings.html'" 
+                    class="back-btn px-4 py-2 rounded-lg text-white hover:text-blue-300 transition-colors flex items-center space-x-2">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Dashboard</span>
+            </button>
+        </div>
+
+        <!-- Main Title -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4">
+                <i class="fas fa-code text-purple-400 mr-3"></i>
+                Earn from Coding
+            </h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                Transform your coding sessions into cryptocurrency earnings. Get paid real CODE tokens for every line you write!
+            </p>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="card p-8 mb-8">
+            <h2 class="text-2xl font-semibold mb-6 text-center">
+                <i class="fas fa-star text-yellow-400 mr-2"></i>
+                Why Earn from Coding?
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="text-3xl text-green-400 mb-3">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Real Cryptocurrency</h3>
+                    <p class="text-gray-300 text-sm">Earn actual CODE tokens on Base network with ultra-low fees (~$0.01)</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl text-blue-400 mb-3">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Automatic Tracking</h3>
+                    <p class="text-gray-300 text-sm">No manual work - extension tracks your code and pays automatically</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl text-purple-400 mb-3">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Streak Bonuses</h3>
+                    <p class="text-gray-300 text-sm">Build coding streaks for up to 200% bonus rewards</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="card p-8 mb-8">
+            <h2 class="text-2xl font-semibold mb-6 text-center">
+                <i class="fas fa-cogs text-blue-400 mr-2"></i>
+                How It Works
+            </h2>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="step-card p-4 text-center">
+                    <div class="text-2xl text-green-400 mb-3">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2">1. Install Extension</h4>
+                    <p class="text-sm text-gray-300">Download CodeDAO VS Code extension from GitHub</p>
+                </div>
+                <div class="step-card p-4 text-center">
+                    <div class="text-2xl text-blue-400 mb-3">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2">2. Connect Wallet</h4>
+                    <p class="text-sm text-gray-300">Link your Base-compatible wallet for payments</p>
+                </div>
+                <div class="step-card p-4 text-center">
+                    <div class="text-2xl text-purple-400 mb-3">
+                        <i class="fas fa-keyboard"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2">3. Start Coding</h4>
+                    <p class="text-sm text-gray-300">Write code in any project - extension tracks automatically</p>
+                </div>
+                <div class="step-card p-4 text-center">
+                    <div class="text-2xl text-yellow-400 mb-3">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2">4. Get Paid</h4>
+                    <p class="text-sm text-gray-300">Earn CODE tokens automatically deposited to your wallet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earning Rates -->
+        <div class="card p-8 mb-8">
+            <h2 class="text-2xl font-semibold mb-6 text-center">
+                <i class="fas fa-calculator text-green-400 mr-2"></i>
+                Earning Rates
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="step-card p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-green-400">Base Rates</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><i class="fas fa-chevron-right text-green-400 mr-2"></i><strong>0.1 CODE</strong> per line of code</li>
+                        <li><i class="fas fa-chevron-right text-blue-400 mr-2"></i><strong>Bonus</strong> for functions & classes</li>
+                        <li><i class="fas fa-chevron-right text-purple-400 mr-2"></i><strong>Extra</strong> for tests & documentation</li>
+                        <li><i class="fas fa-chevron-right text-yellow-400 mr-2"></i><strong>Quality bonuses</strong> for clean code</li>
+                    </ul>
+                </div>
+                <div class="step-card p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-purple-400">Streak Multipliers</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><i class="fas fa-fire text-orange-400 mr-2"></i><strong>Day 1-3:</strong> 1x base rate</li>
+                        <li><i class="fas fa-fire text-orange-400 mr-2"></i><strong>Day 4-7:</strong> 1.5x multiplier</li>
+                        <li><i class="fas fa-fire text-red-400 mr-2"></i><strong>Day 8-14:</strong> 1.75x multiplier</li>
+                        <li><i class="fas fa-fire text-red-400 mr-2"></i><strong>Day 15+:</strong> 2x multiplier</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Installation Section -->
+        <div class="card p-8 text-center">
+            <h2 class="text-2xl font-semibold mb-6">
+                <i class="fas fa-rocket text-blue-400 mr-2"></i>
+                Ready to Start Earning?
+            </h2>
+            <p class="text-gray-300 mb-6 max-w-2xl mx-auto">
+                Install the CodeDAO VS Code extension from our GitHub repository and start earning cryptocurrency while you code!
+            </p>
+            <button onclick="installExtension()" 
+                    class="install-btn px-8 py-4 rounded-lg text-white font-semibold text-lg inline-flex items-center space-x-2">
+                <i class="fab fa-github"></i>
+                <span>Install from GitHub</span>
+                <i class="fas fa-external-link-alt"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function installExtension() {
+            window.open('https://github.com/CodeDAO-org/codedao-extension', '_blank');
+        }
+    </script>
+</body>
+</html> 

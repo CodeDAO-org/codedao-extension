@@ -74,7 +74,22 @@ class CodeDAOTwitterBot {
     this.app = express();
     
     // Security middleware
-    this.app.use(helmet());
+    // Configure helmet with proper CSP for dashboard
+    this.app.use(helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"], // Allow inline scripts for dashboard
+          connectSrc: ["'self'"], // CRITICAL: Allow fetch to same origin for /analytics
+          styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles
+          imgSrc: ["'self'", "data:", "https:"],
+          fontSrc: ["'self'", "https:"],
+          objectSrc: ["'none'"],
+          mediaSrc: ["'self'"],
+          frameSrc: ["'none'"]
+        }
+      }
+    }));
     this.app.use(cors());
     this.app.use(express.json({ limit: '10mb' }));
 
@@ -96,6 +111,25 @@ class CodeDAOTwitterBot {
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
+    });
+
+    // Debug/diagnostic endpoint for troubleshooting
+    this.app.get('/debug/status', (req, res) => {
+      res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        endpoints: {
+          health: '/health',
+          analytics: '/analytics',
+          dashboard: '/dashboard'
+        },
+        csp: res.get('Content-Security-Policy') || 'not set',
+        environment: process.env.NODE_ENV || 'development',
+        bot_config: {
+          target_username: config.bot.targetUsername,
+          engagement_strategy: config.bot.engagementStrategy
+        }
+      });
     });
 
     // Dashboard HTML interface

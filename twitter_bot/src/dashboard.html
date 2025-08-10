@@ -254,10 +254,29 @@
             
             showDebug('Rendering dashboard with data keys:', Object.keys(data));
             
+            // Check if this is initial state (no posts yet)
+            const isInitialState = data.overview?.total_posts === 0;
+            
             dashboard.innerHTML = `
+                ${isInitialState ? `
+                <!-- Welcome Card for Initial State -->
+                <div class="card" style="grid-column: 1 / -1; text-align: center; background: linear-gradient(135deg, #4fd1c7 0%, #14b8a6 100%); color: white;">
+                    <h3><span class="emoji">🚀</span>CodeDAO Twitter Bot is Ready!</h3>
+                    <p style="margin: 15px 0; font-size: 1.1rem;">Your bot is successfully running and configured for @CRG</p>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin: 15px 0;">
+                        <strong>🎯 Bot will start posting automatically according to schedule:</strong><br>
+                        • Daily stats at 09:00 UTC<br>
+                        • Educational tips at 10:00 & 15:00 UTC<br>
+                        • Community engagement at 13:00 UTC<br>
+                        • Real-time engagement monitoring 24/7
+                    </div>
+                    <p style="margin-top: 15px;">Once activity begins, you'll see real-time analytics here!</p>
+                </div>
+                ` : ''}
+                
                 <!-- Overview Card -->
                 <div class="card">
-                    <h3><span class="emoji">📊</span>Overview</h3>
+                    <h3><span class="emoji">📊</span>Overview${isInitialState ? ' (Waiting for First Posts)' : ''}</h3>
                     <div class="metric">
                         <span class="metric-label">Total Posts</span>
                         <span class="metric-value">${data.overview?.total_posts || 0}</span>
@@ -281,20 +300,26 @@
                     <h3><span class="emoji">🤖</span>Bot Status</h3>
                     <div class="metric">
                         <span class="metric-label">Status</span>
-                        <span class="status healthy">🟢 Active</span>
+                        <span class="status healthy">🟢 Active (@CRG)</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Strategy</span>
+                        <span class="metric-value">Hybrid (Manual + AI + Auto)</span>
                     </div>
                     <div class="metric">
                         <span class="metric-label">Posts Today</span>
                         <span class="metric-value">${data.engagement?.daily_actions?.posts_today || 0}/25</span>
                     </div>
                     <div class="metric">
-                        <span class="metric-label">Likes Given</span>
-                        <span class="metric-value">${data.engagement?.daily_actions?.likes_given || 0}</span>
+                        <span class="metric-label">Interactions</span>
+                        <span class="metric-value">${(data.engagement?.daily_actions?.likes_given || 0) + (data.engagement?.daily_actions?.replies_sent || 0)}</span>
                     </div>
-                    <div class="metric">
-                        <span class="metric-label">Replies Sent</span>
-                        <span class="metric-value">${data.engagement?.daily_actions?.replies_sent || 0}</span>
+                    ${isInitialState ? `
+                    <div style="margin-top: 15px; padding: 10px; background: #e0f2fe; border-radius: 8px; font-size: 0.9rem; border-left: 4px solid #0ea5e9;">
+                        <strong>🕐 Monitoring Active</strong><br>
+                        <span style="color: #0369a1;">Bot is actively monitoring @CRG and waiting for scheduled post times or engagement opportunities</span>
                     </div>
+                    ` : ''}
                 </div>
 
                 <!-- Performance Card -->
