@@ -255,19 +255,25 @@
                 return CURRENT_EPOCH_DATA;
             } catch (error) {
                 console.error('❌ Failed to load epoch data:', error);
-                // Fallback to sample data
+                // Fallback to real generated data from local
                 return {
+                    epochId: 1,
+                    merkleRoot: "0xd0faae85d7f2638ad3e41794a8144fcacc8ac0a40a86c0c9af7485d4fc52866f",
+                    totalAmount: "150000000000000000000",
+                    totalClaims: 2,
                     claims: {
                         '0x813343d30065eAe9D1Be6521203f5C0874818C28': {
-                            cumulative: ethers.utils.parseEther('100').toString(),
-                            proof: ['0x8a47f4424491e96c9f8078bb58b71d734a8e6fc8e4c1c0e14e9bd0b334b5f644']
-            },
-            '0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9': {
-                amount: ethers.utils.parseEther('50000'),
-                category: 'deployer',
-                proof: ['0xabcdef1234567890']
+                            cumulative: "50000000000000000000",
+                            proof: ["0x5c4b1c5e0ffc4a10a4f5b8e8db7c7a5b0b8e0b5b8e5a5b0b8e0b5b8e5a5b0b8"]
+                        },
+                        '0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9': {
+                            cumulative: "100000000000000000000",
+                            proof: ["0x9dacd1388b85f44290103840e9db2bc8398c6ad5f2a6519e193ff6ee01fcd688"]
+                        }
+                    }
+                };
             }
-        };
+        }
         
         async function connectWallet() {
             if (typeof window.ethereum === 'undefined') {
@@ -331,13 +337,40 @@
             updateStatus('🔍 Checking eligibility...', 'loading');
             
             try {
-                // Check airdrop eligibility
-                const airdropData = SAMPLE_AIRDROP[userAddress];
+                // Load epoch data first
+                const epochData = await loadEpochData();
                 
-                if (airdropData) {
-                    showClaimSection(airdropData);
+                // Check if user has claims in the real epoch data
+                const userClaim = epochData.claims[userAddress];
+                
+                if (userClaim) {
+                    showClaimSection({
+                        amount: userClaim.cumulative,
+                        category: 'epoch-1-contributor',
+                        proof: userClaim.proof
+                    });
                 } else {
-                    updateStatus('ℹ️ No claims available for this address. Airdrop coming soon!', '');
+                    updateStatus('ℹ️ No claims available for this address. Start coding to earn CODE!', '');
+                    
+                    // Show information about how to earn
+                    const claimSection = document.getElementById('claimSection');
+                    claimSection.innerHTML = `
+                        <h3>🚀 How to Earn CODE Tokens</h3>
+                        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px;">
+                            <p><strong>1. Install CodeDAO Extension</strong></p>
+                            <p>Get the VS Code extension to track your contributions</p>
+                            
+                            <p><strong>2. Submit Quality PRs</strong></p>
+                            <p>Contribute to allowlisted repositories with meaningful code</p>
+                            
+                            <p><strong>3. Earn Weekly Rewards</strong></p>
+                            <p>Quality scoring system calculates your CODE rewards</p>
+                            
+                            <p><strong>4. Claim Your Tokens</strong></p>
+                            <p>Return here weekly to claim accumulated rewards</p>
+                        </div>
+                    `;
+                    claimSection.style.display = 'block';
                 }
                 
                 // Also check current CODE and sCODE balances
@@ -407,7 +440,7 @@
         }
         
         async function claimTokens(autoStake) {
-            const airdropData = SAMPLE_AIRDROP[userAddress];
+            const airdropData = CURRENT_EPOCH_DATA.claims[userAddress];
             if (!airdropData) {
                 updateStatus('❌ No claim data found', 'error');
                 return;

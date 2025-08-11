@@ -17,7 +17,7 @@
     "method": "setRoot",
     "parameters": {
       "epochId": 1,
-      "merkleRoot": "0xddc833d869453b3935e5e64cd450430d15fbbb81fcab74dcf91800b63e02ca2e",
+      "merkleRoot": "0xd0faae85d7f2638ad3e41794a8144fcacc8ac0a40a86c0c9af7485d4fc52866f",
       "totalAmount": "150000000000000000000"
     },
     "description": "Set Merkle root for Epoch 1"

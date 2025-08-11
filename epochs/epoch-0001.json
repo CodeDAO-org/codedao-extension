@@ -1,21 +1,21 @@
 {
   "epochId": 1,
-  "timestamp": "2025-08-11T11:54:59.252Z",
+  "timestamp": "2025-08-11T16:16:46.817Z",
   "description": "Epoch 1 - Manual Test Data",
-  "merkleRoot": "0xddc833d869453b3935e5e64cd450430d15fbbb81fcab74dcf91800b63e02ca2e",
+  "merkleRoot": "0xd0faae85d7f2638ad3e41794a8144fcacc8ac0a40a86c0c9af7485d4fc52866f",
   "totalAmount": "150000000000000000000",
   "totalClaims": 2,
   "claims": {
-    "0x813343d30065eAe9D1Be6521203f5C0874818C28": {
+    "0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9": {
       "cumulative": "100000000000000000000",
       "proof": [
-        "0x9dacd1388b85f44290103840e9db2bc8398c6ad5f2a6519e193ff6ee01fcd688"
+        "0x4abeeadde9db207d3b8dd22ceae821f1cc5c74d281205aa0dd038cc9a327fb98"
       ]
     },
-    "0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9": {
+    "0x813343d30065eAe9D1Be6521203f5C0874818C28": {
       "cumulative": "50000000000000000000",
       "proof": [
-        "0x5491684a75f8907cad730e2d64c9c2e8cb190b07c3596de6eb9806f1735ca7f0"
+        "0x71ea90f5d0ed175bb5f208204b8b4880400e97a80531a9955b8c5d5a7f06b1b5"
       ]
     }
   }
