@@ -1,0 +1,60 @@
+name: GitHub App Webhook Server
+
+on:
+  push:
+    branches: [ main ]
+  repository_dispatch:
+    types: [webhook]
+  schedule:
+    - cron: '*/10 * * * *'  # Every 10 minutes
+  workflow_dispatch:
+
+jobs:
+  webhook-server:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        working-directory: ./github-app
+        run: npm install
+        
+      - name: Process GitHub webhooks and generate epoch data
+        working-directory: ./github-app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🚀 Processing GitHub contributions..."
+          node webhook-processor.js
+          
+      - name: Generate epoch data
+        run: |
+          echo "📊 Generating epoch data from contributions..."
+          node scripts/build-epoch.js
+          
+      - name: Update claim data
+        run: |
+          echo "💰 Updating claimable tokens..."
+          # Copy generated epoch data to claim hub
+          if [ -f "claim-data/epoch-0001.json" ]; then
+            echo "✅ New epoch data generated"
+          fi
+          
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          if ! git diff --cached --quiet; then
+            git commit -m "🤖 Auto-update: New epoch data from contributions"
+            git push
+          else
+            echo "No changes to commit"
+          fi 
