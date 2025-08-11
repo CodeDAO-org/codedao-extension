@@ -1,0 +1,22 @@
+{
+  "name": "codedao-github-webhook",
+  "version": "1.0.0",
+  "description": "CodeDAO GitHub webhook for PR scoring and rewards",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@octokit/webhooks": "^12.0.10",
+    "@ethereum-attestation-service/eas-sdk": "^2.5.0",
+    "ethers": "^6.8.0"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "keywords": ["codedao", "github", "webhook", "rewards", "blockchain"],
+  "author": "CodeDAO",
+  "license": "MIT"
+} 

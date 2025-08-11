@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "name": "codedao-github-webhook",
+  "builds": [
+    {
+      "src": "github-app/app.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/webhooks/github",
+      "dest": "github-app/app.js"
+    },
+    {
+      "src": "/health",
+      "dest": "github-app/app.js"
+    }
+  ],
+  "env": {
+    "GITHUB_APP_ID": "@github_app_id",
+    "GITHUB_PRIVATE_KEY": "@github_private_key", 
+    "GITHUB_WEBHOOK_SECRET": "@github_webhook_secret",
+    "ALLOWLIST_REPOS": "codedao-org/codedao-extension",
+    "BASE_RPC": "https://mainnet.base.org",
+    "EAS_PRIVATE_KEY": "@eas_private_key",
+    "EAS_SCHEMA_ID": "@eas_schema_id"
+  }
+} 
