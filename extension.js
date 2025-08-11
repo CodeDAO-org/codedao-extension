@@ -338,11 +338,11 @@ async function sendContributionData(metrics, reward) {
 }
 
 async function connectWallet() {
-    const walletUrl = 'https://codedao-org.github.io/wallet-dashboard.html';
-    vscode.env.openExternal(vscode.Uri.parse(walletUrl));
+    const claimHubUrl = 'https://codedao-org.github.io/codedao-extension/claim-hub.html';
+    vscode.env.openExternal(vscode.Uri.parse(claimHubUrl));
     
     vscode.window.showInformationMessage(
-        '🔗 Opening wallet dashboard in browser. Connect your MetaMask or Coinbase wallet to claim rewards!'
+        '🎁 Opening CodeDAO Claim Hub! Connect your wallet to claim your earned CODE tokens.'
     );
 }
 
@@ -353,10 +353,10 @@ async function showStats() {
         `🔥 Current Streak: ${userStats.streak} days\n\n` +
         `Keep coding to earn more rewards!`;
     
-    vscode.window.showInformationMessage(message, 'View Dashboard', 'Refresh')
+    vscode.window.showInformationMessage(message, 'Claim Tokens', 'Refresh')
         .then(selection => {
-            if (selection === 'View Dashboard') {
-                vscode.env.openExternal(vscode.Uri.parse('https://codedao-org.github.io/wallet-dashboard.html'));
+            if (selection === 'Claim Tokens') {
+                vscode.env.openExternal(vscode.Uri.parse('https://codedao-org.github.io/codedao-extension/claim-hub.html'));
             } else if (selection === 'Refresh') {
                 refreshRewards();
             }
