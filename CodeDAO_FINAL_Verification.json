@@ -1,0 +1,17 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "CodeDAOToken.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.20;\n\ncontract CodeDAOToken {\n    string public name = \"CodeDAO Token\";\n    string public symbol = \"CODE\";\n    uint8 public constant decimals = 18;\n\n    mapping(address => uint256) public balanceOf;\n    mapping(address => mapping(address => uint256)) public allowance;\n    uint256 public totalSupply;\n\n    event Transfer(address indexed from, address indexed to, uint256 value);\n    event Approval(address indexed owner, address indexed spender, uint256 value);\n\n    constructor(address _to) {\n        totalSupply = 100_000_000 * 10 ** uint256(decimals);\n        balanceOf[_to] = totalSupply;\n        emit Transfer(address(0), _to, totalSupply);\n    }\n\n    function transfer(address to, uint256 value) external returns (bool) {\n        require(balanceOf[msg.sender] >= value, \"Insufficient balance\");\n        unchecked { balanceOf[msg.sender] -= value; }\n        balanceOf[to] += value;\n        emit Transfer(msg.sender, to, value);\n        return true;\n    }\n\n    function approve(address spender, uint256 value) external returns (bool) {\n        allowance[msg.sender][spender] = value;\n        emit Approval(msg.sender, spender, value);\n        return true;\n    }\n\n    function transferFrom(address from, address to, uint256 value) external returns (bool) {\n        require(balanceOf[from] >= value, \"Insufficient balance\");\n        uint256 allowed = allowance[from][msg.sender];\n        require(allowed >= value, \"Insufficient allowance\");\n        unchecked {\n            allowance[from][msg.sender] = allowed - value;\n            balanceOf[from] -= value;\n        }\n        balanceOf[to] += value;\n        emit Transfer(from, to, value);\n        return true;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": { "enabled": true, "runs": 10000 },
+    "evmVersion": "paris",
+    "metadata": { "bytecodeHash": "bzzr1" },
+    "viaIR": false,
+    "outputSelection": {
+      "*": { "*": ["abi", "evm.bytecode", "evm.deployedBytecode", "metadata"] }
+    }
+  }
+} 

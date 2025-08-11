@@ -1,49 +1,66 @@
 {
-  "name": "codedao-extension",
+  "name": "codedao-telegram-bot",
   "version": "1.0.0",
-  "description": "CodeDAO Extension for AI Agent Coding Rewards",
-  "main": "extension.js",
+  "description": "CodeDAO Telegram Bot - Earn cryptocurrency for coding!",
+  "main": "bot.js",
   "scripts": {
-    "test": "hardhat test",
-    "compile": "hardhat compile",
-    "deploy": "hardhat run scripts/deploy-token.js",
-    "deploy:base": "hardhat run scripts/deploy-token.js --network base",
-    "deploy:base-sepolia": "hardhat run scripts/deploy-token.js --network base-sepolia",
-    "deploy:v2:sepolia": "hardhat run scripts/deploy-v2-sepolia.js --network baseSepolia",
-    "verify": "hardhat verify --network base",
-    "verify:sepolia": "echo 'Run: npx hardhat verify --network baseSepolia <ADDRESS> <ARGS>'",
-    "test:sepolia": "hardhat run scripts/smoke-test-sepolia.js --network baseSepolia",
-    "clean": "hardhat clean",
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node bot.js",
+    "dev": "nodemon bot.js",
+    "test": "jest",
+    "docker:build": "docker build -t codedao-telegram-bot .",
+    "docker:run": "docker run -d --env-file .env codedao-telegram-bot",
+    "deploy:github": "node github-deploy.js",
+    "bot:run": "node github-bot-runner.js",
+    "bot:test": "node github-bot-runner.js --test",
+    "transparency": "echo \"View source: https://github.com/CodeDAO-org/codedao-extension\""
   },
   "keywords": [
-    "blockchain",
-    "ethereum",
-    "base",
-    "coding-rewards",
-    "ai-agents",
+    "telegram",
+    "bot",
+    "cryptocurrency",
+    "coding",
+    "rewards",
     "web3",
-    "vscode-extension"
+    "base-network",
+    "twitter-integration"
   ],
   "author": "CodeDAO Team",
   "license": "MIT",
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "helmet": "^7.0.0",
-    "ws": "^8.13.0"
-  },
-  "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@nomicfoundation/hardhat-verify": "^2.1.1",
-    "@openzeppelin/contracts": "^5.4.0",
-    "dotenv": "^17.2.1",
+    "@octokit/rest": "^20.0.0",
+    "@openzeppelin/contracts": "^4.9.6",
+    "axios": "^1.5.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "ethers": "^6.15.0",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.10.0",
+    "express-validator": "^7.0.1",
     "hardhat": "^2.26.2",
+    "helmet": "^7.0.0",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.5.2",
+    "mongoose": "^7.5.0",
+    "node-cron": "^3.0.2",
+    "node-telegram-bot-api": "^0.64.0",
+    "pg": "^8.11.3",
+    "redis": "^4.6.7",
+    "twitter-api-v2": "^1.15.0",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "jest": "^29.6.2",
     "nodemon": "^3.0.1"
   },
   "engines": {
-    "node": ">=16.0.0"
-  }
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodeDAO-org/codedao-extension.git"
+  },
+  "homepage": "https://codedao-org.github.io/codedao-extension/twitter-bot/"
 }

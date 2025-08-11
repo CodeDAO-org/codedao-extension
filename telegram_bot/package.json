@@ -40,8 +40,6 @@
     "express-rate-limit": "^6.10.0",
     "express-validator": "^7.0.1",
     "mongoose": "^7.5.0",
-    "chart.js": "^4.4.0",
-    "canvas": "^2.11.2",
     "twitter-api-v2": "^1.15.0",
     "@octokit/rest": "^20.0.0"
   },

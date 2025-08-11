@@ -1,0 +1,25 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/CodeDAOToken.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.24;\n\nimport \"@openzeppelin/contracts/token/ERC20/ERC20.sol\";\n\n/**\n * @title CodeDAO Token\n * @dev Create a pinned, reproducible ERC20 project for CODE with CI preflight.\n * \n * Token Details:\n * - Name: CodeDAO Token\n * - Symbol: CODE\n * - Decimals: 18\n * - Total Supply: 100M (100000000e18)\n * - Owner Model: none\n * - Mint Destination: 0x813343d30065eAe9D1Be6521203f5C0874818C28\n */\ncontract CodeDAOToken is ERC20 {\n    /**\n     * @dev Constructor mints the entire supply to the specified address\n     * @param _to Address to receive the initial token supply\n     */\n    constructor(address _to) ERC20(\"CodeDAO Token\", \"CODE\") {\n        require(_to != address(0), \"CodeDAOToken: mint to zero address\");\n        _mint(_to, 100000000e18);\n    }\n}"
+    }
+  },
+  "settings": {
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "metadata"
+        ]
+      }
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "paris"
+  }
+}

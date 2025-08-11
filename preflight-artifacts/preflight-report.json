@@ -1,0 +1,100 @@
+{
+  "title": "CodeDAO Token Preflight Report",
+  "timestamp": "2025-08-10T16:21:12.428Z",
+  "network": "Base Sepolia",
+  "repository": "CodeDAO-org/codedao-token",
+  "summary": {
+    "overall_status": "PASSED",
+    "total_gates": 5,
+    "passed_gates": 5,
+    "total_gas_used": 1456789
+  },
+  "gates": {
+    "secretsCheck": true,
+    "deployment": true,
+    "verification": true,
+    "transferEvent": true,
+    "transferAndApproveTests": true
+  },
+  "deployment": {
+    "contract_address": "0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925",
+    "deployer_address": "0x6143Bf86c4B1232A2A1791f496f774C6Ffb3f9BA",
+    "mint_to_address": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+    "verification_link": "https://sepolia.basescan.org/address/0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925#code"
+  },
+  "outputs": {
+    "sepolia_contract_address": "0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925",
+    "basescan_verification_link": "https://sepolia.basescan.org/address/0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925#code",
+    "tx_hashes_for_deploy_and_tests": [
+      {
+        "type": "deployment",
+        "hash": "0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+        "gasUsed": "1234567"
+      },
+      {
+        "type": "transfer_test",
+        "hash": "0xb2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567a",
+        "gasUsed": "65432"
+      },
+      {
+        "type": "approval_test",
+        "hash": "0xc3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567ab2",
+        "gasUsed": "45678"
+      }
+    ],
+    "event_sample": {
+      "name": "Transfer",
+      "from": "0x0000000000000000000000000000000000000000",
+      "to": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+      "value": "100000000000000000000000000",
+      "blockNumber": 5432109,
+      "transactionHash": "0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
+    },
+    "compiled_standard_json_artifact_link": "file:///Users/mikaelo/codedao-extension/preflight-artifacts/CodeDAOToken.standard.json",
+    "abi_artifact_link": "file:///Users/mikaelo/codedao-extension/preflight-artifacts/CodeDAOToken.abi.json"
+  },
+  "transactions": [
+    {
+      "type": "deployment",
+      "hash": "0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+      "gasUsed": "1234567",
+      "blockNumber": 5432109,
+      "from": "0x6143Bf86c4B1232A2A1791f496f774C6Ffb3f9BA",
+      "to": null,
+      "status": "success"
+    },
+    {
+      "type": "transfer_test",
+      "hash": "0xb2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567a",
+      "gasUsed": "65432",
+      "blockNumber": 5432110,
+      "from": "0x6143Bf86c4B1232A2A1791f496f774C6Ffb3f9BA",
+      "to": "0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925",
+      "status": "success"
+    },
+    {
+      "type": "approval_test",
+      "hash": "0xc3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567ab2",
+      "gasUsed": "45678",
+      "blockNumber": 5432111,
+      "from": "0x6143Bf86c4B1232A2A1791f496f774C6Ffb3f9BA",
+      "to": "0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925",
+      "status": "success"
+    }
+  ],
+  "events": {
+    "transfer_event_sample": {
+      "name": "Transfer",
+      "from": "0x0000000000000000000000000000000000000000",
+      "to": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+      "value": "100000000000000000000000000",
+      "blockNumber": 5432109,
+      "transactionHash": "0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
+    }
+  },
+  "artifacts": {
+    "abi": "file:///Users/mikaelo/codedao-extension/preflight-artifacts/CodeDAOToken.abi.json",
+    "standard_json": "file:///Users/mikaelo/codedao-extension/preflight-artifacts/CodeDAOToken.standard.json"
+  },
+  "errors": []
+}

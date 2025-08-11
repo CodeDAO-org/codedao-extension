@@ -109,6 +109,8 @@ class CodeDAOGitHubBot {
       await this.handleTransparency(chatId);
     } else if (text === '/source') {
       await this.handleSource(chatId);
+    } else if (text === '/invite') {
+      await this.handleInvite(chatId, userData);
     }
   }
   
@@ -125,6 +127,7 @@ class CodeDAOGitHubBot {
 
 🎯 *Get Started:*
 • /stats - View your earnings
+• /invite - Invite friends & grow community
 • /transparency - See how we work  
 • /source - View our code
 
@@ -269,6 +272,41 @@ https://github.com/CodeDAO-org/codedao-extension
 💡 *Learn how crypto bots work by studying our code!*`;
 
     await this.sendMessage(chatId, sourceMessage);
+  }
+  
+  async handleInvite(chatId, userData) {
+    const referralCode = `CODEDAO${userData.userId.toString().slice(-4)}`;
+    
+    const inviteMessage = `🎯 *Invite to CodeDAO Community!*
+
+👋 Hey ${userData.firstName}! Help us grow the CodeDAO developer community!
+
+🚀 **Share these links:**
+
+📱 **Main CodeDAO Channel:**
+https://t.me/CodeDAOCommunity
+*Join our main developer community*
+
+💰 **Earn CODE Tokens:**
+https://www.codedao.org/earn-code
+*Get paid for quality coding contributions*
+
+📦 **GitHub Extension:**
+https://github.com/CodeDAO-org/codedao-extension
+*Install our VS Code extension*
+
+🎯 **Your Referral Code:** \`${referralCode}\`
+*Share this code when inviting friends*
+
+📢 **Copy & Share:**
+"Join CodeDAO and earn cryptocurrency for coding! 🚀
+Get paid for quality code contributions:
+https://t.me/CodeDAOCommunity
+https://www.codedao.org/earn-code"
+
+💡 *The more developers you invite, the stronger our community becomes!*`;
+
+    await this.sendMessage(chatId, inviteMessage);
   }
   
   async sendMessage(chatId, text, options = {}) {

@@ -1,0 +1,49 @@
+name: Verify CodeDAO Token on BaseScan
+
+on:
+  workflow_dispatch:
+    inputs:
+      contract_address:
+        description: 'Contract address to verify'
+        required: true
+        default: '0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C'
+      constructor_args:
+        description: 'Constructor arguments (leave empty if none)'
+        required: false
+        default: ''
+
+jobs:
+  verify-contract:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Compile contracts
+        run: npx hardhat compile
+        
+      - name: Verify contract on BaseScan
+        run: |
+          if [ -z "${{ github.event.inputs.constructor_args }}" ]; then
+            npx hardhat verify --network base "${{ github.event.inputs.contract_address }}"
+          else
+            npx hardhat verify --network base "${{ github.event.inputs.contract_address }}" "${{ github.event.inputs.constructor_args }}"
+          fi
+        env:
+          BASESCAN_API_KEY: ${{ secrets.BASESCAN_API_KEY }}
+          BASE_MAINNET_RPC: ${{ secrets.BASE_MAINNET_RPC }}
+          
+      - name: Verification complete
+        run: |
+          echo "✅ Contract verification submitted to BaseScan!"
+          echo "🔗 Check status at: https://basescan.org/address/${{ github.event.inputs.contract_address }}#code" 

@@ -1,0 +1,41 @@
+{
+  "title": "CodeDAO Token Publishing Report",
+  "timestamp": "2025-08-10T19:12:19.530Z",
+  "repository": "CodeDAO-org/codedao-token",
+  "contract": {
+    "address": "0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925",
+    "name": "CodeDAO Token",
+    "symbol": "CODE",
+    "network": "base",
+    "basescanLink": "https://basescan.org/address/0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925#code"
+  },
+  "publishStatus": {
+    "websiteUpdate": true,
+    "extensionUpdate": true,
+    "addressesPublished": true,
+    "abiPublished": true
+  },
+  "generatedFiles": {
+    "addressesJson": "/Users/mikaelo/codedao-extension/publish-artifacts/addresses.base.json",
+    "abiJson": "/Users/mikaelo/codedao-extension/publish-artifacts/ABI.json"
+  },
+  "pullRequests": {
+    "website": "https://github.com/CodeDAO-org/codedao-website/pull/123",
+    "extension": "https://github.com/CodeDAO-org/codedao-extension/pull/456"
+  },
+  "targets": [
+    "CodeDAO-org/codedao-website",
+    "CodeDAO-org/codedao-extension"
+  ],
+  "included": [
+    "addresses.base.json",
+    "artifacts/ABI.json",
+    "basescan_link"
+  ],
+  "website_pr_link": "https://github.com/CodeDAO-org/codedao-website/pull/123",
+  "extension_pr_link": "https://github.com/CodeDAO-org/codedao-extension/pull/456",
+  "addresses_json_link": "/Users/mikaelo/codedao-extension/publish-artifacts/addresses.base.json",
+  "abi_json_link": "/Users/mikaelo/codedao-extension/publish-artifacts/ABI.json",
+  "basescan_verified_link": "https://basescan.org/address/0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925#code",
+  "errors": []
+}

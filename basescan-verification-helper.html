@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BaseScan Verification Helper - CodeDAO Token</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .info-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .json-container {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .json-text {
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 5px;
+            background: #2d2d30;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        
+        .copy-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+        
+        .copy-btn.copied {
+            background: #17a2b8;
+        }
+        
+        .steps {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .steps h3 {
+            color: #004085;
+            margin-bottom: 15px;
+        }
+        
+        .steps ol {
+            padding-left: 20px;
+        }
+        
+        .steps li {
+            margin-bottom: 10px;
+            color: #004085;
+            line-height: 1.6;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            color: #856404;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .status {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .button-group {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 BaseScan Verification Helper</h1>
+            <p>CodeDAO Token Contract Verification Assistant</p>
+        </div>
+        
+        <div class="section">
+            <h2>📋 Contract Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Contract Address:</strong>
+                    0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C
+                </div>
+                <div class="info-item">
+                    <strong>Contract Name:</strong>
+                    contracts/CodeDAOToken.sol:CodeDAOToken
+                </div>
+                <div class="info-item">
+                    <strong>Compiler Version:</strong>
+                    v0.8.20+commit.a1b79de6
+                </div>
+                <div class="info-item">
+                    <strong>License:</strong>
+                    3) MIT License (MIT)
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📝 Standard JSON for Verification</h2>
+            <p>Copy this exact JSON and paste it into BaseScan's Standard-Json-Input field:</p>
+            
+            <div class="json-container">
+                <div class="json-text" id="jsonText"></div>
+            </div>
+            
+            <div class="button-group">
+                <button class="copy-btn" onclick="copyJSON()">📋 Copy Standard JSON</button>
+                <button class="copy-btn" onclick="openBaseScan()" style="background: #667eea;">🚀 Open BaseScan Verification</button>
+            </div>
+        </div>
+        
+        <div class="steps">
+            <h3>🚀 Step-by-Step Verification Guide</h3>
+            <ol>
+                <li><strong>Click "Open BaseScan Verification"</strong> or go to: 
+                    <a href="https://basescan.org/verifyContract?a=0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C" target="_blank">BaseScan Verification Page</a>
+                </li>
+                <li><strong>Select Compiler Type:</strong> "Solidity (Standard-Json-Input)"</li>
+                <li><strong>Select Compiler Version:</strong> "v0.8.20+commit.a1b79de6"</li>
+                <li><strong>Select License:</strong> "3) MIT License (MIT)"</li>
+                <li><strong>Paste Standard JSON:</strong> Click "Copy Standard JSON" above and paste into the text area</li>
+                <li><strong>Contract Name:</strong> Enter "contracts/CodeDAOToken.sol:CodeDAOToken"</li>
+                <li><strong>Click "Verify and Publish"</strong></li>
+            </ol>
+        </div>
+        
+        <div class="highlight success">
+            <strong>✅ Expected Result:</strong> Your CodeDAO Token contract will be verified with a green checkmark on BaseScan, 
+            showing "CodeDAO Token / CODE / 18 decimals" with full source code visible.
+        </div>
+        
+        <div id="status" class="status" style="display: none;"></div>
+    </div>
+
+    <script>
+        const standardJson = {
+            "language": "Solidity",
+            "sources": {
+                "contracts/CodeDAOToken.sol": {
+                    "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\ncontract CodeDAOToken {\n    string public name = \"CodeDAO Token\";\n    string public symbol = \"CODE\";\n    uint8 public decimals = 18;\n    uint256 public totalSupply = 100_000_000e18; // 100M tokens\n    \n    mapping(address => uint256) public balanceOf;\n    mapping(address => mapping(address => uint256)) public allowance;\n    \n    event Transfer(address indexed from, address indexed to, uint256 value);\n    event Approval(address indexed owner, address indexed spender, uint256 value);\n    \n    constructor() {\n        balanceOf[0x813343d30065eAe9D1Be6521203f5C0874818C28] = totalSupply; // Mint to Safe\n        emit Transfer(address(0), 0x813343d30065eAe9D1Be6521203f5C0874818C28, totalSupply);\n    }\n    \n    function transfer(address to, uint256 value) external returns (bool) {\n        require(balanceOf[msg.sender] >= value, \"Insufficient balance\");\n        balanceOf[msg.sender] -= value;\n        balanceOf[to] += value;\n        emit Transfer(msg.sender, to, value);\n        return true;\n    }\n    \n    function approve(address spender, uint256 value) external returns (bool) {\n        allowance[msg.sender][spender] = value;\n        emit Approval(msg.sender, spender, value);\n        return true;\n    }\n    \n    function transferFrom(address from, address to, uint256 value) external returns (bool) {\n        require(balanceOf[from] >= value, \"Insufficient balance\");\n        require(allowance[from][msg.sender] >= value, \"Insufficient allowance\");\n        \n        balanceOf[from] -= value;\n        balanceOf[to] += value;\n        allowance[from][msg.sender] -= value;\n        \n        emit Transfer(from, to, value);\n        return true;\n    }\n}"
+                }
+            },
+            "settings": {
+                "optimizer": {
+                    "enabled": true,
+                    "runs": 10000
+                },
+                "outputSelection": {
+                    "*": {
+                        "*": ["*"]
+                    }
+                },
+                "evmVersion": "paris"
+            }
+        };
+
+        // Display the JSON in a formatted way
+        document.getElementById('jsonText').textContent = JSON.stringify(standardJson, null, 2);
+
+        function copyJSON() {
+            const jsonString = JSON.stringify(standardJson, null, 2);
+            
+            // Create a temporary textarea element
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = jsonString;
+            document.body.appendChild(tempTextArea);
+            
+            // Select and copy the text
+            tempTextArea.select();
+            tempTextArea.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                document.execCommand('copy');
+                showStatus('✅ Standard JSON copied to clipboard!', 'success');
+                
+                // Update button text temporarily
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+                
+            } catch (err) {
+                showStatus('❌ Could not copy to clipboard. Please select and copy manually.', 'error');
+            }
+            
+            // Remove the temporary element
+            document.body.removeChild(tempTextArea);
+        }
+
+        function openBaseScan() {
+            window.open('https://basescan.org/verifyContract?a=0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C', '_blank');
+            showStatus('🚀 BaseScan verification page opened in new tab!', 'success');
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

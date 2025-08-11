@@ -1,3 +1,4 @@
+
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomicfoundation/hardhat-verify");
 require("dotenv").config();
@@ -8,9 +9,18 @@ module.exports = {
     version: "0.8.20",
     settings: {
       optimizer: {
-        enabled: false  // Try without optimizer for V1 verification
+        enabled: true,  // Optimal settings found
+        runs: 10000     // Best match was 10000 runs
+      },
+      evmVersion: "paris",  // Best match was paris
+      viaIR: false,
+      metadata: {
+        bytecodeHash: "bzzr1"  // Try bzzr1 instead of default ipfs
       }
     }
+  },
+  sourcify: {
+    enabled: true
   },
   networks: {
     // Base Sepolia Testnet
@@ -29,11 +39,16 @@ module.exports = {
     }
   },
   etherscan: {
-    apiKey: {
-      base: process.env.BASESCAN_API_KEY,
-      baseSepolia: process.env.BASESCAN_API_KEY
-    },
+    apiKey: process.env.BASESCAN_API_KEY,
     customChains: [
+      {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://api.basescan.org/api",
+          browserURL: "https://basescan.org"
+        }
+      },
       {
         network: "baseSepolia",
         chainId: 84532,
@@ -44,4 +59,4 @@ module.exports = {
       }
     ]
   }
-}; 
+};

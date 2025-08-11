@@ -1,0 +1,40 @@
+# CodeDAO Token Specification
+name: "CodeDAO Token"
+symbol: "CODE"
+decimals: 18
+supply: "100000000e18"
+readable_supply: "100M"
+owner_model: "none"
+mint_to: "0x813343d30065eAe9D1Be6521203f5C0874818C28"
+
+# Build Configuration
+openzeppelin_version: "4.9.6"
+solidity_version: "0.8.24"
+optimizer:
+  enabled: true
+  runs: 200
+evm_version: "paris"
+via_ir: false
+
+# Networks
+networks:
+  base_sepolia:
+    chain_id: 84532
+    rpc_url: "${{ secrets.BASE_SEPOLIA_RPC }}"
+  base_mainnet:
+    chain_id: 8453
+    rpc_url: "${{ secrets.BASE_MAINNET_RPC }}"
+
+# Safe Configuration
+safe:
+  address: "0x813343d30065eAe9D1Be6521203f5C0874818C28"
+  service_url: "${{ secrets.SAFE_TX_SERVICE_URL }}"
+
+# Verification
+verification:
+  basescan_api_key: "${{ secrets.BASESCAN_API_KEY }}"
+
+# Deployment Credentials (for preflight only)
+deployment:
+  sepolia_private_key: "${{ secrets.PRIVATE_KEY }}"
+  deployer_address: "0x6143Bf86c4B1232A2A1791f496f774C6Ffb3f9BA"

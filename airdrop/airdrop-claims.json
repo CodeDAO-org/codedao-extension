@@ -1,0 +1,112 @@
+{
+  "merkleRoot": "0x24abd9c6cc7f673fd4aa2fd8d7115ca9447d543a71607c002252372b0a7b4571",
+  "totalRecipients": 8,
+  "totalAmount": "5000000000000000000000000",
+  "totalAmountFormatted": "5000000.0",
+  "generatedAt": "2025-08-11T04:08:36.833Z",
+  "recipients": [
+    {
+      "index": 0,
+      "address": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+      "amount": "100000000000000000000000",
+      "amountFormatted": "100000.0",
+      "category": "builders",
+      "proof": [
+        "0x4a6b9420eb4969f8e12b9b7c4d886971da80aee52ca6e95dfd73d6eb38a5e9b0",
+        "0x7b323e9a3ba9f5879f72281ddd5dcb3ae1dae74d78349ea218cea82803403459",
+        "0x1bcf6bb00c260131f5ddc395a4fa7ffa278f267bf9b25e43108b5858f588279e"
+      ]
+    },
+    {
+      "index": 1,
+      "address": "0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9",
+      "amount": "50000000000000000000000",
+      "amountFormatted": "50000.0",
+      "category": "builders",
+      "proof": [
+        "0x34483b44b86913b60fa2c13248edccabcc0096116ee3efbfdb7305b1f724e701",
+        "0x7b323e9a3ba9f5879f72281ddd5dcb3ae1dae74d78349ea218cea82803403459",
+        "0x1bcf6bb00c260131f5ddc395a4fa7ffa278f267bf9b25e43108b5858f588279e"
+      ]
+    },
+    {
+      "index": 2,
+      "address": "0x1234567890123456789012345678901234567890",
+      "amount": "25000000000000000000000",
+      "amountFormatted": "25000.0",
+      "category": "earlyLPs",
+      "proof": [
+        "0x57e64f7397997d27ded7048c32ac366f7825bfb1820f83b9a170a1681d17fc5d",
+        "0x86cbbe4fa7044f59ba3179cb4563c412a6e857358267f330e2d0c688ec4ca2dc",
+        "0x1bcf6bb00c260131f5ddc395a4fa7ffa278f267bf9b25e43108b5858f588279e"
+      ]
+    },
+    {
+      "index": 3,
+      "address": "0x0987654321098765432109876543210987654321",
+      "amount": "15000000000000000000000",
+      "amountFormatted": "15000.0",
+      "category": "governance",
+      "proof": [
+        "0x1fec1f2da0051085328631a6322048aa0815b74d39086b2076a8951170bdc947",
+        "0x86cbbe4fa7044f59ba3179cb4563c412a6e857358267f330e2d0c688ec4ca2dc",
+        "0x1bcf6bb00c260131f5ddc395a4fa7ffa278f267bf9b25e43108b5858f588279e"
+      ]
+    },
+    {
+      "index": 4,
+      "address": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+      "amount": "20000000000000000000000",
+      "amountFormatted": "20000.0",
+      "category": "partners",
+      "proof": [
+        "0x45ec83411b64ae0c40ffdad086e38905272ffec07ca2af32fd2e46941dee62f0",
+        "0x64db4ce177683305c56bbf6e5054ada2e13dff696527d693a21db6f8858c78f7",
+        "0x1d74d9a8df0ab36d85dad2702e6fbcbd63489331a348d1836db60e94a24ebb00"
+      ]
+    },
+    {
+      "index": 5,
+      "address": "0x1111111111111111111111111111111111111111",
+      "amount": "1000000000000000000000",
+      "amountFormatted": "1000.0",
+      "category": "questers",
+      "proof": [
+        "0x180cf806284762585bbb0ed7b71f06f0e1080fcc988399ceab1edc0743a2a7d2",
+        "0x64db4ce177683305c56bbf6e5054ada2e13dff696527d693a21db6f8858c78f7",
+        "0x1d74d9a8df0ab36d85dad2702e6fbcbd63489331a348d1836db60e94a24ebb00"
+      ]
+    },
+    {
+      "index": 6,
+      "address": "0x2222222222222222222222222222222222222222",
+      "amount": "1000000000000000000000",
+      "amountFormatted": "1000.0",
+      "category": "questers",
+      "proof": [
+        "0x0ad91d4299d065d764be6358fa1c9a6cacabc070b7f7254899a8c474c361482e",
+        "0x917851264bd02b489d5b7f9d941c9505c0570569cbdb56fc2b8ce57c00c7e439",
+        "0x1d74d9a8df0ab36d85dad2702e6fbcbd63489331a348d1836db60e94a24ebb00"
+      ]
+    },
+    {
+      "index": 7,
+      "address": "0x3333333333333333333333333333333333333333",
+      "amount": "1000000000000000000000",
+      "amountFormatted": "1000.0",
+      "category": "questers",
+      "proof": [
+        "0xf411143d3da3a2845c6cb983877e2874fa68d1ef6970860721443aabd1fbc959",
+        "0x917851264bd02b489d5b7f9d941c9505c0570569cbdb56fc2b8ce57c00c7e439",
+        "0x1d74d9a8df0ab36d85dad2702e6fbcbd63489331a348d1836db60e94a24ebb00"
+      ]
+    }
+  ],
+  "summary": {
+    "builders": 2,
+    "earlyLPs": 1,
+    "governance": 1,
+    "partners": 1,
+    "questers": 3
+  }
+}

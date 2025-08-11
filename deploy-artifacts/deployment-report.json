@@ -1,0 +1,71 @@
+{
+  "title": "CodeDAO Token Mainnet Deployment",
+  "timestamp": "2025-08-10T16:26:17.235Z",
+  "network": "Base Mainnet",
+  "chainId": 8453,
+  "repository": "CodeDAO-org/codedao-token",
+  "status": "READY_FOR_EXECUTION",
+  "safe": {
+    "address": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+    "network": "base",
+    "safeTxServiceUrl": "https://safe-transaction-base.safe.global",
+    "appLink": "https://app.safe.global/transactions/queue?safe=base:0x813343d30065eAe9D1Be6521203f5C0874818C28"
+  },
+  "deployment": {
+    "contractName": "CodeDAO Token",
+    "symbol": "CODE",
+    "totalSupply": "100000000e18",
+    "mintTo": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+    "deployer": "0x813343d30065eAe9D1Be6521203f5C0874818C28"
+  },
+  "transaction": {
+    "to": null,
+    "value": "0",
+    "data": "0x608060405234801561001057600080fd5b506040516200115338038062001153833981810160405281019061003491906100f7565b6040518060400160405280600d81526020017f436f646544414f20546f6b656e000000000000000000000000000000000000008152506040518060400160405280600481526020017f434f4445000000000000000000000000000000000000000000000000000000008152508160039081610092919061033a565b5080600490816100a2919061033a565b5050506000811690506100ba81610147565b6100f0576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016100e7906104c8565b60405180910390fd5b6100ff816a52b7d2dcc80cd2e4000000610218565b505061058e565b0000000000000000000000008133343d30065eae9d1be6521203f5c0874818c28",
+    "dataLength": 669,
+    "nonce": 42,
+    "operation": 0,
+    "estimatedGas": "2000000"
+  },
+  "calldataDigest": {
+    "to": null,
+    "value": "0",
+    "data": "0x608060405234801561001057600080fd5b506040516200115338038062001153833981810160405281019061003491906100f7565b6040518060400160405280600d81526020017f436f646544414f20546f6b656e000000000000000000000000000000000000008152506040518060400160405280600481526020017f434f4445000000000000000000000000000000000000000000000000000000008152508160039081610092919061033a565b5080600490816100a2919061033a565b5050506000811690506100ba81610147565b6100f0576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016100e7906104c8565b60405180910390fd5b6100ff816a52b7d2dcc80cd2e4000000610218565b505061058e565b0000000000000000000000008133343d30065eae9d1be6521203f5c0874818c28",
+    "dataLength": 669,
+    "operation": 0,
+    "constructorArgs": [
+      "0x813343d30065eAe9D1Be6521203f5C0874818C28"
+    ],
+    "estimatedGas": "2000000"
+  },
+  "postActions": [
+    "verify-mainnet",
+    "canary-transfer",
+    "publish"
+  ],
+  "verification": {
+    "basescanApiKey": "899ZAUFH...",
+    "autoVerify": true
+  },
+  "checklist": [
+    {
+      "item": "Safe has sufficient ETH for gas",
+      "status": "VERIFY_MANUALLY",
+      "note": "Check Safe balance on Base mainnet"
+    },
+    {
+      "item": "All signers available for execution",
+      "status": "VERIFY_MANUALLY",
+      "note": "Ensure required number of signers can approve"
+    },
+    {
+      "item": "BaseScan API key configured",
+      "status": "READY"
+    },
+    {
+      "item": "Post-action queue prepared",
+      "status": "READY"
+    }
+  ],
+  "errors": []
+}

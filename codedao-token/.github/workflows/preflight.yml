@@ -1,0 +1,48 @@
+name: Preflight
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Compile contracts
+        run: npx hardhat compile
+      
+      - name: Deploy to Base Sepolia
+        env:
+          BASE_SEPOLIA_RPC: ${{ secrets.BASE_SEPOLIA_RPC }}
+          BASESCAN_API_KEY: ${{ secrets.BASESCAN_API_KEY }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        run: npm run deploy:sepolia
+      
+      - name: Run smoke tests
+        env:
+          BASE_SEPOLIA_RPC: ${{ secrets.BASE_SEPOLIA_RPC }}
+        run: npm run test:smoke
+      
+      - name: Generate deployment report
+        run: npm run report:preflight
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: preflight-artifacts
+          path: |
+            artifacts/
+            deployments/
+            reports/

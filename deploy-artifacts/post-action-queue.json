@@ -1,0 +1,41 @@
+{
+  "timestamp": "2025-08-10T16:26:17.238Z",
+  "triggerCondition": "safe_execution_success",
+  "actions": [
+    {
+      "command": "/token verify-mainnet",
+      "description": "Verify contract on BaseScan",
+      "params": {
+        "repo": "CodeDAO-org/codedao-token",
+        "network": "base",
+        "require_verified": true
+      }
+    },
+    {
+      "command": "/token canary-transfer",
+      "description": "Execute canary transfer to test contract",
+      "params": {
+        "repo": "CodeDAO-org/codedao-token",
+        "network": "base",
+        "amount": "1000000000000000000",
+        "to": "0x742d35Cc6634C0532925a3b8D4bc2eAe"
+      }
+    },
+    {
+      "command": "/token publish",
+      "description": "Publish contract details to website and extension",
+      "params": {
+        "repo": "CodeDAO-org/codedao-token",
+        "targets": [
+          "CodeDAO-org/codedao-website",
+          "CodeDAO-org/codedao-extension"
+        ],
+        "include": [
+          "addresses.base.json",
+          "artifacts/ABI.json",
+          "basescan_link"
+        ]
+      }
+    }
+  ]
+}

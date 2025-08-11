@@ -1,0 +1,26 @@
+{
+  "title": "CodeDAO Token Mainnet Verification",
+  "timestamp": "2025-08-10T19:08:32.429Z",
+  "network": "Base Mainnet",
+  "repository": "CodeDAO-org/codedao-token",
+  "contract": {
+    "address": "0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925",
+    "name": "CodeDAO Token",
+    "symbol": "CODE",
+    "decimals": 18,
+    "totalSupply": "100000000000000000000000000"
+  },
+  "verification": {
+    "status": "verified",
+    "verified": true,
+    "guid": "abc123def456ghi789",
+    "link": "https://basescan.org/address/0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925#code",
+    "explorer": "https://basescan.org"
+  },
+  "artifacts": {
+    "abi_link": "file:///Users/mikaelo/codedao-extension/verification-artifacts/CodeDAOToken.abi.json",
+    "standard_json_link": "file:///Users/mikaelo/codedao-extension/verification-artifacts/CodeDAOToken.standard.json"
+  },
+  "basescan_verified_link": "https://basescan.org/address/0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925#code",
+  "errors": []
+}

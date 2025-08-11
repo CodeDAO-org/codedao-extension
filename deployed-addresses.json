@@ -1,0 +1,31 @@
+{
+  "codeToken": "0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C",
+  "stakingVault": "0xe6F6f49F5865e5230fd2Dc90F9cC8440d8eA5f7c", 
+  "epochDistributor": "0x36653EFf30fa88765Cf12199A009DdcB2cF724a0",
+  "network": "base",
+  "deployer": "0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9",
+  "timestamp": "2025-01-12T02:00:00.000Z",
+  "verification_status": {
+    "codeToken": "✅ Verified",
+    "stakingVault": "✅ Verified", 
+    "epochDistributor": "✅ Verified"
+  },
+  "basescan_links": {
+    "codeToken": "https://basescan.org/address/0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C#code",
+    "stakingVault": "https://basescan.org/address/0xe6F6f49F5865e5230fd2Dc90F9cC8440d8eA5f7c#code",
+    "epochDistributor": "https://basescan.org/address/0x36653EFf30fa88765Cf12199A009DdcB2cF724a0#code"
+  },
+  "tier_requirements": {
+    "Free": "0 CODE staked",
+    "Builder": "10,000 CODE staked",
+    "Pro": "50,000 CODE staked", 
+    "Partner": "250,000 CODE staked"
+  },
+  "next_steps": [
+    "Fund EpochDistributor with CODE tokens",
+    "Set up GitHub App for PR attestations",
+    "Create CODE/USDC pool on Aerodrome",
+    "Integrate SIWE + tier gating in dashboard",
+    "Deploy governance contracts"
+  ]
+} 

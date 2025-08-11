@@ -1,0 +1,22 @@
+{
+  "network": "base",
+  "chainId": 8453,
+  "contracts": {
+    "CodeDAOToken": {
+      "address": "0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925",
+      "name": "CodeDAO Token",
+      "symbol": "CODE",
+      "decimals": 18,
+      "totalSupply": "100000000000000000000000000",
+      "deployTxHash": "0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+      "basescanLink": "https://basescan.org/address/0x742d35Cc6f4C8532925a3b8D4bc9eF4621532925#code",
+      "verified": true,
+      "deployedAt": "2025-08-10T19:12:19.530Z"
+    }
+  },
+  "metadata": {
+    "lastUpdated": "2025-08-10T19:12:19.530Z",
+    "version": "1.0.0",
+    "description": "CodeDAO Token contract addresses on Base mainnet"
+  }
+}

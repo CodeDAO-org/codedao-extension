@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+/**
+ * @title CodeDAOToken V1 (Reconstructed for verification)
+ * @dev Simple ERC20 token with Ownable, fixed 100M supply
+ * Deployed originally with 100,000,000 tokens minted to deployer
+ */
+contract CodeDAOToken is ERC20, Ownable {
+    /**
+     * @dev Constructor sets name, symbol and mints 100M tokens to deployer
+     * No constructor arguments - deploys with msg.sender as initial owner and token holder
+     */
+    constructor() ERC20("CodeDAO Token", "CODE") {
+        // Mint 100 million tokens (100,000,000 * 10^18)
+        _mint(msg.sender, 100000000 * 10**18);
+    }
+    
+    // No additional functions - just basic ERC20 + Ownable
+    // Total supply is fixed at 100M, no minting capability
+} 
