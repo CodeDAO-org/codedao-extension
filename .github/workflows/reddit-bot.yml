@@ -81,43 +81,84 @@ Keep building, keep earning! 🚀
             print(f'🎉 Posted milestone: {post.url}')
             print(f'📊 Post ID: {post.id}')
             
-        else:  # weekend_thread (default)
-            # Enhanced weekend builder thread
-            current_time = datetime.now()
-            day_name = current_time.strftime('%A')
-            
-            title = f'🚀 {day_name} Builder Thread - What are you coding?'
-            
-            content = f'''**Welcome to the {day_name} CodeDAO builder thread!**
-
-**Share what you are working on:**
-- 💻 Current coding projects and features
-- 🔧 Weekend hacks and experiments  
-- 🐛 Bugs you are crushing
-- 🎯 New technologies you are learning
-- 🚀 Cool discoveries and breakthroughs
-
-**CodeDAO Resources:**
-- 🌐 **Dashboard**: https://codedao-org.github.io/dashboard.html
-- 📖 **Get Started Guide**: https://codedao-org.github.io/get-started.html
-- 💰 **Earn CODE tokens**: Track contributions and get rewarded
-- 🤝 **Peer Review**: Get feedback on your code
-- 📊 **Quality Scoring**: AI-powered code analysis
-
-**Community Guidelines:**
-- Share your progress, no matter how small
-- Ask questions and offer help to others
-- Include links to your projects when possible
-- Celebrate wins and learn from challenges
-
-**Remember**: Every commit, every PR, every contribution makes you a better developer. The CodeDAO community is here to support your journey! 
-
-Let us build the future together! 🔥
-
----
-*🤖 This thread is automatically posted every 4 hours to keep our community active. Join the conversation and share your coding adventures!*
-
-*Posted by CodeDAO Bot | {current_time.strftime('%Y-%m-%d %H:%M UTC')}*'''
+                 else:  # weekend_thread (default)
+             # Natural, human-like builder thread
+             import random
+             current_time = datetime.now()
+             day_name = current_time.strftime('%A')
+             hour = current_time.hour
+             
+             # Vary titles to feel more natural
+             titles = [
+                 f'What are you building this {day_name}?',
+                 f'{day_name} coding session - what is everyone working on?',
+                 f'Share your {day_name} projects!',
+                 f'Quick check-in: what is on your screen right now?',
+                 f'{day_name} builders thread',
+                 f'What are you coding today?'
+             ]
+             
+             # Add time-specific context
+             if hour < 12:
+                 titles.extend([f'Good morning! What are you starting with today?', f'Morning coffee and code - what is the plan?'])
+             elif hour < 17:
+                 titles.extend([f'Afternoon check-in - how is the coding going?', f'Midday progress update thread'])
+             else:
+                 titles.extend([f'Evening builders - what are you working on tonight?', f'Night owl coders, what is keeping you up?'])
+             
+             title = random.choice(titles)
+             
+             # More casual, conversational content
+             intros = [
+                 f'Hey CodeDAO builders! Hope everyone is having a productive {day_name}.',
+                 f'Another {day_name}, another chance to build something awesome.',
+                 f'What is everyone hacking on this {day_name}?',
+                 f'Quick pulse check on what the community is building.',
+                 f'{day_name} vibes are strong - let us see those projects!'
+             ]
+             
+             questions = [
+                 'Drop a comment with what you are working on:',
+                 'Share your current project:',
+                 'Tell us about your latest code adventure:',
+                 'What is on your development plate:',
+                 'Quick update on your builds:'
+             ]
+             
+             bullets = [
+                 '• New features you are shipping',
+                 '• Bugs you finally squashed',  
+                 '• Tech stack experiments',
+                 '• Weekend side projects',
+                 '• Learning something completely new',
+                 '• Refactoring that old messy code',
+                 '• Open source contributions'
+             ]
+             
+             random.shuffle(bullets)
+             selected_bullets = bullets[:4]  # Pick 4 random ones
+             
+             closings = [
+                 'No progress is too small to share. We are all here learning together.',
+                 'Remember, every line of code gets you closer to your goals.',
+                 'The CodeDAO community is here to support each other.',
+                 'Whether you are debugging or deploying, drop an update below.',
+                 'Let us keep the momentum going and share what we are building!'
+             ]
+             
+             content = f'''{random.choice(intros)}
+ 
+ {random.choice(questions)}
+ 
+ {chr(10).join(selected_bullets)}
+ 
+ {random.choice(closings)}
+ 
+ **Quick links if you need them:**
+ Dashboard: https://codedao-org.github.io/dashboard.html
+ Get started: https://codedao-org.github.io/get-started.html
+ 
+ Looking forward to seeing what everyone is cooking up! 👨‍💻👩‍💻'''
             
             post = subreddit.submit(title=title, selftext=content)
             print(f'✅ Posted {day_name} builder thread: {post.url}')
