@@ -1,0 +1,58 @@
+{
+  "epochId": 1,
+  "merkleRoot": "0x6487037e4c0c1089836290a8aeb65d088de02b773fdfde8ac7d243bc4a71ae06",
+  "totalAmount": "160000000000000000000000",
+  "totalAmountFormatted": "160000.0",
+  "description": "Genesis Airdrop + Week 1 Builder Rewards",
+  "expiryDays": 90,
+  "recipients": [
+    {
+      "address": "0x0987654321098765432109876543210987654321",
+      "cumulativeAmount": "3000000000000000000000",
+      "cumulativeFormatted": "3000.0",
+      "proof": [
+        "0xf8b1f25adc5159410ff157f20a19c6137117217d045aebf0e73186121fb77423",
+        "0x8ec5ef7ea6bdb0af95d33e41a173b308f3bad740145f3cb2508272f649092785",
+        "0xd3e3f8e6166140e0efa1cb9bbb42e687be42848d9a66bb33764a22ab45feaaa7"
+      ]
+    },
+    {
+      "address": "0x1234567890123456789012345678901234567890",
+      "cumulativeAmount": "5000000000000000000000",
+      "cumulativeFormatted": "5000.0",
+      "proof": [
+        "0x89566eb5813a1a41efb4094ed63a7e54fb9751cbb8c54d3a53e7b2c3ddba2093",
+        "0x8ec5ef7ea6bdb0af95d33e41a173b308f3bad740145f3cb2508272f649092785",
+        "0xd3e3f8e6166140e0efa1cb9bbb42e687be42848d9a66bb33764a22ab45feaaa7"
+      ]
+    },
+    {
+      "address": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+      "cumulativeAmount": "100000000000000000000000",
+      "cumulativeFormatted": "100000.0",
+      "proof": [
+        "0xcf06f1e71ec4b959998aa255356f590ef8c3dabbc8f6c7114194745277645cba",
+        "0xab93239301d47b22f4e32a08b4347ee9a4899e28d67e56b9b6a57d33bf42921a",
+        "0xd3e3f8e6166140e0efa1cb9bbb42e687be42848d9a66bb33764a22ab45feaaa7"
+      ]
+    },
+    {
+      "address": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+      "cumulativeAmount": "2000000000000000000000",
+      "cumulativeFormatted": "2000.0",
+      "proof": [
+        "0x80c894dbe45061e73bf8eb199a65f6ce7fddcb7f60515f49d24489c5db298288",
+        "0xab93239301d47b22f4e32a08b4347ee9a4899e28d67e56b9b6a57d33bf42921a",
+        "0xd3e3f8e6166140e0efa1cb9bbb42e687be42848d9a66bb33764a22ab45feaaa7"
+      ]
+    },
+    {
+      "address": "0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9",
+      "cumulativeAmount": "50000000000000000000000",
+      "cumulativeFormatted": "50000.0",
+      "proof": [
+        "0x95d68f82ce90aba83403e4b6e61d2e5aab81ed25841fe19b0a7c47c00225819b"
+      ]
+    }
+  ]
+}

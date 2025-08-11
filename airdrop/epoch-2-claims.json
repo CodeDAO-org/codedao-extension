@@ -1,0 +1,68 @@
+{
+  "epochId": 2,
+  "merkleRoot": "0x469cfc1e66a05bd87a120f264cfd09792d03a71f669657d2ec37952730884970",
+  "totalAmount": "172000000000000000000000",
+  "totalAmountFormatted": "172000.0",
+  "description": "Week 2 Builder Rewards",
+  "expiryDays": 90,
+  "recipients": [
+    {
+      "address": "0x0987654321098765432109876543210987654321",
+      "cumulativeAmount": "6500000000000000000000",
+      "cumulativeFormatted": "6500.0",
+      "proof": [
+        "0xa2e6ea76d15c46906e4b2d82928dc79db04001ae6b89d66b9de5e5affdc502b0",
+        "0x9776a497a4bfdfd08c76ac2dd6ec5046c5770d49ff292cc3967220758e013c69",
+        "0x7e5f1e178913b4e559efdbebd8ce0e9b87874f311eb8d2591b8e8ab6880d7f7b"
+      ]
+    },
+    {
+      "address": "0x1111111111111111111111111111111111111111",
+      "cumulativeAmount": "2500000000000000000000",
+      "cumulativeFormatted": "2500.0",
+      "proof": [
+        "0x0bc472a52f371df28d41fad8b48744586d144c9adff816bd2329b6c6b41f1ee1",
+        "0x9776a497a4bfdfd08c76ac2dd6ec5046c5770d49ff292cc3967220758e013c69",
+        "0x7e5f1e178913b4e559efdbebd8ce0e9b87874f311eb8d2591b8e8ab6880d7f7b"
+      ]
+    },
+    {
+      "address": "0x1234567890123456789012345678901234567890",
+      "cumulativeAmount": "9500000000000000000000",
+      "cumulativeFormatted": "9500.0",
+      "proof": [
+        "0x80c894dbe45061e73bf8eb199a65f6ce7fddcb7f60515f49d24489c5db298288",
+        "0x3546a6a08bfc4599f4d77b756490114ae975a3f18901a5d54e65d23d124ef839",
+        "0x7e5f1e178913b4e559efdbebd8ce0e9b87874f311eb8d2591b8e8ab6880d7f7b"
+      ]
+    },
+    {
+      "address": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+      "cumulativeAmount": "100000000000000000000000",
+      "cumulativeFormatted": "100000.0",
+      "proof": [
+        "0xe069f2b1eea5ddecd65f4d8a9b7cab5dc92bdce5c9c66438ae63bc5bc2efecff",
+        "0x3546a6a08bfc4599f4d77b756490114ae975a3f18901a5d54e65d23d124ef839",
+        "0x7e5f1e178913b4e559efdbebd8ce0e9b87874f311eb8d2591b8e8ab6880d7f7b"
+      ]
+    },
+    {
+      "address": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+      "cumulativeAmount": "3500000000000000000000",
+      "cumulativeFormatted": "3500.0",
+      "proof": [
+        "0xd3e3f8e6166140e0efa1cb9bbb42e687be42848d9a66bb33764a22ab45feaaa7",
+        "0x41e1d13e5a2eb7164c5b4876ad054344def890e20270091737cc56c72887577d"
+      ]
+    },
+    {
+      "address": "0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9",
+      "cumulativeAmount": "50000000000000000000000",
+      "cumulativeFormatted": "50000.0",
+      "proof": [
+        "0xa07ac9cec6afd260a47b15d4f2791b85fad964ec488c7f329e6b9f42666783d5",
+        "0x41e1d13e5a2eb7164c5b4876ad054344def890e20270091737cc56c72887577d"
+      ]
+    }
+  ]
+}
