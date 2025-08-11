@@ -67,7 +67,7 @@ npx hardhat run scripts/verify-ecosystem.js --network base
 ```
 
 ### **Option 3: Claim Hub Demo**
-Open [`claim-hub.html`](claim-hub.html) in your browser to test the complete user flow.
+Visit the [CodeDAO Dashboard](https://codedao-org.github.io/codedao-extension/dashboard/index.html) and click "🎁 Claim CODE" in the navigation, or go directly to the [Claim Hub](https://codedao-org.github.io/codedao-extension/claim-hub.html).
 
 **📋 Complete Test Vectors**: See [`test-vectors.md`](test-vectors.md) for comprehensive validation.
 
