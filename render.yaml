@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: codedao-webhook-ai-agent
+    runtime: node
+    plan: starter
+    rootDir: github-app
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: GITHUB_WEBHOOK_SECRET
+        value: CodeDAO_Production_Secret_2024
+      - key: ALLOWLIST_REPOS
+        value: codedao-org/codedao-extension
+      - key: BASE_RPC
+        value: https://mainnet.base.org
+    healthCheckPath: /health
+    repo: https://github.com/CodeDAO-org/codedao-extension
+    branch: main 
