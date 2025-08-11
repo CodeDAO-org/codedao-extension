@@ -60,22 +60,44 @@ jobs:
             print('✅ Reddit bot connection test successful!')
             print(f'📊 Account karma: {reddit.user.me().comment_karma + reddit.user.me().link_karma}')
             
-        elif action == 'milestone_post':
-            # Simple milestone post
-            title = '🎉 CodeDAO Community Milestone!'
-            content = '''**Exciting news from the CodeDAO community!**
-            
-A new milestone has been reached in our developer ecosystem.
-
-**Join the CodeDAO Community:**
-- 🌐 **Dashboard**: https://codedao-org.github.io/dashboard.html
-- 📚 **Get Started**: https://codedao-org.github.io/get-started.html
-- 💰 **Earn CODE tokens** for your coding contributions
-- 🤝 **Connect with developers** building the future
-
-Keep building, keep earning! 🚀
-
-*Posted by CodeDAO Bot*'''
+                 elif action == 'milestone_post':
+             # Natural milestone celebration
+             import random
+             
+             milestone_titles = [
+                 'Pretty cool milestone for our community!',
+                 'Quick celebration post for CodeDAO',
+                 'Community update - we hit a milestone!',
+                 'Some good news to share with everyone',
+                 'Milestone Monday (or whatever day it is!)'
+             ]
+             
+             milestone_intros = [
+                 'Just wanted to drop a quick update that we hit another milestone in the CodeDAO community.',
+                 'Hey everyone! We reached another cool milestone.',
+                 'Community growth update: we just hit a new milestone!',
+                 'Quick shoutout - the CodeDAO ecosystem keeps growing.',
+                 'Pretty awesome to see the community hitting new milestones.'
+             ]
+             
+             milestone_calls = [
+                 'If you have not checked out CodeDAO yet, now is a great time to jump in.',
+                 'For anyone new here, CodeDAO lets you earn tokens for your coding contributions.',
+                 'Always looking for more builders to join the community.',
+                 'The more developers we have, the stronger the ecosystem gets.',
+                 'Come for the code, stay for the community (and the tokens).'
+             ]
+             
+             title = random.choice(milestone_titles)
+             content = f'''{random.choice(milestone_intros)}
+ 
+ {random.choice(milestone_calls)}
+ 
+ Links if you want to check it out:
+ • Dashboard: https://codedao-org.github.io/dashboard.html  
+ • Getting started: https://codedao-org.github.io/get-started.html
+ 
+ Thanks for being part of this! 🚀'''
             
             post = subreddit.submit(title=title, selftext=content)
             print(f'🎉 Posted milestone: {post.url}')
