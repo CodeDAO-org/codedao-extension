@@ -1,0 +1,68 @@
+{
+  "version": "1.0",
+  "chainId": "8453",
+  "createdAt": 1704067200000,
+  "meta": {
+    "name": "CodeDAO Epoch 1 Setup",
+    "description": "Fund EpochDistributor and set Merkle root for first epoch",
+    "txBuilderVersion": "1.16.1"
+  },
+  "transactions": [
+    {
+      "to": "0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "name": "to",
+            "type": "address",
+            "value": "0x36653EFf30fa88765Cf12199A009DdcB2cF724a0"
+          },
+          {
+            "name": "amount",
+            "type": "uint256",
+            "value": "150000000000000000000"
+          }
+        ],
+        "name": "transfer",
+        "payable": false
+      },
+      "contractInputsValues": {
+        "to": "0x36653EFf30fa88765Cf12199A009DdcB2cF724a0",
+        "amount": "150000000000000000000"
+      }
+    },
+    {
+      "to": "0x36653EFf30fa88765Cf12199A009DdcB2cF724a0",
+      "value": "0", 
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "name": "epochId",
+            "type": "uint256",
+            "value": "1"
+          },
+          {
+            "name": "merkleRoot",
+            "type": "bytes32",
+            "value": "0xddc833d869453b3935e5e64cd450430d15fbbb81fcab74dcf91800b63e02ca2e"
+          },
+          {
+            "name": "totalAmount", 
+            "type": "uint256",
+            "value": "150000000000000000000"
+          }
+        ],
+        "name": "setRoot",
+        "payable": false
+      },
+      "contractInputsValues": {
+        "epochId": "1",
+        "merkleRoot": "0xddc833d869453b3935e5e64cd450430d15fbbb81fcab74dcf91800b63e02ca2e",
+        "totalAmount": "150000000000000000000"
+      }
+    }
+  ]
+} 

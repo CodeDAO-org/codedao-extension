@@ -4,202 +4,317 @@ const { EAS, SchemaEncoder } = require('@ethereum-attestation-service/eas-sdk');
 const { ethers } = require('ethers');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Configuration
+const CONFIG = {
+    GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET,
+    ALLOWLIST_REPOS: (process.env.ALLOWLIST_REPOS || 'codedao-org/codedao-extension').split(','),
+    BASE_RPC: process.env.BASE_RPC || 'https://mainnet.base.org',
+    EAS_CONTRACT_ADDRESS: '0x4200000000000000000000000000000000000021', // Base EAS
+    EAS_SCHEMA_ID: process.env.EAS_SCHEMA_ID || '0x', // Set when schema is deployed
+    EAS_PRIVATE_KEY: process.env.EAS_PRIVATE_KEY, // Optional for MVP
+};
+
+console.log('🚀 CodeDAO GitHub Webhook Starting...');
+console.log('📋 Config:');
+console.log('   Allowed Repos:', CONFIG.ALLOWLIST_REPOS);
+console.log('   Base RPC:', CONFIG.BASE_RPC);
+console.log('   EAS Contract:', CONFIG.EAS_CONTRACT_ADDRESS);
+
+// Initialize webhooks
 const webhooks = new Webhooks({
-    secret: process.env.GITHUB_WEBHOOK_SECRET,
+    secret: CONFIG.GITHUB_WEBHOOK_SECRET,
 });
 
-// Base network configuration
-const PROVIDER = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL || 'https://mainnet.base.org');
-const SIGNER = new ethers.Wallet(process.env.ATTESTATION_PRIVATE_KEY, PROVIDER);
+// Middleware
+app.use(express.json());
 
-// EAS configuration on Base
-const EAS_CONTRACT_ADDRESS = '0x4200000000000000000000000000000000000021'; // Base EAS
-const eas = new EAS(EAS_CONTRACT_ADDRESS);
-eas.connect(SIGNER);
+// Health endpoint
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        service: 'codedao-github-webhook',
+        version: '1.0.0',
+        config: {
+            allowedRepos: CONFIG.ALLOWLIST_REPOS.length,
+            easEnabled: !!CONFIG.EAS_PRIVATE_KEY,
+            baseRpc: !!CONFIG.BASE_RPC
+        }
+    });
+});
 
-// Our PR attestation schema
-const PR_SCHEMA_UID = process.env.PR_SCHEMA_UID; // To be created
-const schemaEncoder = new SchemaEncoder("string repo_name,uint256 pr_number,address author_addr,address merged_by,uint256 lines_added,uint256 lines_removed,uint256 files_changed,string[] labels,bool tests_passed,uint256 complexity_score,uint256 review_approvals,uint256 merged_timestamp");
-
-// Allowlisted repositories
-const ALLOWED_REPOS = [
-    'codedao-org/codedao-extension',
-    'codedao-org/codedao-contracts',
-    // Add more as needed
-];
+// Root endpoint
+app.get('/', (req, res) => {
+    res.json({
+        service: 'CodeDAO GitHub Webhook',
+        status: 'running',
+        docs: 'https://github.com/CodeDAO-org/codedao-extension',
+        endpoints: {
+            health: '/health',
+            webhooks: '/webhooks/github'
+        }
+    });
+});
 
 // Quality scoring algorithm
 function calculateQualityScore(prData) {
-    let score = 100; // Base score for merged PR
+    console.log('🔍 Calculating quality score for PR:', prData.number);
     
-    // Difficulty multiplier based on labels
-    const difficultyMultiplier = getDifficultyMultiplier(prData.labels);
-    score *= difficultyMultiplier;
+    let score = 0;
+    const factors = {};
     
-    // Review factor (more reviews = higher score)
-    const reviewFactor = Math.min(1.5, 1 + (prData.review_approvals * 0.1));
-    score *= reviewFactor;
-    
-    // Test coverage factor
-    const testFactor = prData.tests_passed ? 1.2 : 0.8;
-    score *= testFactor;
-    
-    // Complexity factor (capped to prevent gaming)
-    const complexityFactor = Math.min(2.0, 1 + (prData.files_changed * 0.05));
-    score *= complexityFactor;
-    
-    // Author reputation (to be implemented)
-    const reputationMultiplier = 1.0; // TODO: Implement reputation system
-    score *= reputationMultiplier;
-    
-    return Math.floor(score);
-}
-
-function getDifficultyMultiplier(labels) {
-    if (labels.includes('good-first-issue')) return 0.5;
-    if (labels.includes('core') || labels.includes('critical')) return 2.0;
-    if (labels.includes('feature')) return 1.3;
-    if (labels.includes('bug')) return 1.1;
-    return 1.0; // Default
-}
-
-// GitHub webhook handler for PR events
-webhooks.on('pull_request.closed', async ({ payload }) => {
-    if (!payload.pull_request.merged) {
-        console.log('❌ PR not merged, skipping');
-        return;
+    // Base score for merged PR
+    if (prData.merged) {
+        score += 100;
+        factors.merged = 100;
     }
     
-    const repo = payload.repository.full_name;
-    if (!ALLOWED_REPOS.includes(repo)) {
-        console.log(`❌ Repo ${repo} not allowlisted, skipping`);
-        return;
-    }
+    // Lines changed factor (up to 50 points)
+    const linesChanged = (prData.additions || 0) + (prData.deletions || 0);
+    const linesFactor = Math.min(50, Math.floor(linesChanged / 10));
+    score += linesFactor;
+    factors.lines = linesFactor;
     
-    console.log(`🔄 Processing merged PR #${payload.pull_request.number} in ${repo}`);
+    // Review factor (up to 30 points)
+    const reviewCount = prData.review_comments || 0;
+    const reviewFactor = Math.min(30, reviewCount * 5);
+    score += reviewFactor;
+    factors.review = reviewFactor;
+    
+    // Complexity factor based on files changed (up to 20 points)
+    const filesChanged = prData.changed_files || 0;
+    const complexityFactor = Math.min(20, filesChanged * 2);
+    score += complexityFactor;
+    factors.complexity = complexityFactor;
+    
+    console.log('📊 Score breakdown:', factors);
+    console.log('🎯 Total score:', score);
+    
+    return {
+        score,
+        factors,
+        timestamp: new Date().toISOString()
+    };
+}
+
+// Convert score to CODE token amount (basic formula)
+function scoreToTokenAmount(score) {
+    // Base formula: score / 10 = CODE tokens
+    // Max ~20 CODE per excellent PR (score 200)
+    const tokens = Math.floor(score / 10);
+    return Math.max(1, Math.min(50, tokens)); // Min 1, max 50 CODE
+}
+
+// Create EAS attestation (if configured)
+async function createPRAttestation(prData, qualityData) {
+    if (!CONFIG.EAS_PRIVATE_KEY || !CONFIG.EAS_SCHEMA_ID) {
+        console.log('⚠️ EAS not configured, skipping attestation');
+        return null;
+    }
     
     try {
-        await createPRAttestation(payload);
+        console.log('🏗️ Creating EAS attestation...');
+        
+        const provider = new ethers.JsonRpcProvider(CONFIG.BASE_RPC);
+        const signer = new ethers.Wallet(CONFIG.EAS_PRIVATE_KEY, provider);
+        
+        const eas = new EAS(CONFIG.EAS_CONTRACT_ADDRESS);
+        eas.connect(signer);
+        
+        // Schema: string repo_name,uint256 pr_number,address author_addr,uint256 score,string pr_title,uint256 timestamp
+        const schemaEncoder = new SchemaEncoder(
+            "string repo_name,uint256 pr_number,address author_addr,uint256 score,string pr_title,uint256 timestamp"
+        );
+        
+        const encodedData = schemaEncoder.encodeData([
+            { name: "repo_name", value: prData.repository, type: "string" },
+            { name: "pr_number", value: prData.number, type: "uint256" },
+            { name: "author_addr", value: prData.author_address || ethers.ZeroAddress, type: "address" },
+            { name: "score", value: qualityData.score, type: "uint256" },
+            { name: "pr_title", value: prData.title, type: "string" },
+            { name: "timestamp", value: Math.floor(Date.now() / 1000), type: "uint256" }
+        ]);
+        
+        const tx = await eas.attest({
+            schema: CONFIG.EAS_SCHEMA_ID,
+            data: {
+                recipient: prData.author_address || ethers.ZeroAddress,
+                expirationTime: 0,
+                revocable: true,
+                data: encodedData,
+            },
+        });
+        
+        const attestationUID = await tx.wait();
+        console.log('✅ EAS attestation created:', attestationUID);
+        
+        return attestationUID;
+        
     } catch (error) {
-        console.error('❌ Failed to create attestation:', error);
+        console.error('❌ EAS attestation failed:', error.message);
+        return null;
+    }
+}
+
+// Store epoch data (simple file-based for MVP)
+function storeEpochData(address, amount, prData) {
+    const fs = require('fs');
+    const path = require('path');
+    
+    try {
+        // Load current epoch data
+        const epochFile = path.join(__dirname, '..', 'epochs', 'current-epoch.json');
+        let epochData = { claims: {} };
+        
+        if (fs.existsSync(epochFile)) {
+            epochData = JSON.parse(fs.readFileSync(epochFile, 'utf8'));
+        }
+        
+        // Add/update claim
+        if (!epochData.claims[address]) {
+            epochData.claims[address] = {
+                cumulative: "0",
+                prs: []
+            };
+        }
+        
+        const currentCumulative = BigInt(epochData.claims[address].cumulative);
+        const newAmount = ethers.parseEther(amount.toString());
+        const newCumulative = currentCumulative + newAmount;
+        
+        epochData.claims[address].cumulative = newCumulative.toString();
+        epochData.claims[address].prs.push({
+            number: prData.number,
+            repository: prData.repository,
+            amount: newAmount.toString(),
+            timestamp: new Date().toISOString(),
+            score: prData.score
+        });
+        
+        // Update metadata
+        epochData.lastUpdated = new Date().toISOString();
+        epochData.totalClaims = Object.keys(epochData.claims).length;
+        
+        // Save updated data
+        fs.writeFileSync(epochFile, JSON.stringify(epochData, null, 2));
+        
+        console.log(`💾 Updated epoch data for ${address}: ${ethers.formatEther(newCumulative)} CODE total`);
+        
+        return {
+            address,
+            newAmount: ethers.formatEther(newAmount),
+            totalAmount: ethers.formatEther(newCumulative),
+            prCount: epochData.claims[address].prs.length
+        };
+        
+    } catch (error) {
+        console.error('❌ Failed to store epoch data:', error.message);
+        return null;
+    }
+}
+
+// Main webhook handler
+webhooks.on('pull_request.closed', async ({ payload }) => {
+    console.log('\n🔔 Received PR closed event');
+    
+    try {
+        const pr = payload.pull_request;
+        const repo = payload.repository;
+        
+        // Check if repo is allowlisted
+        const repoFullName = repo.full_name;
+        if (!CONFIG.ALLOWLIST_REPOS.includes(repoFullName)) {
+            console.log(`⚠️ Repository ${repoFullName} not in allowlist`);
+            return;
+        }
+        
+        // Check if PR was merged
+        if (!pr.merged) {
+            console.log(`⚠️ PR #${pr.number} was closed but not merged`);
+            return;
+        }
+        
+        console.log(`✅ Processing merged PR #${pr.number} in ${repoFullName}`);
+        console.log(`👤 Author: ${pr.user.login}`);
+        console.log(`📝 Title: ${pr.title}`);
+        
+        // Extract PR data
+        const prData = {
+            number: pr.number,
+            title: pr.title,
+            repository: repoFullName,
+            author: pr.user.login,
+            author_address: null, // TODO: Link GitHub to wallet address
+            merged: pr.merged,
+            additions: pr.additions,
+            deletions: pr.deletions,
+            changed_files: pr.changed_files,
+            review_comments: pr.review_comments,
+            merged_at: pr.merged_at
+        };
+        
+        // Calculate quality score
+        const qualityData = calculateQualityScore(prData);
+        prData.score = qualityData.score;
+        
+        // Convert to token amount
+        const tokenAmount = scoreToTokenAmount(qualityData.score);
+        
+        console.log(`💰 Reward: ${tokenAmount} CODE tokens`);
+        
+        // Create EAS attestation (optional)
+        const attestationUID = await createPRAttestation(prData, qualityData);
+        
+        // Store in epoch data (using author's GitHub username as placeholder)
+        // TODO: Replace with actual wallet address from GitHub linking
+        const placeholderAddress = `github:${pr.user.login}`;
+        const epochResult = storeEpochData(placeholderAddress, tokenAmount, prData);
+        
+        console.log('✅ PR processing complete!');
+        console.log('📊 Summary:');
+        console.log(`   Score: ${qualityData.score}`);
+        console.log(`   Reward: ${tokenAmount} CODE`);
+        console.log(`   Attestation: ${attestationUID || 'N/A'}`);
+        console.log(`   Epoch Updated: ${!!epochResult}`);
+        
+        // TODO: Trigger notifications (Discord, Telegram, email)
+        
+    } catch (error) {
+        console.error('❌ Error processing PR webhook:', error);
     }
 });
 
-async function createPRAttestation(payload) {
-    const pr = payload.pull_request;
-    const repo = payload.repository;
+// Webhook endpoint
+app.post('/webhooks/github', (req, res) => {
+    console.log('📥 Received webhook:', req.headers['x-github-event']);
     
-    // TODO: Get GitHub user's wallet address (needs user registration system)
-    const authorAddress = await getWalletAddress(pr.user.login);
-    const mergedByAddress = await getWalletAddress(pr.merged_by?.login);
-    
-    if (!authorAddress) {
-        console.log(`❌ No wallet address found for ${pr.user.login}`);
-        return;
-    }
-    
-    // Extract PR data
-    const prData = {
-        repo_name: repo.full_name,
-        pr_number: pr.number,
-        author_addr: authorAddress,
-        merged_by: mergedByAddress || ethers.ZeroAddress,
-        lines_added: pr.additions || 0,
-        lines_removed: pr.deletions || 0,
-        files_changed: pr.changed_files || 0,
-        labels: pr.labels.map(label => label.name),
-        tests_passed: await checkTestsPassed(pr),
-        complexity_score: calculateComplexityScore(pr),
-        review_approvals: await getReviewApprovals(pr),
-        merged_timestamp: Math.floor(new Date(pr.merged_at).getTime() / 1000)
-    };
-    
-    // Calculate quality score
-    const qualityScore = calculateQualityScore(prData);
-    console.log(`📊 Quality score for PR #${pr.number}: ${qualityScore}`);
-    
-    // Encode attestation data
-    const encodedData = schemaEncoder.encodeData([
-        { name: "repo_name", value: prData.repo_name, type: "string" },
-        { name: "pr_number", value: prData.pr_number, type: "uint256" },
-        { name: "author_addr", value: prData.author_addr, type: "address" },
-        { name: "merged_by", value: prData.merged_by, type: "address" },
-        { name: "lines_added", value: prData.lines_added, type: "uint256" },
-        { name: "lines_removed", value: prData.lines_removed, type: "uint256" },
-        { name: "files_changed", value: prData.files_changed, type: "uint256" },
-        { name: "labels", value: prData.labels, type: "string[]" },
-        { name: "tests_passed", value: prData.tests_passed, type: "bool" },
-        { name: "complexity_score", value: prData.complexity_score, type: "uint256" },
-        { name: "review_approvals", value: prData.review_approvals, type: "uint256" },
-        { name: "merged_timestamp", value: prData.merged_timestamp, type: "uint256" },
-    ]);
-    
-    // Create attestation on Base
-    const tx = await eas.attest({
-        schema: PR_SCHEMA_UID,
-        data: {
-            recipient: prData.author_addr,
-            expirationTime: 0,
-            revocable: true,
-            data: encodedData,
-        },
+    webhooks.receive({
+        id: req.headers['x-github-delivery'],
+        name: req.headers['x-github-event'],
+        signature: req.headers['x-hub-signature-256'],
+        payload: JSON.stringify(req.body),
+    }).catch(error => {
+        console.error('❌ Webhook processing error:', error);
+        res.status(500).json({ error: error.message });
     });
     
-    const receipt = await tx.wait();
-    console.log(`✅ Attestation created: ${receipt.transactionHash}`);
-    
-    // Store quality score for epoch calculations
-    await storeQualityScore(prData.author_addr, qualityScore, getCurrentEpoch());
-}
+    res.status(200).json({ received: true });
+});
 
-// Helper functions (to be implemented)
-async function getWalletAddress(githubUsername) {
-    // TODO: Query user registration database
-    // For now, return null - users need to register their wallet
-    return null;
-}
-
-async function checkTestsPassed(pr) {
-    // TODO: Check GitHub status checks
-    return true; // Simplified for MVP
-}
-
-function calculateComplexityScore(pr) {
-    // Simple complexity score based on files changed
-    return Math.min(100, pr.changed_files * 10);
-}
-
-async function getReviewApprovals(pr) {
-    // TODO: Query GitHub API for review approvals
-    return 1; // Simplified for MVP
-}
-
-function getCurrentEpoch() {
-    const epochStart = new Date('2024-01-01').getTime(); // Adjust start date
-    const weeksSinceStart = Math.floor((Date.now() - epochStart) / (7 * 24 * 60 * 60 * 1000));
-    return weeksSinceStart;
-}
-
-async function storeQualityScore(address, score, epoch) {
-    // TODO: Store in database for epoch calculations
-    console.log(`📈 Storing score: ${address} = ${score} points for epoch ${epoch}`);
-}
-
-// Express middleware
-app.use(express.json());
-app.use('/webhooks', webhooks.middleware);
-
-// Health check
-app.get('/health', (req, res) => {
-    res.json({ status: 'healthy', timestamp: new Date().toISOString() });
+// Error handling
+app.use((error, req, res, next) => {
+    console.error('❌ Express error:', error);
+    res.status(500).json({ error: 'Internal server error' });
 });
 
 // Start server
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 CodeDAO GitHub App listening on port ${PORT}`);
-    console.log(`📡 Webhook endpoint: /webhooks`);
-    console.log(`💾 Allowed repos: ${ALLOWED_REPOS.join(', ')}`);
+    console.log(`🚀 CodeDAO GitHub Webhook running on port ${PORT}`);
+    console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+    console.log(`📨 Webhook endpoint: http://localhost:${PORT}/webhooks/github`);
+    console.log('✅ Ready to process GitHub events!');
 });
 
 module.exports = app; 

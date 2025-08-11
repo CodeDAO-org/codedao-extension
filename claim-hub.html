@@ -242,12 +242,25 @@
         let signer;
         let userAddress;
         
-        // Sample airdrop data for testing
-        const SAMPLE_AIRDROP = {
-            '0x813343d30065eAe9D1Be6521203f5C0874818C28': {
-                amount: ethers.utils.parseEther('100000'),
-                category: 'treasury',
-                proof: ['0x1234567890abcdef']
+        // Real epoch data - loaded from GitHub
+        const EPOCH_DATA_URL = "https://raw.githubusercontent.com/CodeDAO-org/codedao-extension/main/claim-data/epoch-0001.json";
+        let CURRENT_EPOCH_DATA = null;
+        
+        // Load real epoch data
+        async function loadEpochData() {
+            try {
+                const response = await fetch(EPOCH_DATA_URL);
+                CURRENT_EPOCH_DATA = await response.json();
+                console.log('✅ Loaded epoch data:', CURRENT_EPOCH_DATA);
+                return CURRENT_EPOCH_DATA;
+            } catch (error) {
+                console.error('❌ Failed to load epoch data:', error);
+                // Fallback to sample data
+                return {
+                    claims: {
+                        '0x813343d30065eAe9D1Be6521203f5C0874818C28': {
+                            cumulative: ethers.utils.parseEther('100').toString(),
+                            proof: ['0x8a47f4424491e96c9f8078bb58b71d734a8e6fc8e4c1c0e14e9bd0b334b5f644']
             },
             '0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9': {
                 amount: ethers.utils.parseEther('50000'),
