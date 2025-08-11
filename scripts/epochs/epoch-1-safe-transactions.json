@@ -1,0 +1,25 @@
+[
+  {
+    "to": "0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C",
+    "value": "0",
+    "data": null,
+    "method": "transfer",
+    "parameters": {
+      "to": "0x36653EFf30fa88765Cf12199A009DdcB2cF724a0",
+      "amount": "150000000000000000000"
+    },
+    "description": "Fund EpochDistributor with 150.0 CODE"
+  },
+  {
+    "to": "0x36653EFf30fa88765Cf12199A009DdcB2cF724a0",
+    "value": "0",
+    "data": null,
+    "method": "setRoot",
+    "parameters": {
+      "epochId": 1,
+      "merkleRoot": "0xd0faae85d7f2638ad3e41794a8144fcacc8ac0a40a86c0c9af7485d4fc52866f",
+      "totalAmount": "150000000000000000000"
+    },
+    "description": "Set Merkle root for Epoch 1"
+  }
+]

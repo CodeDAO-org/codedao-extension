@@ -10,14 +10,15 @@ const keccak256 = require('keccak256');
 const { ethers } = require('ethers');
 const fs = require('fs');
 
-// Epoch 1 - Manual test data (100 CODE for testing)
+// Epoch 1 - Manual test data (150 CODE for testing)
+// IMPORTANT: Using EOAs for browser MetaMask claims, not Safe address
 const EPOCH_1_DATA = [
     {
-        address: "0x813343d30065eAe9D1Be6521203f5C0874818C28", // Safe - for testing
+        address: "0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9", // Deployer EOA - for browser testing
         cumulative: ethers.parseEther("100") // 100 CODE
     },
     {
-        address: "0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9", // Deployer - for testing  
+        address: "0x813343d30065eAe9D1Be6521203f5C0874818C28", // Safe - for reference (can claim via Safe app)
         cumulative: ethers.parseEther("50") // 50 CODE
     }
 ];
