@@ -1,0 +1,112 @@
+{
+  "chainId": 8453,
+  "network": "base",
+  "contracts": {
+    "codeToken": {
+      "address": "0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C",
+      "name": "CodeDAO Token",
+      "symbol": "CODE",
+      "decimals": 18,
+      "totalSupply": "100000000000000000000000000",
+      "verified": true,
+      "basescanUrl": "https://basescan.org/address/0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C#code",
+      "deploymentTx": "0x...",
+      "compiler": {
+        "version": "0.8.20",
+        "optimizer": {
+          "enabled": true,
+          "runs": 10000
+        },
+        "evmVersion": "paris",
+        "metadata": {
+          "bytecodeHash": "bzzr1"
+        },
+        "viaIR": false
+      }
+    },
+    "stakingVault": {
+      "address": "0xe6F6f49F5865e5230fd2Dc90F9cC8440d8eA5f7c",
+      "name": "Staked CodeDAO Token",
+      "symbol": "sCODE",
+      "decimals": 18,
+      "verified": true,
+      "basescanUrl": "https://basescan.org/address/0xe6F6f49F5865e5230fd2Dc90F9cC8440d8eA5f7c#code",
+      "description": "Liquid staking vault for CODE tokens with governance voting power"
+    },
+    "epochDistributor": {
+      "address": "0x36653EFf30fa88765Cf12199A009DdcB2cF724a0",
+      "name": "CodeEpochDistributor",
+      "verified": true,
+      "basescanUrl": "https://basescan.org/address/0x36653EFf30fa88765Cf12199A009DdcB2cF724a0#code",
+      "description": "Weekly builder reward distribution via Merkle claims"
+    },
+    "safe": {
+      "address": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+      "name": "CodeDAO Treasury",
+      "safeUrl": "https://app.safe.global/base:0x813343d30065eAe9D1Be6521203f5C0874818C28",
+      "basescanUrl": "https://basescan.org/address/0x813343d30065eAe9D1Be6521203f5C0874818C28",
+      "description": "Multi-signature treasury holding 100M CODE tokens"
+    }
+  },
+  "tokenomics": {
+    "totalSupply": "100000000",
+    "distributionPlan": {
+      "safe": "100000000",
+      "airdrop": "5000000",
+      "builderRewards": "TBD",
+      "lpIncentives": "TBD"
+    },
+    "stakingTiers": {
+      "builder": "10000",
+      "pro": "50000", 
+      "partner": "250000"
+    },
+    "weeklyEmissions": {
+      "builderRewards": "150000-200000",
+      "lpIncentives": "100000"
+    }
+  },
+  "governance": {
+    "governor": {
+      "address": "TBD",
+      "description": "DAO governance with sCODE voting power"
+    },
+    "timelock": {
+      "address": "TBD", 
+      "delay": "172800",
+      "description": "2-day execution delay for governance proposals"
+    }
+  },
+  "airdrop": {
+    "totalAmount": "5000000",
+    "buckets": {
+      "builders": { "amount": "1750000", "percentage": 35, "passportGated": true },
+      "earlyLPs": { "amount": "1000000", "percentage": 20, "passportGated": false },
+      "governance": { "amount": "750000", "percentage": 15, "passportGated": false },
+      "partners": { "amount": "750000", "percentage": 15, "passportGated": false },
+      "questers": { "amount": "500000", "percentage": 10, "passportGated": false },
+      "reserve": { "amount": "250000", "percentage": 5, "passportGated": false }
+    },
+    "merkleRoot": "0x24abd9c6cc7f673fd4aa2fd8d7115ca9447d543a71607c002252372b0a7b4571",
+    "claimWindow": "90 days",
+    "passportThreshold": 15
+  },
+  "security": {
+    "upgradeable": false,
+    "pausable": {
+      "epochDistributor": true,
+      "stakingVault": false,
+      "codeToken": false
+    },
+    "adminRoles": {
+      "codeToken": "Immutable (no admin)",
+      "stakingVault": "Safe multisig",
+      "epochDistributor": "Safe multisig"
+    },
+    "reentrancyGuards": ["epochDistributor", "stakingVault"],
+    "killSwitch": "Limited to reward distribution only"
+  },
+  "lastUpdated": "2025-01-11T04:30:00.000Z",
+  "deployedBy": "AI Agent",
+  "agentBuilt": true
+} 

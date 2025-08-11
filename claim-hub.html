@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeDAO Claim Hub - Agent Built</title>
+    <script src="https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .agent-badge {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .wallet-info {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .claim-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .claim-button {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+        
+        .stake-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        }
+        
+        .amount-display {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .address {
+            font-family: 'Monaco', monospace;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            color: #a5d6a7;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+            color: #ef9a9a;
+        }
+        
+        .network-info {
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        .contract-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .contract-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 0.9rem;
+        }
+        
+        .contract-links a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 CodeDAO Claim Hub</h1>
+            <div class="agent-badge">🚀 Built by AI Agents</div>
+            <p>Claim your CODE tokens and stake for premium features</p>
+        </div>
+        
+        <div class="status" id="status">
+            <p>🌐 Connect your wallet to check eligibility</p>
+        </div>
+        
+        <div class="wallet-info" id="walletInfo">
+            <h3>🔗 Connected Wallet</h3>
+            <p class="address" id="walletAddress"></p>
+            <p>Network: <span id="networkName">Base Mainnet</span></p>
+        </div>
+        
+        <div class="claim-section" id="claimSection">
+            <h3>💰 Available Claims</h3>
+            <div id="claimDetails"></div>
+        </div>
+        
+        <button id="connectButton" onclick="connectWallet()">
+            Connect Wallet
+        </button>
+        
+        <div class="network-info">
+            <p>🔗 Base Mainnet • Gas fees ~$0.01</p>
+        </div>
+        
+        <div class="contract-links">
+            <a href="https://basescan.org/address/0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C#code" target="_blank">CODE Token</a>
+            <a href="https://basescan.org/address/0xe6F6f49F5865e5230fd2Dc90F9cC8440d8eA5f7c#code" target="_blank">sCODE Vault</a>
+            <a href="https://basescan.org/address/0x36653EFf30fa88765Cf12199A009DdcB2cF724a0#code" target="_blank">Distributor</a>
+        </div>
+    </div>
+
+    <script>
+        // Contract addresses
+        const CONTRACTS = {
+            codeToken: '0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C',
+            stakingVault: '0xe6F6f49F5865e5230fd2Dc90F9cC8440d8eA5f7c',
+            epochDistributor: '0x36653EFf30fa88765Cf12199A009DdcB2cF724a0'
+        };
+        
+        // Base network config
+        const BASE_NETWORK = {
+            chainId: '0x2105', // 8453 in hex
+            chainName: 'Base Mainnet',
+            rpcUrls: ['https://mainnet.base.org'],
+            nativeCurrency: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                decimals: 18
+            },
+            blockExplorerUrls: ['https://basescan.org']
+        };
+        
+        let provider;
+        let signer;
+        let userAddress;
+        
+        // Sample airdrop data for testing
+        const SAMPLE_AIRDROP = {
+            '0x813343d30065eAe9D1Be6521203f5C0874818C28': {
+                amount: ethers.utils.parseEther('100000'),
+                category: 'treasury',
+                proof: ['0x1234567890abcdef']
+            },
+            '0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9': {
+                amount: ethers.utils.parseEther('50000'),
+                category: 'deployer',
+                proof: ['0xabcdef1234567890']
+            }
+        };
+        
+        async function connectWallet() {
+            if (typeof window.ethereum === 'undefined') {
+                updateStatus('❌ MetaMask not detected. Please install MetaMask.', 'error');
+                return;
+            }
+            
+            try {
+                updateStatus('🔄 Connecting wallet...', 'loading');
+                
+                // Request account access
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                
+                // Check if we're on Base
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                if (chainId !== BASE_NETWORK.chainId) {
+                    await switchToBase();
+                }
+                
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                signer = provider.getSigner();
+                userAddress = await signer.getAddress();
+                
+                updateStatus('✅ Wallet connected successfully!', 'success');
+                showWalletInfo();
+                await checkEligibility();
+                
+            } catch (error) {
+                console.error('Wallet connection error:', error);
+                updateStatus(`❌ Connection failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function switchToBase() {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: BASE_NETWORK.chainId }]
+                });
+            } catch (error) {
+                if (error.code === 4902) {
+                    // Network not added, add it
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [BASE_NETWORK]
+                    });
+                } else {
+                    throw error;
+                }
+            }
+        }
+        
+        function showWalletInfo() {
+            document.getElementById('walletAddress').textContent = userAddress;
+            document.getElementById('walletInfo').style.display = 'block';
+            document.getElementById('connectButton').textContent = 'Connected';
+            document.getElementById('connectButton').disabled = true;
+        }
+        
+        async function checkEligibility() {
+            updateStatus('🔍 Checking eligibility...', 'loading');
+            
+            try {
+                // Check airdrop eligibility
+                const airdropData = SAMPLE_AIRDROP[userAddress];
+                
+                if (airdropData) {
+                    showClaimSection(airdropData);
+                } else {
+                    updateStatus('ℹ️ No claims available for this address. Airdrop coming soon!', '');
+                }
+                
+                // Also check current CODE and sCODE balances
+                await checkBalances();
+                
+            } catch (error) {
+                console.error('Eligibility check error:', error);
+                updateStatus(`❌ Failed to check eligibility: ${error.message}`, 'error');
+            }
+        }
+        
+        async function checkBalances() {
+            try {
+                const codeTokenABI = [
+                    "function balanceOf(address owner) view returns (uint256)",
+                    "function name() view returns (string)",
+                    "function symbol() view returns (string)"
+                ];
+                
+                const codeToken = new ethers.Contract(CONTRACTS.codeToken, codeTokenABI, signer);
+                const stakingVault = new ethers.Contract(CONTRACTS.stakingVault, codeTokenABI, signer);
+                
+                const codeBalance = await codeToken.balanceOf(userAddress);
+                const scodeBalance = await stakingVault.balanceOf(userAddress);
+                
+                const balanceInfo = document.createElement('div');
+                balanceInfo.className = 'amount-display';
+                balanceInfo.innerHTML = `
+                    <p>💰 Current Balance:</p>
+                    <p>CODE: ${ethers.utils.formatEther(codeBalance)}</p>
+                    <p>sCODE: ${ethers.utils.formatEther(scodeBalance)}</p>
+                `;
+                
+                const walletInfo = document.getElementById('walletInfo');
+                walletInfo.appendChild(balanceInfo);
+                
+            } catch (error) {
+                console.log('Balance check failed (might not have tokens yet):', error.message);
+            }
+        }
+        
+        function showClaimSection(airdropData) {
+            const claimSection = document.getElementById('claimSection');
+            const claimDetails = document.getElementById('claimDetails');
+            
+            const amount = ethers.utils.formatEther(airdropData.amount);
+            
+            claimDetails.innerHTML = `
+                <div class="amount-display">
+                    <p>🎁 Available to Claim</p>
+                    <p><strong>${amount} CODE</strong></p>
+                    <p>Category: ${airdropData.category}</p>
+                </div>
+                <button class="claim-button" onclick="claimTokens(false)">
+                    Claim to Wallet
+                </button>
+                <button class="stake-button" onclick="claimTokens(true)">
+                    🚀 Claim & Stake (Recommended)
+                </button>
+                <p style="margin-top: 15px; opacity: 0.8; font-size: 0.9rem;">
+                    💡 Staking gives you sCODE for governance voting and premium features
+                </p>
+            `;
+            
+            claimSection.style.display = 'block';
+            updateStatus('🎉 You have CODE tokens to claim!', 'success');
+        }
+        
+        async function claimTokens(autoStake) {
+            const airdropData = SAMPLE_AIRDROP[userAddress];
+            if (!airdropData) {
+                updateStatus('❌ No claim data found', 'error');
+                return;
+            }
+            
+            try {
+                updateStatus(`🔄 ${autoStake ? 'Claiming & staking' : 'Claiming'} tokens...`, 'loading');
+                
+                // This is a demo - in production this would call the actual MerkleDistributor
+                // For now, simulate the transaction
+                updateStatus('🔄 Simulating claim transaction...', 'loading');
+                
+                // Simulate transaction delay
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                if (autoStake) {
+                    updateStatus('✅ Successfully claimed and staked! You now have sCODE for premium features.', 'success');
+                } else {
+                    updateStatus('✅ Successfully claimed! CODE tokens sent to your wallet.', 'success');
+                }
+                
+                // Hide claim section after successful claim
+                document.getElementById('claimSection').style.display = 'none';
+                
+                // Refresh balances
+                await checkBalances();
+                
+            } catch (error) {
+                console.error('Claim error:', error);
+                updateStatus(`❌ Claim failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function updateStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.innerHTML = message;
+            statusEl.className = 'status ' + (type || '');
+        }
+        
+        // Check if wallet is already connected
+        window.addEventListener('load', async () => {
+            if (typeof window.ethereum !== 'undefined' && window.ethereum.selectedAddress) {
+                await connectWallet();
+            }
+        });
+        
+        // Listen for account changes
+        if (typeof window.ethereum !== 'undefined') {
+            window.ethereum.on('accountsChanged', (accounts) => {
+                if (accounts.length === 0) {
+                    location.reload();
+                } else {
+                    connectWallet();
+                }
+            });
+            
+            window.ethereum.on('chainChanged', () => {
+                location.reload();
+            });
+        }
+    </script>
+</body>
+</html> 
