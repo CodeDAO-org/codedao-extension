@@ -1,0 +1,146 @@
+name: Deploy CodeDAO Webhook
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'github-app/**'
+      - '.github/workflows/deploy-webhook.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  deploy:
+    name: Deploy Webhook to Production
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: 🚀 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: 'github-app/package.json'
+        
+    - name: 🔧 Install Dependencies
+      working-directory: github-app
+      run: npm ci
+      
+    - name: 🧪 Health Check
+      working-directory: github-app
+      run: |
+        echo "🔍 Validating webhook configuration..."
+        node -e "
+          const fs = require('fs');
+          const app = fs.readFileSync('app.js', 'utf8');
+          if (!app.includes('ALLOWLIST_REPOS')) throw new Error('Missing ALLOWLIST_REPOS');
+          if (!app.includes('/health')) throw new Error('Missing health endpoint');
+          if (!app.includes('pull_request.closed')) throw new Error('Missing PR handler');
+          console.log('✅ Webhook validation passed');
+        "
+        
+    - name: 🚀 Deploy to Render
+      uses: johnbeynon/render-deploy-action@v0.0.8
+      with:
+        service-id: ${{ secrets.RENDER_SERVICE_ID }}
+        api-key: ${{ secrets.RENDER_API_KEY }}
+        wait-for-success: true
+        
+    - name: 🔍 Post-Deploy Health Check
+      run: |
+        echo "⏳ Waiting for deployment to be ready..."
+        sleep 30
+        
+        echo "🏥 Testing health endpoint..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.WEBHOOK_URL }}/health || echo "000")
+        
+        if [ "$response" = "200" ]; then
+          echo "✅ Health check passed (HTTP $response)"
+        else
+          echo "❌ Health check failed (HTTP $response)"
+          exit 1
+        fi
+        
+    - name: 📊 Deployment Summary
+      run: |
+        echo "🎉 CODEDAO WEBHOOK DEPLOYED!"
+        echo "📍 URL: ${{ secrets.WEBHOOK_URL }}"
+        echo "🔗 Health: ${{ secrets.WEBHOOK_URL }}/health"
+        echo "📨 Webhook: ${{ secrets.WEBHOOK_URL }}/webhooks/github" 
+        echo "🤖 Ready for GitHub integration!"
+        
+    - name: 📢 Update Deployment Status
+      run: |
+        echo "WEBHOOK_STATUS=deployed" >> $GITHUB_ENV
+        echo "WEBHOOK_URL=${{ secrets.WEBHOOK_URL }}" >> $GITHUB_ENV
+        echo "DEPLOYED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
+        
+  configure-github:
+    name: Configure GitHub App
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: success()
+    
+    steps:
+    - name: 📋 GitHub App Configuration
+      run: |
+        echo "🔧 NEXT STEP: Configure GitHub App"
+        echo "📍 Go to: https://github.com/settings/apps"
+        echo "🔗 Webhook URL: ${{ secrets.WEBHOOK_URL }}/webhooks/github"
+        echo "🔑 Webhook Secret: Use GITHUB_WEBHOOK_SECRET from repository secrets"
+        echo "📝 Permissions needed:"
+        echo "   - Repository permissions: Pull requests (Read)"
+        echo "   - Subscribe to events: Pull request"
+        echo ""
+        echo "✅ Once configured, the webhook will process CodeDAO PRs!"
+        
+  notify-completion:
+    name: Notify Deployment Complete
+    runs-on: ubuntu-latest
+    needs: [deploy, configure-github]
+    if: always()
+    
+    steps:
+    - name: 🎉 Deployment Success
+      if: needs.deploy.result == 'success'
+      run: |
+        echo "🚀 CODEDAO WEBHOOK SUCCESSFULLY DEPLOYED!"
+        echo ""
+        echo "📊 DEPLOYMENT SUMMARY:"
+        echo "✅ Webhook: Live and healthy"
+        echo "✅ GitHub Actions: Automated deployment"
+        echo "✅ Health checks: Passing"
+        echo "✅ Ready for: Real PR processing"
+        echo ""
+        echo "🔄 NEXT STEPS:"
+        echo "1. Execute Safe transactions (fund distributor)"
+        echo "2. Configure GitHub App webhook URL"
+        echo "3. Test with real PR"
+        echo ""
+        echo "🎯 STATUS: Production-ready webhook deployed!"
+        
+    - name: ❌ Deployment Failed
+      if: needs.deploy.result == 'failure'
+      run: |
+        echo "❌ WEBHOOK DEPLOYMENT FAILED"
+        echo "🔧 Check the logs above for details"
+        echo "💡 Common issues:"
+        echo "   - Missing Render secrets"
+        echo "   - Invalid service configuration"
+        echo "   - Health check timeout"
+        exit 1 
