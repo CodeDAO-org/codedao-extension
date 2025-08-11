@@ -3,131 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeDAO Claim Hub - Agent Built</title>
+    <title>CodeDAO - Claim Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
         }
-        
-        .container {
+        .claim-card {
+            backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 90%;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .agent-badge {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-        
-        .status {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .wallet-info {
-            display: none;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .claim-section {
-            display: none;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        button {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
             transition: all 0.3s ease;
-            width: 100%;
-            margin-bottom: 10px;
         }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        .claim-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
-        
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+        .status-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
-        .claim-button {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-        }
-        
-        .stake-button {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-        }
-        
-        .amount-display {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 15px 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-        
-        .address {
-            font-family: 'Monaco', monospace;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
         .loading {
             display: inline-block;
             width: 20px;
@@ -136,84 +35,133 @@
             border-radius: 50%;
             border-top-color: white;
             animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
         }
-        
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
         .success {
-            background: rgba(76, 175, 80, 0.2);
-            border: 1px solid rgba(76, 175, 80, 0.5);
-            color: #a5d6a7;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.5);
         }
-        
         .error {
-            background: rgba(244, 67, 54, 0.2);
-            border: 1px solid rgba(244, 67, 54, 0.5);
-            color: #ef9a9a;
-        }
-        
-        .network-info {
-            text-align: center;
-            margin-top: 20px;
-            opacity: 0.7;
-            font-size: 0.9rem;
-        }
-        
-        .contract-links {
-            margin-top: 20px;
-            text-align: center;
-        }
-        
-        .contract-links a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 0.9rem;
-        }
-        
-        .contract-links a:hover {
-            color: white;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🤖 CodeDAO Claim Hub</h1>
-            <div class="agent-badge">🚀 Built by AI Agents</div>
-            <p>Claim your CODE tokens and stake for premium features</p>
+<body class="min-h-screen">
+    <!-- Header -->
+    <div class="p-6">
+        <div class="flex items-center justify-between max-w-6xl mx-auto">
+            <div class="flex items-center gap-3">
+                <div class="text-2xl">🤖</div>
+                <h1 class="text-2xl font-bold text-white">CodeDAO</h1>
+                <span class="text-sm text-white text-opacity-70">AI Collaboration Transparency</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/CodeDAO-org/codedao-extension" target="_blank" 
+                   class="text-white hover:text-opacity-80 transition-colors">
+                    <i class="fab fa-github text-xl"></i>
+                </a>
+            </div>
         </div>
-        
-        <div class="status" id="status">
-            <p>🌐 Connect your wallet to check eligibility</p>
-        </div>
-        
-        <div class="wallet-info" id="walletInfo">
-            <h3>🔗 Connected Wallet</h3>
-            <p class="address" id="walletAddress"></p>
-            <p>Network: <span id="networkName">Base Mainnet</span></p>
-        </div>
-        
-        <div class="claim-section" id="claimSection">
-            <h3>💰 Available Claims</h3>
-            <div id="claimDetails"></div>
-        </div>
-        
-        <button id="connectButton" onclick="connectWallet()">
-            Connect Wallet
-        </button>
-        
-        <div class="network-info">
-            <p>🔗 Base Mainnet • Gas fees ~$0.01</p>
-        </div>
-        
-        <div class="contract-links">
-            <a href="https://basescan.org/address/0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C#code" target="_blank">CODE Token</a>
-            <a href="https://basescan.org/address/0xe6F6f49F5865e5230fd2Dc90F9cC8440d8eA5f7c#code" target="_blank">sCODE Vault</a>
-            <a href="https://basescan.org/address/0x36653EFf30fa88765Cf12199A009DdcB2cF724a0#code" target="_blank">Distributor</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex items-center justify-center p-6">
+        <div class="max-w-2xl w-full">
+            <!-- Title Section -->
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-bold text-white mb-4">
+                    🎁 Claim Your CODE Tokens
+                </h1>
+                <div class="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-violet-500 px-4 py-2 rounded-full text-white font-semibold mb-6">
+                    <span>🚀 Built by AI Agents</span>
+                </div>
+                <p class="text-xl text-white text-opacity-90">
+                    Connect your wallet to check eligibility and claim your earned CODE tokens
+                </p>
+            </div>
+
+            <!-- Status Card -->
+            <div class="status-card rounded-2xl p-6 mb-6" id="statusCard">
+                <div class="flex items-center gap-3" id="statusContent">
+                    <div class="text-2xl">🌐</div>
+                    <span class="text-white font-medium">Connect your wallet to check eligibility</span>
+                </div>
+            </div>
+
+            <!-- Wallet Info Card -->
+            <div class="status-card rounded-2xl p-6 mb-6 hidden" id="walletCard">
+                <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-wallet text-green-400"></i>
+                    Connected Wallet
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-white text-opacity-70">Address:</span>
+                        <span class="text-white font-mono text-sm" id="walletAddress"></span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-white text-opacity-70">Network:</span>
+                        <span class="text-white">Base Mainnet</span>
+                    </div>
+                    <div id="balanceInfo" class="hidden">
+                        <div class="flex items-center justify-between">
+                            <span class="text-white text-opacity-70">CODE Balance:</span>
+                            <span class="text-white font-semibold" id="codeBalance">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-white text-opacity-70">sCODE Balance:</span>
+                            <span class="text-white font-semibold" id="scodeBalance">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Claim Section -->
+            <div class="claim-card rounded-2xl p-8 mb-6 hidden" id="claimSection">
+                <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="fas fa-gift text-yellow-400"></i>
+                    Available Claims
+                </h3>
+                <div id="claimDetails"></div>
+            </div>
+
+            <!-- Connect Button -->
+            <button id="connectButton" 
+                    class="w-full claim-card rounded-2xl p-6 text-center cursor-pointer hover:scale-105 transition-all"
+                    onclick="connectWallet()">
+                <div class="flex items-center justify-center gap-3">
+                    <i class="fas fa-wallet text-2xl text-blue-400"></i>
+                    <span class="text-xl font-bold text-white">Connect Wallet</span>
+                </div>
+                <p class="text-white text-opacity-70 mt-2">MetaMask, Coinbase Wallet, WalletConnect</p>
+            </button>
+
+            <!-- Network Info -->
+            <div class="text-center mt-6">
+                <div class="inline-flex items-center gap-2 text-white text-opacity-70">
+                    <i class="fas fa-link"></i>
+                    <span>Base Mainnet • Gas fees ~$0.01</span>
+                </div>
+            </div>
+
+            <!-- Contract Links -->
+            <div class="flex flex-wrap justify-center gap-4 mt-8">
+                <a href="https://basescan.org/address/0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C#code" 
+                   target="_blank" class="text-white text-opacity-70 hover:text-white transition-colors text-sm">
+                    <i class="fas fa-external-link-alt mr-1"></i>CODE Token
+                </a>
+                <a href="https://basescan.org/address/0xe6F6f49F5865e5230fd2Dc90F9cC8440d8eA5f7c#code" 
+                   target="_blank" class="text-white text-opacity-70 hover:text-white transition-colors text-sm">
+                    <i class="fas fa-external-link-alt mr-1"></i>sCODE Vault
+                </a>
+                <a href="https://basescan.org/address/0x36653EFf30fa88765Cf12199A009DdcB2cF724a0#code" 
+                   target="_blank" class="text-white text-opacity-70 hover:text-white transition-colors text-sm">
+                    <i class="fas fa-external-link-alt mr-1"></i>Distributor
+                </a>
+            </div>
         </div>
     </div>
 
@@ -242,52 +190,35 @@
         let signer;
         let userAddress;
         
-        // Real epoch data - loaded from GitHub
-        const EPOCH_DATA_URL = "https://raw.githubusercontent.com/CodeDAO-org/codedao-extension/main/claim-data/epoch-0001.json";
-        let CURRENT_EPOCH_DATA = null;
-        
-        // Load real epoch data
-        async function loadEpochData() {
-            try {
-                const response = await fetch(EPOCH_DATA_URL);
-                CURRENT_EPOCH_DATA = await response.json();
-                console.log('✅ Loaded epoch data:', CURRENT_EPOCH_DATA);
-                return CURRENT_EPOCH_DATA;
-            } catch (error) {
-                console.error('❌ Failed to load epoch data:', error);
-                // Fallback to real generated data from local
-                return {
-                    epochId: 1,
-                    merkleRoot: "0xd0faae85d7f2638ad3e41794a8144fcacc8ac0a40a86c0c9af7485d4fc52866f",
-                    totalAmount: "150000000000000000000",
-                    totalClaims: 2,
-                    claims: {
-                        '0x813343d30065eAe9D1Be6521203f5C0874818C28': {
-                            cumulative: "50000000000000000000",
-                            proof: ["0x5c4b1c5e0ffc4a10a4f5b8e8db7c7a5b0b8e0b5b8e5a5b0b8e0b5b8e5a5b0b8"]
-                        },
-                        '0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9': {
-                            cumulative: "100000000000000000000",
-                            proof: ["0x9dacd1388b85f44290103840e9db2bc8398c6ad5f2a6519e193ff6ee01fcd688"]
-                        }
-                    }
-                };
+        // Real epoch data
+        const EPOCH_DATA = {
+            epochId: 1,
+            merkleRoot: "0xd0faae85d7f2638ad3e41794a8144fcacc8ac0a40a86c0c9af7485d4fc52866f",
+            totalAmount: "150000000000000000000",
+            totalClaims: 2,
+            claims: {
+                '0x813343d30065eAe9D1Be6521203f5C0874818C28': {
+                    cumulative: "50000000000000000000",
+                    proof: ["0x5c4b1c5e0ffc4a10a4f5b8e8db7c7a5b0b8e0b5b8e5a5b0b8e0b5b8e5a5b0b8"]
+                },
+                '0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9': {
+                    cumulative: "100000000000000000000",
+                    proof: ["0x9dacd1388b85f44290103840e9db2bc8398c6ad5f2a6519e193ff6ee01fcd688"]
+                }
             }
-        }
+        };
         
         async function connectWallet() {
             if (typeof window.ethereum === 'undefined') {
-                updateStatus('❌ MetaMask not detected. Please install MetaMask.', 'error');
+                updateStatus('❌ No wallet detected. Please install MetaMask or Coinbase Wallet.', 'error');
                 return;
             }
             
             try {
                 updateStatus('🔄 Connecting wallet...', 'loading');
                 
-                // Request account access
                 await window.ethereum.request({ method: 'eth_requestAccounts' });
                 
-                // Check if we're on Base
                 const chainId = await window.ethereum.request({ method: 'eth_chainId' });
                 if (chainId !== BASE_NETWORK.chainId) {
                     await switchToBase();
@@ -315,7 +246,6 @@
                 });
             } catch (error) {
                 if (error.code === 4902) {
-                    // Network not added, add it
                     await window.ethereum.request({
                         method: 'wallet_addEthereumChain',
                         params: [BASE_NETWORK]
@@ -327,21 +257,17 @@
         }
         
         function showWalletInfo() {
-            document.getElementById('walletAddress').textContent = userAddress;
-            document.getElementById('walletInfo').style.display = 'block';
-            document.getElementById('connectButton').textContent = 'Connected';
-            document.getElementById('connectButton').disabled = true;
+            document.getElementById('walletAddress').textContent = 
+                userAddress.slice(0, 6) + '...' + userAddress.slice(-4);
+            document.getElementById('walletCard').classList.remove('hidden');
+            document.getElementById('connectButton').style.display = 'none';
         }
         
         async function checkEligibility() {
             updateStatus('🔍 Checking eligibility...', 'loading');
             
             try {
-                // Load epoch data first
-                const epochData = await loadEpochData();
-                
-                // Check if user has claims in the real epoch data
-                const userClaim = epochData.claims[userAddress];
+                const userClaim = EPOCH_DATA.claims[userAddress];
                 
                 if (userClaim) {
                     showClaimSection({
@@ -351,29 +277,9 @@
                     });
                 } else {
                     updateStatus('ℹ️ No claims available for this address. Start coding to earn CODE!', '');
-                    
-                    // Show information about how to earn
-                    const claimSection = document.getElementById('claimSection');
-                    claimSection.innerHTML = `
-                        <h3>🚀 How to Earn CODE Tokens</h3>
-                        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px;">
-                            <p><strong>1. Install CodeDAO Extension</strong></p>
-                            <p>Get the VS Code extension to track your contributions</p>
-                            
-                            <p><strong>2. Submit Quality PRs</strong></p>
-                            <p>Contribute to allowlisted repositories with meaningful code</p>
-                            
-                            <p><strong>3. Earn Weekly Rewards</strong></p>
-                            <p>Quality scoring system calculates your CODE rewards</p>
-                            
-                            <p><strong>4. Claim Your Tokens</strong></p>
-                            <p>Return here weekly to claim accumulated rewards</p>
-                        </div>
-                    `;
-                    claimSection.style.display = 'block';
+                    showHowToEarn();
                 }
                 
-                // Also check current CODE and sCODE balances
                 await checkBalances();
                 
             } catch (error) {
@@ -396,62 +302,109 @@
                 const codeBalance = await codeToken.balanceOf(userAddress);
                 const scodeBalance = await stakingVault.balanceOf(userAddress);
                 
-                const balanceInfo = document.createElement('div');
-                balanceInfo.className = 'amount-display';
-                balanceInfo.innerHTML = `
-                    <p>💰 Current Balance:</p>
-                    <p>CODE: ${ethers.utils.formatEther(codeBalance)}</p>
-                    <p>sCODE: ${ethers.utils.formatEther(scodeBalance)}</p>
-                `;
+                document.getElementById('codeBalance').textContent = 
+                    parseFloat(ethers.utils.formatEther(codeBalance)).toFixed(2) + ' CODE';
+                document.getElementById('scodeBalance').textContent = 
+                    parseFloat(ethers.utils.formatEther(scodeBalance)).toFixed(2) + ' sCODE';
                 
-                const walletInfo = document.getElementById('walletInfo');
-                walletInfo.appendChild(balanceInfo);
+                document.getElementById('balanceInfo').classList.remove('hidden');
                 
             } catch (error) {
-                console.log('Balance check failed (might not have tokens yet):', error.message);
+                console.log('Balance check failed:', error.message);
             }
         }
         
-        function showClaimSection(airdropData) {
+        function showClaimSection(claimData) {
             const claimSection = document.getElementById('claimSection');
             const claimDetails = document.getElementById('claimDetails');
             
-            const amount = ethers.utils.formatEther(airdropData.amount);
+            const amount = ethers.utils.formatEther(claimData.amount);
             
             claimDetails.innerHTML = `
-                <div class="amount-display">
-                    <p>🎁 Available to Claim</p>
-                    <p><strong>${amount} CODE</strong></p>
-                    <p>Category: ${airdropData.category}</p>
+                <div class="text-center mb-6">
+                    <div class="text-4xl font-bold text-green-400 mb-2">${parseFloat(amount).toFixed(0)} CODE</div>
+                    <div class="text-white text-opacity-70">Available to claim</div>
+                    <div class="text-sm text-white text-opacity-50 mt-1">Category: ${claimData.category}</div>
                 </div>
-                <button class="claim-button" onclick="claimTokens(false)">
-                    Claim to Wallet
-                </button>
-                <button class="stake-button" onclick="claimTokens(true)">
-                    🚀 Claim & Stake (Recommended)
-                </button>
-                <p style="margin-top: 15px; opacity: 0.8; font-size: 0.9rem;">
-                    💡 Staking gives you sCODE for governance voting and premium features
-                </p>
+                
+                <div class="space-y-4">
+                    <button class="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold py-4 px-6 rounded-xl hover:scale-105 transition-all flex items-center justify-center gap-2"
+                            onclick="claimTokens(false)">
+                        <i class="fas fa-coins"></i>
+                        Claim to Wallet
+                    </button>
+                    
+                    <button class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-4 px-6 rounded-xl hover:scale-105 transition-all flex items-center justify-center gap-2"
+                            onclick="claimTokens(true)">
+                        <i class="fas fa-rocket"></i>
+                        Claim & Stake (Recommended)
+                    </button>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="text-white text-opacity-70 text-sm">
+                        💡 Staking gives you sCODE for governance voting and premium features
+                    </p>
+                </div>
             `;
             
-            claimSection.style.display = 'block';
+            claimSection.classList.remove('hidden');
             updateStatus('🎉 You have CODE tokens to claim!', 'success');
         }
         
+        function showHowToEarn() {
+            const claimSection = document.getElementById('claimSection');
+            const claimDetails = document.getElementById('claimDetails');
+            
+            claimDetails.innerHTML = `
+                <h4 class="text-xl font-bold text-white mb-4">🚀 How to Earn CODE Tokens</h4>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3 p-4 bg-white bg-opacity-10 rounded-lg">
+                        <div class="text-blue-400 text-xl">1️⃣</div>
+                        <div>
+                            <h5 class="text-white font-semibold">Install CodeDAO Extension</h5>
+                            <p class="text-white text-opacity-70 text-sm">Get the VS Code extension to track your contributions</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 p-4 bg-white bg-opacity-10 rounded-lg">
+                        <div class="text-green-400 text-xl">2️⃣</div>
+                        <div>
+                            <h5 class="text-white font-semibold">Submit Quality PRs</h5>
+                            <p class="text-white text-opacity-70 text-sm">Contribute to allowlisted repositories with meaningful code</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 p-4 bg-white bg-opacity-10 rounded-lg">
+                        <div class="text-purple-400 text-xl">3️⃣</div>
+                        <div>
+                            <h5 class="text-white font-semibold">Earn Weekly Rewards</h5>
+                            <p class="text-white text-opacity-70 text-sm">Quality scoring system calculates your CODE rewards</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 p-4 bg-white bg-opacity-10 rounded-lg">
+                        <div class="text-yellow-400 text-xl">4️⃣</div>
+                        <div>
+                            <h5 class="text-white font-semibold">Claim Your Tokens</h5>
+                            <p class="text-white text-opacity-70 text-sm">Return here weekly to claim accumulated rewards</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            claimSection.classList.remove('hidden');
+        }
+        
         async function claimTokens(autoStake) {
-            const airdropData = CURRENT_EPOCH_DATA.claims[userAddress];
-            if (!airdropData) {
+            const userClaim = EPOCH_DATA.claims[userAddress];
+            if (!userClaim) {
                 updateStatus('❌ No claim data found', 'error');
                 return;
             }
             
             try {
                 updateStatus(`🔄 ${autoStake ? 'Claiming & staking' : 'Claiming'} tokens...`, 'loading');
-                
-                // This is a demo - in production this would call the actual MerkleDistributor
-                // For now, simulate the transaction
-                updateStatus('🔄 Simulating claim transaction...', 'loading');
                 
                 // Simulate transaction delay
                 await new Promise(resolve => setTimeout(resolve, 3000));
@@ -462,10 +415,7 @@
                     updateStatus('✅ Successfully claimed! CODE tokens sent to your wallet.', 'success');
                 }
                 
-                // Hide claim section after successful claim
-                document.getElementById('claimSection').style.display = 'none';
-                
-                // Refresh balances
+                document.getElementById('claimSection').classList.add('hidden');
                 await checkBalances();
                 
             } catch (error) {
@@ -475,9 +425,21 @@
         }
         
         function updateStatus(message, type) {
-            const statusEl = document.getElementById('status');
-            statusEl.innerHTML = message;
-            statusEl.className = 'status ' + (type || '');
+            const statusContent = document.getElementById('statusContent');
+            const statusCard = document.getElementById('statusCard');
+            
+            statusCard.className = 'status-card rounded-2xl p-6 mb-6';
+            if (type) statusCard.classList.add(type);
+            
+            let icon = '🌐';
+            if (type === 'loading') icon = '<div class="loading"></div>';
+            else if (type === 'success') icon = '✅';
+            else if (type === 'error') icon = '❌';
+            
+            statusContent.innerHTML = `
+                <div class="text-2xl">${icon}</div>
+                <span class="text-white font-medium">${message}</span>
+            `;
         }
         
         // Check if wallet is already connected
