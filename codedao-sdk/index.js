@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const chalk = require('chalk');
-const axios = require('axios');
-const simpleGit = require('simple-git');
+// CodeDAO SDK - No dependencies version
+const fs = require('fs');
+const path = require('path');
 
 /**
  * CodeDAO SDK - Earn CODE tokens while you code
@@ -16,43 +16,36 @@ class CodeDAOSDK {
     }
 
     async initialize() {
-        console.log(chalk.blue.bold('🚀 CodeDAO SDK Initializing...'));
-        console.log(chalk.green('💰 Start earning CODE tokens for your contributions!'));
+        console.log('🚀 CodeDAO SDK Initializing...');
+        console.log('💰 Start earning CODE tokens for your contributions!');
         
         try {
             // Check if we're in a git repository
-            const isRepo = await this.git.checkIsRepo();
-            if (!isRepo) {
-                console.log(chalk.red('❌ Not in a git repository. Please run this in a git project.'));
+            if (!fs.existsSync('.git')) {
+                console.log('❌ Not in a git repository. Please run this in a git project.');
                 return;
             }
 
-            // Get repository info
-            const remotes = await this.git.getRemotes(true);
-            const origin = remotes.find(r => r.name === 'origin');
-            
-            if (origin) {
-                console.log(chalk.blue(`📂 Repository: ${origin.refs.fetch}`));
-            }
+            console.log('📂 Repository detected');
 
             // Setup git hooks for tracking
             await this.setupGitHooks();
             
-            console.log(chalk.green.bold('✅ CodeDAO SDK setup complete!'));
-            console.log(chalk.yellow('🎯 Next steps:'));
-            console.log(chalk.white('   1. Make commits to this repository'));
-            console.log(chalk.white('   2. Your contributions will be tracked automatically'));
-            console.log(chalk.white(`   3. Visit ${this.dashboardUrl} to see earnings`));
-            console.log(chalk.white('   4. Connect your wallet to claim CODE tokens'));
+            console.log('✅ CodeDAO SDK setup complete!');
+            console.log('🎯 Next steps:');
+            console.log('   1. Make commits to this repository');
+            console.log('   2. Your contributions will be tracked automatically');
+            console.log(`   3. Visit ${this.dashboardUrl} to see earnings`);
+            console.log('   4. Connect your wallet to claim CODE tokens');
 
         } catch (error) {
-            console.error(chalk.red('❌ Setup failed:'), error.message);
+            console.error('❌ Setup failed:', error.message);
         }
     }
 
     async setupGitHooks() {
         // For MVP, we'll use a simple tracking approach
-        console.log(chalk.blue('🔗 Setting up contribution tracking...'));
+        console.log('🔗 Setting up contribution tracking...');
         
         // Create a .codedao config file
         const config = {
@@ -61,25 +54,24 @@ class CodeDAOSDK {
             trackingEnabled: true
         };
 
-        const fs = require('fs');
         fs.writeFileSync('.codedao.json', JSON.stringify(config, null, 2));
         
-        console.log(chalk.green('✅ Tracking configured in .codedao.json'));
+        console.log('✅ Tracking configured in .codedao.json');
     }
 
     async checkEarnings() {
-        console.log(chalk.blue('💰 Checking your CODE earnings...'));
-        console.log(chalk.yellow(`🌐 Visit: ${this.dashboardUrl}`));
-        console.log(chalk.green('🔗 Connect your wallet to see earnings and claim tokens'));
+        console.log('💰 Checking your CODE earnings...');
+        console.log(`🌐 Visit: ${this.dashboardUrl}`);
+        console.log('🔗 Connect your wallet to see earnings and claim tokens');
     }
 
     static showHelp() {
-        console.log(chalk.blue.bold('\n📚 CodeDAO SDK Commands:'));
-        console.log(chalk.white('  codedao init       - Initialize earning in this repository'));
-        console.log(chalk.white('  codedao earnings   - Check your CODE token earnings'));
-        console.log(chalk.white('  codedao dashboard  - Open the CodeDAO dashboard'));
-        console.log(chalk.white('  codedao help       - Show this help message'));
-        console.log(chalk.green('\n💡 Tip: Visit the dashboard to connect your wallet and claim tokens!'));
+        console.log('\n📚 CodeDAO SDK Commands:');
+        console.log('  codedao init       - Initialize earning in this repository');
+        console.log('  codedao earnings   - Check your CODE token earnings');
+        console.log('  codedao dashboard  - Open the CodeDAO dashboard');
+        console.log('  codedao help       - Show this help message');
+        console.log('\n💡 Tip: Visit the dashboard to connect your wallet and claim tokens!');
     }
 }
 
@@ -95,8 +87,8 @@ switch (command) {
         sdk.checkEarnings();
         break;
     case 'dashboard':
-        console.log(chalk.blue('🌐 Opening CodeDAO dashboard...'));
-        console.log(chalk.yellow(`Visit: ${sdk.dashboardUrl}`));
+        console.log('🌐 Opening CodeDAO dashboard...');
+        console.log(`Visit: ${sdk.dashboardUrl}`);
         break;
     case 'help':
     case '--help':
@@ -104,7 +96,7 @@ switch (command) {
         CodeDAOSDK.showHelp();
         break;
     default:
-        console.log(chalk.red('❌ Unknown command. Use "codedao help" for available commands.'));
+        console.log('❌ Unknown command. Use "codedao help" for available commands.');
         CodeDAOSDK.showHelp();
 }
 
