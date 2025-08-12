@@ -12,7 +12,7 @@ class CodeDAOSDK {
     constructor() {
         this.webhookUrl = 'https://codedao-github-app.vercel.app/webhook';
         this.dashboardUrl = 'https://codedao-org.github.io/codedao-extension/dashboard/index.html';
-        // No git dependency needed
+        this.git = simpleGit();
     }
 
     async initialize() {
