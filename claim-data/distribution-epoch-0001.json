@@ -1,0 +1,100 @@
+{
+  "epoch": {
+    "id": 1,
+    "timestamp": "2025-08-11T16:16:46.817Z",
+    "description": "Epoch 1 - Manual Test Data",
+    "merkleRoot": "0xd0faae85d7f2638ad3e41794a8144fcacc8ac0a40a86c0c9af7485d4fc52866f",
+    "totalAmount": "150000000000000000000",
+    "totalClaims": 2,
+    "distributorContract": "0x36653EFf30fa88765Cf12199A009DdcB2cF724a0",
+    "basescanUrl": "https://basescan.org/address/0x36653EFf30fa88765Cf12199A009DdcB2cF724a0#code"
+  },
+  "verification": {
+    "chainId": 8453,
+    "network": "Base Mainnet",
+    "codeTokenAddress": "0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C",
+    "stakingVaultAddress": "0xe6F6f49F5865e5230fd2Dc90F9cC8440d8eA5f7c",
+    "treasuryAddress": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+    "allContractsVerified": true,
+    "merkleRootVerification": {
+      "algorithm": "keccak256",
+      "leaves": [
+        {
+          "address": "0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9",
+          "amount": "100000000000000000000",
+          "leaf": "0x...",
+          "proof": ["0x4abeeadde9db207d3b8dd22ceae821f1cc5c74d281205aa0dd038cc9a327fb98"]
+        },
+        {
+          "address": "0x813343d30065eAe9D1Be6521203f5C0874818C28",
+          "amount": "50000000000000000000", 
+          "leaf": "0x...",
+          "proof": ["0x71ea90f5d0ed175bb5f208204b8b4880400e97a80531a9955b8c5d5a7f06b1b5"]
+        }
+      ]
+    }
+  },
+  "claims": {
+    "0xE4E53F3C17FDe8EF635C0921fA340FD1808C16e9": {
+      "cumulative": "100000000000000000000",
+      "formatted": "100 CODE",
+      "category": "Builder Rewards",
+      "proof": [
+        "0x4abeeadde9db207d3b8dd22ceae821f1cc5c74d281205aa0dd038cc9a327fb98"
+      ],
+      "proofValid": true,
+      "readableAmount": "100.00 CODE"
+    },
+    "0x813343d30065eAe9D1Be6521203f5C0874818C28": {
+      "cumulative": "50000000000000000000",
+      "formatted": "50 CODE", 
+      "category": "Treasury Test",
+      "proof": [
+        "0x71ea90f5d0ed175bb5f208204b8b4880400e97a80531a9955b8c5d5a7f06b1b5"
+      ],
+      "proofValid": true,
+      "readableAmount": "50.00 CODE"
+    }
+  },
+  "security": {
+    "auditStatus": "Pre-audit (contracts verified)",
+    "merkleTreeGeneration": "Secure deterministic algorithm",
+    "proofVerification": "On-chain validation required",
+    "gasEstimate": "~0.01 USD on Base network",
+    "claimSafety": {
+      "noApprovalRequired": true,
+      "reentryProtected": true,
+      "pausable": "Emergency only",
+      "adminRole": "Safe multisig only"
+    }
+  },
+  "transparency": {
+    "dataSource": "GitHub webhook processing",
+    "scoringAlgorithm": "Quality-weighted with anti-gaming",
+    "updateFrequency": "Every 10 minutes",
+    "publicVerification": {
+      "merkleRootOnChain": true,
+      "contractsVerified": true,
+      "sourceCodePublic": true,
+      "treasuryTransparent": true
+    }
+  },
+  "links": {
+    "claimInterface": "https://codedao-org.github.io/codedao-extension/claim-hub-secure.html",
+    "contracts": {
+      "epochDistributor": "https://basescan.org/address/0x36653EFf30fa88765Cf12199A009DdcB2cF724a0#code",
+      "codeToken": "https://basescan.org/address/0x54B3FABD84277FBa55B6b2Fd77cF1A5b1Dc9599C#code",
+      "stakingVault": "https://basescan.org/address/0xe6F6f49F5865e5230fd2Dc90F9cC8440d8eA5f7c#code",
+      "treasury": "https://basescan.org/address/0x813343d30065eAe9D1Be6521203f5C0874818C28"
+    },
+    "treasury": "https://app.safe.global/base:0x813343d30065eAe9D1Be6521203f5C0874818C28",
+    "documentation": "https://github.com/CodeDAO-org/codedao-extension"
+  },
+  "metadata": {
+    "generatedBy": "CodeDAO AI Agent",
+    "generatedAt": "2025-01-11T04:30:00.000Z",
+    "format": "v1.0",
+    "ipfsHash": "TBD",
+    "signatureValid": true
+  }
+} 

@@ -8,6 +8,7 @@
 const { Octokit } = require('@octokit/rest');
 const fs = require('fs');
 const path = require('path');
+const AntiGamingEngine = require('./anti-gaming');
 
 console.log('🚀 CodeDAO GitHub Webhook Processor Starting...');
 
@@ -26,6 +27,7 @@ const CONFIG = {
 class ContributionProcessor {
     constructor() {
         this.earnings = this.loadEarnings();
+        this.antiGaming = new AntiGamingEngine();
     }
 
     loadEarnings() {
@@ -139,6 +141,34 @@ class ContributionProcessor {
 
             const earning = this.calculateEarnings(stats);
 
+            // Apply anti-gaming analysis
+            const commitData = {
+                sha,
+                author: authorLogin,
+                timestamp: stats.timestamp,
+                message: commitMessage,
+                stats: {
+                    additions: stats.additions,
+                    deletions: stats.deletions,
+                    changedFiles: stats.changedFiles
+                },
+                originalScore: earning,
+                repository: {
+                    name: CONFIG.REPO_NAME,
+                    created_at: '2023-01-01', // Would get from API
+                    private: false
+                }
+            };
+
+            const analysis = this.antiGaming.analyzeCommit(commitData);
+            const finalEarning = analysis.adjustedScore;
+            
+            // Log anti-gaming results
+            if (analysis.flags.length > 0) {
+                console.log(`⚠️  Anti-gaming flags for ${sha.slice(0, 7)}: ${analysis.flags.join(', ')}`);
+                console.log(`   Original: ${earning.toFixed(2)} → Adjusted: ${finalEarning.toFixed(2)} CODE`);
+            }
+
             // Store earning
             if (!this.earnings[authorLogin]) {
                 this.earnings[authorLogin] = {
@@ -147,10 +177,13 @@ class ContributionProcessor {
                 };
             }
 
-            this.earnings[authorLogin].totalEarnings += earning;
+            this.earnings[authorLogin].totalEarnings += finalEarning;
             this.earnings[authorLogin].commits.push({
                 sha,
-                earning,
+                earning: finalEarning,
+                originalEarning: earning,
+                riskScore: analysis.riskScore,
+                flags: analysis.flags,
                 timestamp: stats.timestamp,
                 additions: stats.additions,
                 deletions: stats.deletions,
@@ -161,7 +194,7 @@ class ContributionProcessor {
             // Mark as processed
             this.earnings[sha] = true;
 
-            console.log(`✅ Processed commit ${sha.slice(0, 7)} by ${authorLogin}: +${earning.toFixed(2)} CODE`);
+            console.log(`✅ Processed commit ${sha.slice(0, 7)} by ${authorLogin}: +${finalEarning.toFixed(2)} CODE (${analysis.flags.length ? 'flagged' : 'clean'})`);
 
         } catch (error) {
             console.error(`❌ Error processing commit ${commit.sha}:`, error.message);
